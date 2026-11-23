@@ -2183,8 +2183,10 @@ AC["dg-esc"]=d=>{
 // ---------- cópia do progresso ----------
 AC.exportar=()=>{
   const txt=JSON.stringify({app:"cozinha-do-flavio",versao:1,exportado:new Date().toISOString(),dados:Object.fromEntries(COLS.map(c=>[c,S[c]]))});
-  try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=`cozinha-do-flavio-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch{}
-  openDlg("Cópia do progresso",`<p class="prosa">O arquivo foi para os downloads. Se ele não aparecer, copie o texto abaixo e guarde num lugar seguro, como um e-mail para você mesmo.</p>
+  // Dentro do claude.ai o download não funciona: lá a cópia é só o texto.
+  const baixa=!window.claude;
+  if(baixa)try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=`cozinha-do-flavio-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch{}
+  openDlg("Cópia do progresso",`<p class="prosa">${baixa?"O arquivo foi para os downloads. Se ele não aparecer, copie o texto abaixo":"Copie o texto abaixo"} e guarde num lugar seguro, como um e-mail para você mesmo. No app instalado, use \"Carregar cópia\" e cole o texto.</p>
     <textarea class="inp" id="ex-txt" rows="4" readonly aria-label="Texto da cópia">${esc(txt)}</textarea>
     <div class="acoes"><button class="btn soft" type="button" id="ex-copiar">Copiar o texto</button><span class="nota" id="ex-st" aria-live="polite"></span></div>`,null);
   $("#ex-copiar").onclick=async()=>{const t=$("#ex-txt");try{await navigator.clipboard.writeText(t.value);$("#ex-st").textContent="Copiado."}catch{t.select();$("#ex-st").textContent="Selecionei o texto: use Copiar do celular."}};
@@ -2215,7 +2217,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão b52d32a4e5.
+// Guarda o app no aparelho para abrir sem internet. Versão 17ea484f8c.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
