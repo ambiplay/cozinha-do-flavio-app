@@ -1281,6 +1281,13 @@ function avisoPendente(id){
 }
 
 // ---------- Início ----------
+// Só no aparelho (modo local) os dados podem se perder com o navegador: lembra de salvar uma cópia.
+function avisoCopia(){
+  if(modo!=="local")return "";
+  const l=lembreteCopia(LS.get("copia",null),Date.now(),Object.keys(S.progresso).length+Object.keys(S.receitas).length>0);
+  if(!l)return "";
+  return `<div class="painel acoes" style="justify-content:space-between"><span>${l.nunca?"Seu progresso e suas receitas estão só neste aparelho. Salve uma cópia para não perder nada.":`Sua última cópia do progresso tem ${l.dias} dias. Salve outra para guardar o que mudou.`}</span><button class="btn soft" data-ac="exportar">Salvar cópia agora</button></div>`;
+}
 V.inicio={
   mount(el){el.innerHTML='<div id="in-corpo" class="view"></div>'},
   update(){
@@ -1304,7 +1311,7 @@ V.inicio={
         <div class="acoes"><button class="btn acao" data-ac="go" data-v="aula" data-id="${prox}">Abrir a aula</button></div></section>`}
     else topo=`<section class="aro"><h2 class="h-pag">Agora você cozinha sozinho.</h2><p class="prosa">Todas as aulas do curso estão feitas, e o livro de receitas está inteiro aberto.</p><div class="acoes"><button class="btn acao" data-ac="go" data-v="receitas">Abrir o livro</button></div></section>`;
     $("#in-corpo").innerHTML=`<h1 class="h-pag">${oi}! Vamos cozinhar?</h1>
-      ${avisoPendente()}${topo}${depois}
+      ${avisoPendente()}${topo}${depois}${avisoCopia()}
       ${!feitas&&!pratos?`<p class="nota prosa">Cada aula concluída vira uma técnica que você sabe, e as técnicas abrem receitas no livro.</p>`:`<section class="sec"><h2 class="h-sec">O que você já sabe</h2>
         <div class="numeros"><div><b>${feitas} de ${ORDEM.length}</b><span>aulas</span></div><div><b>${tec}</b><span>técnicas</span></div><div><b>${pratos}</b><span>${pratos===1?"prato feito":"pratos feitos"}</span></div></div>
         <div class="barra" role="img" aria-label="${feitas} de ${ORDEM.length} aulas"><i style="width:${ORDEM.length?feitas/ORDEM.length*100:0}%"></i></div></section>`}
@@ -1426,6 +1433,7 @@ V.receita={
       <div class="acoes"><button class="btn acao" data-ac="cozinhar" data-id="${esc(r.id)}">${CZ&&CZ.id===r.id&&CZ.passo>0?"Continuar cozinhando":"Cozinhar agora"}</button>
         <button class="btn soft" data-ac="compras-add" data-id="${esc(r.id)}">Pôr na lista de compras</button>
         <button class="btn soft" data-ac="fav" data-id="${esc(r.id)}" aria-pressed="${!!S.favoritas[r.id]}">${S.favoritas[r.id]?"Tirar das favoritas":"Favoritar"}</button>
+        <button class="btn soft" data-ac="receita-enviar" data-id="${esc(r.id)}">Enviar a receita</button>
         ${minha?"":SAMPLE?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}"${RC.busy?" disabled":""}>Adaptar com o Claude</button>`:(()=>{const o=opcoesAdaptar(r);return o.trocas.length||o.equipamentos.length?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}">Adaptar</button>`:""})()}<button class="btn soft" data-ac="duvida" data-id="${esc(r.id)}">Tirar uma dúvida</button>
         ${minha?`<button class="btn contorno" data-ac="receita-propria" data-id="${esc(r.id)}">Editar</button>`:""}${criada?`<button class="btn contorno" data-ac="apagar-receita" data-id="${esc(r.id)}">Apagar</button>`:""}</div>
       ${blocoReceita(r)}`;
@@ -1476,15 +1484,26 @@ V.compras={
 };
 document.addEventListener("change",e=>{const id=e.target.dataset&&e.target.dataset.compra;if(id&&S.compras[id])put("compras",id,{...S.compras[id],feito:e.target.checked})});
 const itemCompra=c=>[c.q==null?"":fmtNum(c.q,c.u,c.item),un(c.u,c.q),plural(c.item,c.q,c.u)].filter(Boolean).join(" ");
-// Manda o que falta comprar para outro app (WhatsApp, notas…). Sem esse recurso, mostra o texto para copiar.
-AC["compras-enviar"]=async()=>{
-  const falta=Object.values(S.compras).filter(c=>!c.feito).sort((a,b)=>(a.ordem||0)-(b.ordem||0));if(!falta.length)return;
-  const txt="Lista de compras\n"+falta.map(c=>"- "+itemCompra(c)).join("\n");
+// Manda um texto para outro app (WhatsApp, notas…). Sem esse recurso (ou recusado, como no claude.ai), mostra o texto para copiar.
+async function enviarTexto(titulo,txt,oque){
   if(navigator.share){try{await navigator.share({text:txt});return}catch(e){if(e&&e.name==="AbortError")return}}
-  openDlg("Lista de compras",`<p class="prosa">Copie a lista e cole onde quiser, como numa conversa ou nas notas do celular.</p>
-    <textarea class="inp" id="cp-txt" rows="8" readonly aria-label="Lista de compras para copiar">${esc(txt)}</textarea>
-    <div class="acoes"><button class="btn soft" type="button" id="cp-copiar">Copiar a lista</button><span class="nota" id="cp-st" aria-live="polite"></span></div>`,null);
-  $("#cp-copiar").onclick=async()=>{const t=$("#cp-txt");try{await navigator.clipboard.writeText(t.value);$("#cp-st").textContent="Copiado."}catch{t.select();$("#cp-st").textContent="Selecionei o texto: use Copiar do celular."}};
+  openDlg(titulo,`<p class="prosa">Copie ${oque} e cole onde quiser, como numa conversa ou nas notas do celular.</p>
+    <textarea class="inp" id="env-txt" rows="8" readonly aria-label="${esc(titulo)} para copiar">${esc(txt)}</textarea>
+    <div class="acoes"><button class="btn soft" type="button" id="env-copiar">Copiar</button><span class="nota" id="env-st" aria-live="polite"></span></div>`,null);
+  $("#env-copiar").onclick=async()=>{const t=$("#env-txt");try{await navigator.clipboard.writeText(t.value);$("#env-st").textContent="Copiado."}catch{t.select();$("#env-st").textContent="Selecionei o texto: use Copiar do celular."}};
+}
+AC["compras-enviar"]=()=>{
+  const falta=Object.values(S.compras).filter(c=>!c.feito).sort((a,b)=>(a.ordem||0)-(b.ordem||0));if(!falta.length)return;
+  enviarTexto("Lista de compras","Lista de compras\n"+falta.map(c=>"- "+itemCompra(c)).join("\n"),"a lista");
+};
+// Receita inteira em texto, nas porções que estão na tela.
+AC["receita-enviar"]=d=>{
+  const r=receitaDe(d.id);if(!r)return;
+  const p=porc(),base=r.porcoes||3,link=S.receitas[r.id]&&rpLink(r.link);
+  const ing=r.ingredientes.map(i=>{const q=i.q==null?null:i.q*p/base;return "- "+[q==null?"":fmtNum(q,i.u,i.item),un(i.u,q),i.item].filter(Boolean).join(" ")+(i.obs?` (${i.obs})`:"")});
+  const pas=r.passos.map((s,k)=>`${k+1}. ${s.txt}${s.pronto?` Pronto quando: ${s.pronto}.`:""}`);
+  const txt=`${r.titulo}\n${p} ${p>1?"porções":"porção"} · ${fmtMin(r.minutos)}\n\nIngredientes\n${ing.join("\n")}\n\nModo de fazer\n${pas.join("\n")}${link?`\n\nReceita original: ${link}`:""}`;
+  enviarTexto(r.titulo,txt,"a receita");
 };
 AC["compra-nova"]=()=>{const inp=$("#cp-novo"),t=inp.value.trim();if(!t)return;put("compras",uid(),{item:t.slice(0,80),q:null,u:"",feito:false,origem:"",ordem:Date.now()});inp.value="";inp.focus()};
 AC["compra-del"]=d=>{const c=S.compras[d.id];if(!c)return;del("compras",d.id);toast("Item tirado da lista.",{undo:()=>put("compras",d.id,c)})};
@@ -2160,6 +2179,14 @@ function lerCopia(txt){
   dados.receitas=Object.fromEntries(Object.entries(dados.receitas).filter(([,r])=>inteira(r)));
   return {ok:true,dados,exportado:typeof o.exportado==="string"?o.exportado:null};
 }
+// No aparelho, os dados só existem ali: lembra de salvar uma cópia se nunca salvou ou se faz mais de 14 dias.
+function lembreteCopia(ultimaISO,agora,temDados){
+  if(!temDados)return null;
+  const t=Date.parse(ultimaISO||"");
+  if(!isFinite(t))return {nunca:true,dias:null};
+  const dias=Math.floor((agora-t)/864e5);
+  return dias>14?{nunca:false,dias}:null;
+}
 /*AJUDANTE-FIM*/
 
 async function criarReceita(prompt,origem){
@@ -2331,6 +2358,7 @@ AC["dg-esc"]=d=>{
 
 // ---------- cópia do progresso ----------
 AC.exportar=()=>{
+  LS.set("copia",new Date().toISOString());refresh();
   const txt=JSON.stringify({app:"minha-cozinha",versao:1,exportado:new Date().toISOString(),dados:Object.fromEntries(COLS.map(c=>[c,S[c]]))});
   // Dentro do claude.ai o download não funciona: lá a cópia é só o texto.
   const baixa=!window.claude;
@@ -2366,7 +2394,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 7d252c63eb.
+// Guarda o app no aparelho para abrir sem internet. Versão 0e73b7305d.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
