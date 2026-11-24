@@ -1302,8 +1302,8 @@ V.inicio={
         <p class="meta">${novo?(feitas?"Próxima aula":"Sua primeira aula"):"Para repetir"} · ${esc(m.titulo)} · ${fmtMin(a.receita.minutos)}</p>
         <p class="prosa">${esc(a.ideia.split(". ")[0])}.</p>
         <div class="acoes"><button class="btn acao" data-ac="go" data-v="aula" data-id="${prox}">Abrir a aula</button></div></section>`}
-    else topo=`<section class="aro"><h2 class="h-pag">Você cozinha sozinho, Flavio.</h2><p class="prosa">Todas as aulas do curso estão feitas, e o livro de receitas está inteiro aberto.</p><div class="acoes"><button class="btn acao" data-ac="go" data-v="receitas">Abrir o livro</button></div></section>`;
-    $("#in-corpo").innerHTML=`<h1 class="h-pag">${oi}, Flavio</h1>
+    else topo=`<section class="aro"><h2 class="h-pag">Agora você cozinha sozinho.</h2><p class="prosa">Todas as aulas do curso estão feitas, e o livro de receitas está inteiro aberto.</p><div class="acoes"><button class="btn acao" data-ac="go" data-v="receitas">Abrir o livro</button></div></section>`;
+    $("#in-corpo").innerHTML=`<h1 class="h-pag">${oi}! Vamos cozinhar?</h1>
       ${avisoPendente()}${topo}${depois}
       ${!feitas&&!pratos?`<p class="nota prosa">Cada aula concluída vira uma técnica que você sabe, e as técnicas abrem receitas no livro.</p>`:`<section class="sec"><h2 class="h-sec">O que você já sabe</h2>
         <div class="numeros"><div><b>${feitas} de ${ORDEM.length}</b><span>aulas</span></div><div><b>${tec}</b><span>técnicas</span></div><div><b>${pratos}</b><span>${pratos===1?"prato feito":"pratos feitos"}</span></div></div>
