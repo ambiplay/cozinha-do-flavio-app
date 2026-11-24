@@ -348,7 +348,7 @@ body.cozinhando .view{flex:1;gap:0}
 "use strict";
 
 /*CONTEUDO-INI*/
-// Conteúdo do curso. Tudo aqui é fixo; o progresso do Flavio fica na conta dele.
+// Conteúdo do curso. Tudo aqui é fixo; o progresso do aluno fica na conta dele.
 // I(quantidade para 3 pessoas | null, unidade, item, observação)   P(texto, fogo 1-3 | null, timer em segundos | null, sinal de pronto)
 const I=(q,u,item,obs)=>obs?{q,u,item,obs}:{q,u,item};
 const P=(txt,fogo=null,timer=null,pronto)=>pronto?{txt,fogo,timer,pronto}:{txt,fogo,timer};
@@ -1690,9 +1690,9 @@ V.cozinhar={
 };
 
 // ---------- Claude dentro do app ----------
-const REGRAS=`Você é o professor de cozinha de um curso para um único aluno, o Flavio, que mora em Natal (RN) e está aprendendo a cozinhar do zero. Regras fixas:
+const REGRAS=`Você é o professor de cozinha de um curso para um único aluno, que mora no Brasil e está aprendendo a cozinhar do zero. Regras fixas:
 - Responda em português do Brasil, simples e direto, sem markdown.
-- O Flavio não come carne de porco nem derivados (bacon, linguiça de porco, presunto, calabresa, banha, toucinho). Nunca sugira esses ingredientes.
+- O aluno não come carne de porco nem derivados (bacon, linguiça de porco, presunto, calabresa, banha, toucinho). Nunca sugira esses ingredientes.
 - Segurança alimentar conservadora: frango e carne moída sempre totalmente cozidos; panela de pressão só se abre depois que o pino baixa sozinho; nada de improvisar com óleo quente.
 - Use só técnicas que ele já concluiu. Equipamento da casa: fogão, forno, airfryer, micro-ondas, panelas comuns e panela de pressão.`;
 const FORMATO=`Responda só com um objeto JSON, neste formato:
@@ -2131,8 +2131,8 @@ async function criarReceita(prompt,origem){
   }catch(e){const m=e&&e.code==="invalid_json"?"A receita veio em formato estranho. Peça de novo.":msgErro(e);if(m)toast(m)}
   finally{RC.busy=false;refresh()}
 }
-function receitaNova(pedido){return criarReceita(`${REGRAS}\n\nTécnicas que o Flavio já concluiu (id: nome):\n${listaTecnicas()}\n\nCrie UMA receita nova para ele, usando só essas técnicas.\nPedido dele: ${pedido||"uma receita diferente das que já fiz, no meu nível"}\n\n${FORMATO}`,"pedido seu")}
-function adaptar(r,pedido){return criarReceita(`${REGRAS}\n\nTécnicas que o Flavio já concluiu (id: nome):\n${listaTecnicas()}\n\nReceita original:\n${ctxReceita(r)}\n\nAdapte esta receita conforme o pedido, mantendo o que funciona e trocando só o necessário. Em "exige" use só ids da lista.\nPedido dele: ${pedido}\n\n${FORMATO}`,"adaptada de "+r.titulo)}
+function receitaNova(pedido){return criarReceita(`${REGRAS}\n\nTécnicas que o aluno já concluiu (id: nome):\n${listaTecnicas()}\n\nCrie UMA receita nova para ele, usando só essas técnicas.\nPedido dele: ${pedido||"uma receita diferente das que já fiz, no meu nível"}\n\n${FORMATO}`,"pedido seu")}
+function adaptar(r,pedido){return criarReceita(`${REGRAS}\n\nTécnicas que o aluno já concluiu (id: nome):\n${listaTecnicas()}\n\nReceita original:\n${ctxReceita(r)}\n\nAdapte esta receita conforme o pedido, mantendo o que funciona e trocando só o necessário. Em "exige" use só ids da lista.\nPedido dele: ${pedido}\n\n${FORMATO}`,"adaptada de "+r.titulo)}
 // Receita própria: formulário para adicionar (sem id) ou editar (com id).
 function formReceitaPropria(r){
   const v=r||{},ing=r?r.ingredientes.map(rpTextoIngrediente).join("\n"):"",pas=r?r.passos.map(x=>x.txt).join("\n"):"";
@@ -2167,7 +2167,7 @@ AC.diag=async d=>{
   const a=AULAS[d.id],p=S.progresso[d.id];if(!a||!p||DG.busy)return;
   DG.busy=d.id;refresh();
   try{
-    const {text}=await SAMPLE(`${REGRAS}\n\nO Flavio fez a aula "${a.titulo}" e avaliou o resultado como "${p.nota==="errado"?"deu errado":"mais ou menos"}".\nO que ele anotou: ${p.anotacao||"(não anotou nada)"}\n\nReceita da aula:\n${ctxReceita(a.receita)}\n\nErros comuns desta aula:\n${a.erros.map(x=>`- ${x.problema}: ${x.conserto}`).join("\n")}\n\nDiga, em no máximo 5 frases, a causa mais provável e o que ele deve mudar na próxima tentativa. Se a anotação não der para saber, diga o que observar da próxima vez.`,
+    const {text}=await SAMPLE(`${REGRAS}\n\nO aluno fez a aula "${a.titulo}" e avaliou o resultado como "${p.nota==="errado"?"deu errado":"mais ou menos"}".\nO que ele anotou: ${p.anotacao||"(não anotou nada)"}\n\nReceita da aula:\n${ctxReceita(a.receita)}\n\nErros comuns desta aula:\n${a.erros.map(x=>`- ${x.problema}: ${x.conserto}`).join("\n")}\n\nDiga, em no máximo 5 frases, a causa mais provável e o que ele deve mudar na próxima tentativa. Se a anotação não der para saber, diga o que observar da próxima vez.`,
       {cache:false,onText:({text})=>{const el=$("#au-diag");if(el)el.textContent=text}});
     DG.busy=null;const p2=S.progresso[d.id]||p;put("progresso",d.id,{...p2,diagnostico:text.slice(0,2000)});
   }catch(e){DG.busy=null;refresh();const m=msgErro(e);if(m)toast(m)}
@@ -2322,7 +2322,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 1e351a2a91.
+// Guarda o app no aparelho para abrir sem internet. Versão 667add7356.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
