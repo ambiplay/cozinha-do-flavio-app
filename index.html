@@ -1373,7 +1373,7 @@ function linhaReceita(r,fechada){
   const p=S.progresso[r.id],f=fechada?faltam(r):[];
   return `<button type="button" class="linha" data-ac="go" data-v="receita" data-id="${esc(r.id)}"><span class="cresce"><span class="t">${esc(r.titulo)}</span><br>
     <span class="m">${fmtMin(r.minutos)}${fechada?` · falta: ${f.map(id=>esc(AULAS[id].titulo)).join(", ")}`:p&&p.vezes?` · feita ${p.vezes}×`:""}</span></span>
-    ${S.favoritas[r.id]?'<span class="tag good">favorita</span>':""}${S.receitas[r.id]?`<span class="tag">${/^adaptada/.test(S.receitas[r.id].origem||"")?"adaptada":"do Claude"}</span>`:""}</button>`;
+    ${S.favoritas[r.id]?'<span class="tag good">favorita</span>':""}${S.receitas[r.id]?`<span class="tag">${S.receitas[r.id].origem==="sua"?"minha":/^adaptada/.test(S.receitas[r.id].origem||"")?"adaptada":"do Claude"}</span>`:""}</button>`;
 }
 V.receitas={
   mount(el){el.innerHTML='<h1 class="h-pag">Receitas</h1><div id="rc-corpo" class="view"></div>'},
@@ -1385,8 +1385,8 @@ V.receitas={
     if(!abas.some(([a])=>a===RC.aba))RC.aba="abertas";
     let corpo;
     if(RC.aba==="proximas")corpo=fechadas.length?`<p class="nota prosa">Estas receitas abrem quando você concluir as aulas das técnicas que elas usam. Dá para ver e cozinhar antes, se quiser.</p><div class="lista">${fechadas.map(r=>linhaReceita(r,true)).join("")}</div>`:'<p class="vazio">Nenhuma receita esperando: o livro inteiro está aberto.</p>';
-    else if(RC.aba==="criadas")corpo=`<div class="acoes"><button class="btn acao" data-ac="nova-receita"${RC.busy?" disabled":""}>${SAMPLE?(RC.busy?"O Claude está escrevendo…":"Pedir receita nova ao Claude"):"O que dá pra fazer com o que tenho"}</button></div>
-      ${criadas.length?`<div class="lista">${criadas.map(r=>linhaReceita(r)).join("")}</div>`:`<p class="vazio">${SAMPLE?"Peça uma receita com o que você tem em casa. O Claude só usa técnicas que você já concluiu.":"As receitas que você adaptar aparecem aqui. Para adaptar, abra uma receita e toque em Adaptar."}</p>`}`;
+    else if(RC.aba==="criadas")corpo=`<div class="acoes"><button class="btn acao" data-ac="receita-propria">Adicionar receita</button><button class="btn soft" data-ac="nova-receita"${RC.busy?" disabled":""}>${SAMPLE?(RC.busy?"O Claude está escrevendo…":"Pedir receita nova ao Claude"):"O que dá pra fazer com o que tenho"}</button></div>
+      ${criadas.length?`<div class="lista">${criadas.map(r=>linhaReceita(r)).join("")}</div>`:`<p class="vazio">Adicione receitas que você viu em vídeos e sites. Elas ficam aqui, com timer e lista de compras.${SAMPLE?" Ou peça uma ao Claude, com o que você tem em casa.":" As receitas que você adaptar também aparecem aqui."}</p>`}`;
     else if(RC.aba==="favoritas")corpo=favs.length?`<div class="lista">${favs.map(r=>linhaReceita(r)).join("")}</div>`:'<p class="vazio">Marque uma receita como favorita para ela aparecer aqui.</p>';
     else corpo=abertas.length?`<div class="lista">${abertas.map(r=>linhaReceita(r)).join("")}</div>`:'<p class="vazio">As receitas abrem conforme você conclui as aulas. A primeira abre depois das duas primeiras aulas do curso.</p>';
     $("#rc-corpo").innerHTML=`<div class="abas" role="tablist" aria-label="Partes do livro">${abas.map(([a,r])=>`<button type="button" role="tab" id="aba-${a}" aria-controls="rc-painel" data-ac="aba" data-a="${a}" aria-selected="${RC.aba===a}" tabindex="${RC.aba===a?0:-1}">${r}</button>`).join("")}</div>
@@ -1398,9 +1398,9 @@ V.receita={
   update(){
     const r=receitaDe(curArg),box=$("#re-corpo");if(!box)return;
     if(!r){box.innerHTML=`<p class="vazio">${modo==="carregando"?"Carregando a receita…":"Essa receita não existe mais."} <button class="linkbtn" data-ac="go" data-v="receitas">Ver o livro</button></p>`;return}
-    const f=faltam(r),criada=!!S.receitas[r.id],p=S.progresso[r.id];
+    const f=faltam(r),criada=!!S.receitas[r.id],minha=criada&&r.origem==="sua",p=S.progresso[r.id];
     box.innerHTML=`<div class="cab"><button class="linkbtn voltar" data-ac="go" data-v="receitas">← Receitas</button>
-        <h1 class="h-pag">${esc(r.titulo)}</h1>${criada?`<p class="meta">Criada pelo Claude${r.origem?` · ${esc(r.origem)}`:""}</p>`:""}
+        <h1 class="h-pag">${esc(r.titulo)}</h1>${minha?`<p class="meta">Sua receita${rpLink(r.link)?` · <a href="${esc(rpLink(r.link))}" target="_blank" rel="noopener noreferrer">Ver a receita original</a>`:""}</p>`:criada?`<p class="meta">Criada pelo Claude${r.origem?` · ${esc(r.origem)}`:""}</p>`:""}
         ${r.exige&&r.exige.length?`<p class="meta">Técnicas: ${esc(listaE(r.exige.map(t=>TECNICAS[t]?TECNICAS[t].nome:t)))}</p>`:""}
         ${p&&p.vezes?`<span class="nota">Você já fez ${p.vezes}×, a última em ${dataBR(p.data)}${p.nota?` (${{bom:"ficou bom",medio:"mais ou menos",errado:"deu errado"}[p.nota]})`:""}.</span>`:""}</div>
       ${avisoPendente(r.id)}
@@ -1408,8 +1408,8 @@ V.receita={
       <div class="acoes"><button class="btn acao" data-ac="cozinhar" data-id="${esc(r.id)}">${CZ&&CZ.id===r.id&&CZ.passo>0?"Continuar cozinhando":"Cozinhar agora"}</button>
         <button class="btn soft" data-ac="compras-add" data-id="${esc(r.id)}">Pôr na lista de compras</button>
         <button class="btn soft" data-ac="fav" data-id="${esc(r.id)}" aria-pressed="${!!S.favoritas[r.id]}">${S.favoritas[r.id]?"Tirar das favoritas":"Favoritar"}</button>
-        ${SAMPLE?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}"${RC.busy?" disabled":""}>Adaptar com o Claude</button>`:(()=>{const o=opcoesAdaptar(r);return o.trocas.length||o.equipamentos.length?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}">Adaptar</button>`:""})()}<button class="btn soft" data-ac="duvida" data-id="${esc(r.id)}">Tirar uma dúvida</button>
-        ${criada?`<button class="btn contorno" data-ac="apagar-receita" data-id="${esc(r.id)}">Apagar</button>`:""}</div>
+        ${minha?"":SAMPLE?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}"${RC.busy?" disabled":""}>Adaptar com o Claude</button>`:(()=>{const o=opcoesAdaptar(r);return o.trocas.length||o.equipamentos.length?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}">Adaptar</button>`:""})()}<button class="btn soft" data-ac="duvida" data-id="${esc(r.id)}">Tirar uma dúvida</button>
+        ${minha?`<button class="btn contorno" data-ac="receita-propria" data-id="${esc(r.id)}">Editar</button>`:""}${criada?`<button class="btn contorno" data-ac="apagar-receita" data-id="${esc(r.id)}">Apagar</button>`:""}</div>
       ${blocoReceita(r)}`;
   }
 };
@@ -1726,6 +1726,73 @@ function validarReceita(o,sab=tecnicasSabidas()){
   return r;
 }
 /*VALIDAR-FIM*/
+/*MINHA-INI*/
+// Receitas que o usuário digita (vistas em vídeos e sites): lê as caixas do formulário.
+const RP_MARCA=/^\s*(?:[-•*–]|\d+[.)])\s+/;
+const RP_FRAC={"½":.5,"¼":.25,"¾":.75};
+const RP_FIM="(?=[\\s(]|$)";
+const RP_UNID=[
+  [new RegExp("^(?:kg|quilos?|quilogramas?)"+RP_FIM,"i"),"g",1000],
+  [new RegExp("^(?:gramas?|gr|g)"+RP_FIM,"i"),"g",1],
+  [new RegExp("^(?:ml|mililitros?)"+RP_FIM,"i"),"ml",1],
+  [new RegExp("^(?:litros?|l)"+RP_FIM,"i"),"ml",1000],
+  [/^colher(?:es)?\s*(?:\(sopa\)|de\s+sopa)/i,"c. sopa",1],
+  [/^colher(?:es)?\s*(?:\(ch[aá]\)|de\s+ch[aá])/i,"c. chá",1],
+  [/^x[ií]c(?:aras?|\.)?(?:\s*\(ch[aá]\)|\s+de\s+ch[aá](?=\s+de\s))?/i,"xíc",1],
+  [new RegExp("^dentes?"+RP_FIM,"i"),"dente",1],
+];
+const RP_SO_MARCA=/^(?:[-•*–]|\d+[.)]?)$/;
+function rpLinhas(t,max){return String(t??"").split(/\r?\n/).map(l=>l.trim()).filter(l=>l&&!RP_SO_MARCA.test(l)).map(l=>l.replace(RP_MARCA,"").trim()).filter(Boolean).slice(0,max)}
+function lerIngrediente(linha){
+  const l=String(linha??"").replace(RP_MARCA,"").trim().slice(0,120);if(!l)return null;
+  // misto "1 1/2" ou "1 e 1/2" | "1½" | "1/2" | milhar "1.000" | "0,5" | "½"
+  const m=l.match(/^(?:(\d+)\s+(?:e\s+)?(\d+)\/(\d+)|(\d+)\s*([½¼¾])|(\d+)\/(\d+)|(\d{1,3}(?:\.\d{3})+)(?![\d,])|(\d+(?:[.,]\d+)?)|([½¼¾]))\s*/);
+  if(!m)return {q:null,u:"",item:l};
+  let q=m[1]?+m[1]+m[2]/m[3]:m[4]?+m[4]+RP_FRAC[m[5]]:m[6]?m[6]/m[7]:m[8]?+m[8].replace(/\./g,""):m[9]?+m[9].replace(",","."):RP_FRAC[m[10]];
+  if(!isFinite(q))return {q:null,u:"",item:l};
+  let resto=l.slice(m[0].length),u="";
+  for(const [re,un,fator] of RP_UNID){const k=resto.match(re);if(k){u=un;q=Math.round(q*fator*1000)/1000;resto=resto.slice(k[0].length).trim();break}}
+  const item=resto.replace(/^de\s+/i,"").trim();
+  return item&&q>0?{q,u,item}:{q:null,u:"",item:l};
+}
+function lerPasso(linha){
+  const txt=String(linha??"").replace(RP_MARCA,"").trim().slice(0,400);if(!txt)return null;
+  let timer=0;
+  // "1h30" e "1h30min" primeiro, para o "30" não ser lido sozinho
+  const resto=txt.replace(/(\d+)\s*h\s*(\d{1,2})(?:\s*min(?:utos?)?)?(?=[\s.,;:!)]|$)/gi,(_,h,mi)=>{timer+=h*3600+mi*60;return " "});
+  for(const m of resto.matchAll(/(\d+(?:[.,]\d+)?)\s*(horas?|h|minutos?|min|segundos?|seg|s)(?=[\s.,;:!)]|$)/gi)){
+    const n=+m[1].replace(",","."),u=m[2].toLowerCase();timer+=n*(u[0]==="h"?3600:u[0]==="m"?60:1);
+  }
+  const f=txt.match(/fogo\s+(baixo|brando|m[eé]dio|alto)/i);
+  const fogo=f?(/^(baixo|brando)$/i.test(f[1])?1:/^alto$/i.test(f[1])?3:2):null;
+  return {txt,fogo,timer:timer?Math.round(timer):null};
+}
+// Volta um ingrediente salvo para a linha de texto do formulário (para editar).
+function rpTextoIngrediente(i){
+  if(i.q==null)return i.item;
+  const n=String(i.q).replace(".",","),v=i.q>1;
+  const u={g:"g","ml":"ml","xíc":v?"xícaras":"xícara","c. sopa":v?"colheres de sopa":"colher de sopa","c. chá":v?"colheres de chá":"colher de chá",dente:v?"dentes":"dente"}[i.u];
+  return u?`${n} ${u} de ${i.item}`:`${n} ${i.item}`;
+}
+function rpLink(t){
+  let s=String(t??"").trim().slice(0,500);if(!s)return "";
+  if(!/^[a-z][a-z0-9+.-]*:/i.test(s))s="https://"+s;
+  try{const u=new URL(s);return u.protocol==="http:"||u.protocol==="https:"?u.href:""}catch{return ""}
+}
+function montarReceitaPropria(c){
+  const titulo=String(c.titulo??"").trim().slice(0,80);
+  if(!titulo)return {ok:false,erro:"Dê um nome para a receita."};
+  const ingredientes=rpLinhas(c.ingredientes,40).map(lerIngrediente).filter(Boolean);
+  if(!ingredientes.length)return {ok:false,erro:"Escreva pelo menos um ingrediente."};
+  const passos=rpLinhas(c.passos,30).map(lerPasso).filter(Boolean);
+  if(passos.length<2)return {ok:false,erro:"Escreva pelo menos dois passos, um por linha."};
+  const porcoes=Math.min(12,Math.max(1,parseInt(c.porcoes,10)||3));
+  let minutos=parseInt(c.minutos,10);
+  if(!(minutos>0))minutos=Math.max(30,Math.round(passos.reduce((s,p)=>s+(p.timer||0),0)/60));
+  minutos=Math.min(600,Math.max(1,minutos));
+  return {ok:true,receita:{titulo,minutos,porcoes,exige:[],ingredientes,utensilios:[],passos,link:rpLink(c.link),origem:"sua"}};
+}
+/*MINHA-FIM*/
 /*AJUDANTE-INI*/
 // Ajudante: a ajuda offline do app. Só dados e funções puras (sem DOM, sem S),
 // para rodar sem o Claude e ser testado no Node (testar-ajudante.mjs).
@@ -2054,6 +2121,32 @@ async function criarReceita(prompt,origem){
 }
 function receitaNova(pedido){return criarReceita(`${REGRAS}\n\nTécnicas que o Flavio já concluiu (id: nome):\n${listaTecnicas()}\n\nCrie UMA receita nova para ele, usando só essas técnicas.\nPedido dele: ${pedido||"uma receita diferente das que já fiz, no meu nível"}\n\n${FORMATO}`,"pedido seu")}
 function adaptar(r,pedido){return criarReceita(`${REGRAS}\n\nTécnicas que o Flavio já concluiu (id: nome):\n${listaTecnicas()}\n\nReceita original:\n${ctxReceita(r)}\n\nAdapte esta receita conforme o pedido, mantendo o que funciona e trocando só o necessário. Em "exige" use só ids da lista.\nPedido dele: ${pedido}\n\n${FORMATO}`,"adaptada de "+r.titulo)}
+// Receita própria: formulário para adicionar (sem id) ou editar (com id).
+function formReceitaPropria(r){
+  const v=r||{},ing=r?r.ingredientes.map(rpTextoIngrediente).join("\n"):"",pas=r?r.passos.map(x=>x.txt).join("\n"):"";
+  return `<label class="campo" for="rp-titulo">Nome<input class="inp" id="rp-titulo" maxlength="80" value="${esc(v.titulo||"")}" placeholder="Ex.: Frango xadrez"></label>
+    <div class="frow"><label class="campo" for="rp-min" style="flex:1">Tempo total (min)<input class="inp" id="rp-min" type="number" inputmode="numeric" min="1" max="600" value="${esc(v.minutos||"")}"></label>
+      <label class="campo" for="rp-porc" style="flex:1">Rende (porções)<input class="inp" id="rp-porc" type="number" inputmode="numeric" min="1" max="12" value="${esc(v.porcoes||3)}"></label></div>
+    <label class="campo" for="rp-ing">Ingredientes (um por linha)<textarea class="inp" id="rp-ing" rows="6" placeholder="500 g de peito de frango&#10;1 pimentão vermelho&#10;3 colheres de sopa de shoyu">${esc(ing)}</textarea></label>
+    <label class="campo" for="rp-pas">Modo de fazer (um por linha)<textarea class="inp" id="rp-pas" rows="6" placeholder="Corte o frango em cubos.&#10;Doure em fogo médio por 8 minutos.&#10;Junte o molho e mexa.">${esc(pas)}</textarea></label>
+    <label class="campo" for="rp-link">Link do vídeo ou site (opcional)<input class="inp" id="rp-link" type="url" inputmode="url" value="${esc(v.link||"")}" placeholder="youtube.com/…"></label>
+    <p class="nota">Quando um passo fala em tempo, como “8 minutos”, ele ganha timer.</p>
+    <p class="nota" id="rp-erro" role="alert" style="color:var(--bad)"></p>`;
+}
+AC["receita-propria"]=d=>{
+  const velha=d&&d.id?S.receitas[d.id]:null;if(d&&d.id&&!velha)return;
+  openDlg(velha?"Editar receita":"Adicionar receita",formReceitaPropria(velha),dl=>{
+    const g=id=>$(id,dl).value;
+    const o=montarReceitaPropria({titulo:g("#rp-titulo"),minutos:g("#rp-min"),porcoes:g("#rp-porc"),ingredientes:g("#rp-ing"),passos:g("#rp-pas"),link:g("#rp-link")});
+    if(!o.ok){const e=$("#rp-erro",dl);e.textContent=o.erro;e.scrollIntoView({block:"nearest"});return false}
+    const id=velha?velha.id:"m-"+uid();
+    put("receitas",id,{...o.receita,id,criada:velha&&velha.criada||new Date().toISOString()});
+    // Editada no meio do preparo: o passo atual e os timers não podem passar do último passo.
+    if(CZ&&CZ.id===id){const n=o.receita.passos.length;CZ.passo=Math.min(CZ.passo,n);CZ.timers=CZ.timers.filter(t=>t.passo<=n);salvaCZ()}
+    if(!velha){RC.aba="criadas";LS.set("aba","criadas")}
+    toast(`Receita salva: ${o.receita.titulo}.`,{acao:{rotulo:"Abrir",fn:()=>go("receita",id)}});
+  },"Salvar");
+};
 AC["nova-receita"]=()=>{if(!SAMPLE)return sugerirAj();openDlg("Receita nova no seu nível",`<label class="campo" for="nr-txt">O que você quer cozinhar, ou o que tem em casa?<textarea class="inp" id="nr-txt" placeholder="Ex.: tenho frango, batata e cenoura. Quero algo para o jantar."></textarea></label><p class="nota">O Claude usa só as técnicas das aulas que você concluiu.</p>`,d=>{const t=$("#nr-txt",d).value.trim().slice(0,600);RC.aba="criadas";LS.set("aba","criadas");receitaNova(t)},"Criar receita")};
 AC.adaptar=d=>{if(!SAMPLE)return adaptarAj(d);const r=receitaDe(d.id);if(!r)return;openDlg("Adaptar: "+r.titulo,`<label class="campo" for="ad-txt">O que precisa mudar?<textarea class="inp" id="ad-txt" placeholder="Ex.: não tenho creme de leite. Ou: quero fazer na airfryer."></textarea></label><p class="nota">A versão adaptada entra no livro como uma receita nova; a original não muda.</p>`,dl=>{const t=$("#ad-txt",dl).value.trim().slice(0,600);if(!t)return false;adaptar(r,t)},"Adaptar")};
 
@@ -2217,7 +2310,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 17ea484f8c.
+// Guarda o app no aparelho para abrir sem internet. Versão 7f51765351.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
