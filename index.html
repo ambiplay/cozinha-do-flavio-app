@@ -1367,7 +1367,7 @@ V.aula={
 };
 
 // ---------- Receitas ----------
-const RC={aba:(a=>a==="fechadas"?"proximas":a)(LS.get("aba","abertas")),busy:false};
+const RC={aba:(a=>a==="fechadas"?"proximas":a)(LS.get("aba","abertas")),busy:false,q:""};
 AC.aba=d=>{RC.aba=d.a;LS.set("aba",d.a);refresh()};
 function linhaReceita(r,fechada){
   const p=S.progresso[r.id],f=fechada?faltam(r):[];
@@ -1376,9 +1376,19 @@ function linhaReceita(r,fechada){
     ${S.favoritas[r.id]?'<span class="tag good">favorita</span>':""}${S.receitas[r.id]?`<span class="tag">${S.receitas[r.id].origem==="sua"?"minha":/^adaptada/.test(S.receitas[r.id].origem||"")?"adaptada":"do Claude"}</span>`:""}</button>`;
 }
 V.receitas={
-  mount(el){el.innerHTML='<h1 class="h-pag">Receitas</h1><div id="rc-corpo" class="view"></div>'},
+  mount(el){
+    el.innerHTML='<h1 class="h-pag">Receitas</h1><input class="inp" id="rc-q" type="search" placeholder="Procurar receita ou ingrediente" aria-label="Procurar no livro de receitas"><div id="rc-corpo" class="view"></div>';
+    $("#rc-q").value=RC.q;$("#rc-q").addEventListener("input",e=>{RC.q=e.target.value;V.receitas.update()});
+  },
   update(){
     const abertas=LIVRO.filter(aberta),fechadas=LIVRO.filter(r=>!aberta(r)),criadas=Object.values(S.receitas).sort((a,b)=>(b.criada||"").localeCompare(a.criada||""));
+    // Com busca, mostra o livro inteiro filtrado (suas receitas primeiro) no lugar das abas.
+    if(RC.q.trim()){
+      const res=filtrarReceitas([...criadas,...LIVRO],RC.q);
+      $("#rc-corpo").innerHTML=res.length?`<p class="nota" role="status">${res.length===1?"1 receita":res.length+" receitas"}</p><div class="lista">${res.map(r=>linhaReceita(r,!aberta(r))).join("")}</div>`
+        :`<p class="vazio" role="status">Nenhuma receita com “${esc(RC.q.trim())}” no nome ou nos ingredientes.</p>`;
+      return;
+    }
     const favs=Object.keys(S.favoritas).map(receitaDe).filter(Boolean);
     const n=k=>`<span class="n">${k}</span>`;
     const abas=[["abertas",`Abertas${n(abertas.length)}`],["favoritas",`Favoritas${n(favs.length)}`],["criadas",`Criadas${n(criadas.length)}`],["proximas",`Próximas${n(fechadas.length)}`]];
@@ -1402,7 +1412,8 @@ V.receita={
     box.innerHTML=`<div class="cab"><button class="linkbtn voltar" data-ac="go" data-v="receitas">← Receitas</button>
         <h1 class="h-pag">${esc(r.titulo)}</h1>${minha?`<p class="meta">Sua receita${rpLink(r.link)?` · <a href="${esc(rpLink(r.link))}" target="_blank" rel="noopener noreferrer">Ver a receita original</a>`:""}</p>`:criada?`<p class="meta">Criada pelo Claude${r.origem?` · ${esc(r.origem)}`:""}</p>`:""}
         ${r.exige&&r.exige.length?`<p class="meta">Técnicas: ${esc(listaE(r.exige.map(t=>TECNICAS[t]?TECNICAS[t].nome:t)))}</p>`:""}
-        ${p&&p.vezes?`<span class="nota">Você já fez ${p.vezes}×, a última em ${dataBR(p.data)}${p.nota?` (${{bom:"ficou bom",medio:"mais ou menos",errado:"deu errado"}[p.nota]})`:""}.</span>`:""}</div>
+        ${p&&p.vezes?`<span class="nota">Você já fez ${p.vezes}×, a última em ${dataBR(p.data)}${p.nota?` (${{bom:"ficou bom",medio:"mais ou menos",errado:"deu errado"}[p.nota]})`:""}.</span>`:""}
+        ${p&&p.anotacao?`<p class="nota prosa">Da última vez você anotou: “${esc(p.anotacao)}”</p>`:""}</div>
       ${avisoPendente(r.id)}
       ${!criada&&f.length?`<div class="painel"><b>Esta receita usa técnicas que você ainda não viu.</b><p class="nota">Aulas que faltam: ${f.map(id=>`<button class="linkbtn" data-ac="go" data-v="aula" data-id="${id}">${esc(AULAS[id].titulo)}</button>`).join(", ")}. Você pode cozinhar mesmo assim.</p></div>`:""}
       <div class="acoes"><button class="btn acao" data-ac="cozinhar" data-id="${esc(r.id)}">${CZ&&CZ.id===r.id&&CZ.passo>0?"Continuar cozinhando":"Cozinhar agora"}</button>
@@ -1449,14 +1460,25 @@ V.compras={
   update(){
     const box=$("#cp-corpo");if(!box)return;
     const itens=Object.entries(S.compras).sort((a,b)=>(a[1].ordem||0)-(b[1].ordem||0));
-    const lin=([id,c])=>`<div class="compra ${c.feito?"feito":""}"><label><input type="checkbox" id="cp-${esc(id)}" data-compra="${esc(id)}"${c.feito?" checked":""}><span>${esc([c.q==null?"":fmtNum(c.q,c.u,c.item),un(c.u,c.q),plural(c.item,c.q,c.u)].filter(Boolean).join(" "))}</span></label><button class="xbtn" data-ac="compra-del" data-id="${esc(id)}" aria-label="Tirar ${esc(c.item)} da lista">×</button></div>`;
+    const lin=([id,c])=>`<div class="compra ${c.feito?"feito":""}"><label><input type="checkbox" id="cp-${esc(id)}" data-compra="${esc(id)}"${c.feito?" checked":""}><span>${esc(itemCompra(c))}</span></label><button class="xbtn" data-ac="compra-del" data-id="${esc(id)}" aria-label="Tirar ${esc(c.item)} da lista">×</button></div>`;
     const falta=itens.filter(x=>!x[1].feito),ok=itens.filter(x=>x[1].feito);
-    box.innerHTML=itens.length?`${falta.length?`<div class="lista">${falta.map(lin).join("")}</div>`:'<p class="vazio">Tudo comprado.</p>'}
+    box.innerHTML=itens.length?`${falta.length?`<div class="acoes"><button class="btn soft" data-ac="compras-enviar">Enviar a lista</button></div><div class="lista">${falta.map(lin).join("")}</div>`:'<p class="vazio">Tudo comprado.</p>'}
       ${ok.length?`<section class="sec"><div class="sec-topo"><h2 class="h-sec">No carrinho</h2><button class="linkbtn" data-ac="compras-limpar">Limpar os riscados</button></div><div class="lista">${ok.map(lin).join("")}</div></section>`:""}`
       :'<p class="vazio">A lista está vazia. Abra uma aula ou receita e toque em “Pôr na lista de compras”.</p>';
   }
 };
 document.addEventListener("change",e=>{const id=e.target.dataset&&e.target.dataset.compra;if(id&&S.compras[id])put("compras",id,{...S.compras[id],feito:e.target.checked})});
+const itemCompra=c=>[c.q==null?"":fmtNum(c.q,c.u,c.item),un(c.u,c.q),plural(c.item,c.q,c.u)].filter(Boolean).join(" ");
+// Manda o que falta comprar para outro app (WhatsApp, notas…). Sem esse recurso, mostra o texto para copiar.
+AC["compras-enviar"]=async()=>{
+  const falta=Object.values(S.compras).filter(c=>!c.feito).sort((a,b)=>(a.ordem||0)-(b.ordem||0));if(!falta.length)return;
+  const txt="Lista de compras\n"+falta.map(c=>"- "+itemCompra(c)).join("\n");
+  if(navigator.share){try{await navigator.share({text:txt});return}catch(e){if(e&&e.name==="AbortError")return}}
+  openDlg("Lista de compras",`<p class="prosa">Copie a lista e cole onde quiser, como numa conversa ou nas notas do celular.</p>
+    <textarea class="inp" id="cp-txt" rows="8" readonly aria-label="Lista de compras para copiar">${esc(txt)}</textarea>
+    <div class="acoes"><button class="btn soft" type="button" id="cp-copiar">Copiar a lista</button><span class="nota" id="cp-st" aria-live="polite"></span></div>`,null);
+  $("#cp-copiar").onclick=async()=>{const t=$("#cp-txt");try{await navigator.clipboard.writeText(t.value);$("#cp-st").textContent="Copiado."}catch{t.select();$("#cp-st").textContent="Selecionei o texto: use Copiar do celular."}};
+};
 AC["compra-nova"]=()=>{const inp=$("#cp-novo"),t=inp.value.trim();if(!t)return;put("compras",uid(),{item:t.slice(0,80),q:null,u:"",feito:false,origem:"",ordem:Date.now()});inp.value="";inp.focus()};
 AC["compra-del"]=d=>{const c=S.compras[d.id];if(!c)return;del("compras",d.id);toast("Item tirado da lista.",{undo:()=>put("compras",d.id,c)})};
 AC["compras-limpar"]=()=>{const ok=Object.entries(S.compras).filter(x=>x[1].feito);ok.forEach(([id])=>del("compras",id));toast("Riscados apagados.",{undo:()=>ok.forEach(([id,c])=>put("compras",id,c))})};
@@ -1805,6 +1827,21 @@ function montarReceitaPropria(c){
   return {ok:true,receita:{titulo,minutos,porcoes,exige:[],ingredientes,utensilios:[],passos,link:rpLink(c.link),origem:"sua"}};
 }
 /*MINHA-FIM*/
+/*LIVRO-INI*/
+// Busca no livro: pelo nome ou por um ingrediente, sem acento e aceitando plural.
+const lvNorm=t=>String(t??"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+function filtrarReceitas(receitas,q){
+  // palavras curtas ("de", "e") não filtram; "batatas" procura "batata"
+  const ps=lvNorm(q).split(/[^a-z0-9]+/).filter(w=>w.length>=3).map(w=>w.length>3&&w.endsWith("s")?w.slice(0,-1):w);
+  if(!ps.length)return receitas.slice();
+  const achou=[];
+  receitas.forEach((r,i)=>{
+    const tit=lvNorm(r.titulo),tudo=tit+" "+lvNorm((r.ingredientes||[]).map(x=>x.item).join(" "));
+    if(ps.every(w=>tudo.includes(w)))achou.push({r,i,nome:ps.every(w=>tit.includes(w))?0:1});
+  });
+  return achou.sort((a,b)=>a.nome-b.nome||a.i-b.i).map(x=>x.r);
+}
+/*LIVRO-FIM*/
 /*AJUDANTE-INI*/
 // Ajudante: a ajuda offline do app. Só dados e funções puras (sem DOM, sem S),
 // para rodar sem o Claude e ser testado no Node (testar-ajudante.mjs).
@@ -2322,7 +2359,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 94df1db4d4.
+// Guarda o app no aparelho para abrir sem internet. Versão d166611b5a.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
