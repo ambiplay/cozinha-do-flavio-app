@@ -1,5 +1,5 @@
 // Gerado por montar-app.mjs. Guarda tudo no aparelho e responde primeiro do que está guardado.
-const VERSAO="cozinha-b1d2ae2243";
+const VERSAO="cozinha-6cef17696d";
 const ARQUIVOS=["./","index.html","manifest.webmanifest","fontes/figtree.woff2","fontes/young-serif.woff2","icone-192.png","icone-512.png","icone-maskable-512.png"];
 self.addEventListener("install",e=>{
   e.waitUntil(caches.open(VERSAO).then(c=>c.addAll(ARQUIVOS.map(u=>new Request(u,{cache:"reload"})))).then(()=>self.skipWaiting()));
