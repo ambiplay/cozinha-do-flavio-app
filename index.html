@@ -1375,6 +1375,12 @@ function linhaReceita(r,fechada){
     <span class="m">${fmtMin(r.minutos)}${fechada?` · falta: ${f.map(id=>esc(AULAS[id].titulo)).join(", ")}`:p&&p.vezes?` · feita ${p.vezes}×`:""}</span></span>
     ${S.favoritas[r.id]?'<span class="tag good">favorita</span>':""}${S.receitas[r.id]?`<span class="tag">${S.receitas[r.id].origem==="sua"?"minha":/^adaptada/.test(S.receitas[r.id].origem||"")?"adaptada":"do Claude"}</span>`:""}</button>`;
 }
+// Prato de uma aula na busca: aparece pelo nome do prato e abre a aula.
+function linhaAulaBusca(id){
+  const a=AULAS[id],p=S.progresso[id],outro=a.titulo!==a.receita.titulo;
+  return `<button type="button" class="linha" data-ac="go" data-v="aula" data-id="${id}"><span class="cresce"><span class="t">${esc(a.receita.titulo)}</span><br>
+    <span class="m">${outro?`Aula: ${esc(a.titulo)} · `:""}${fmtMin(a.receita.minutos)}${p&&p.vezes?` · feita ${p.vezes}×`:""}</span></span><span class="tag">aula</span></button>`;
+}
 V.receitas={
   mount(el){
     el.innerHTML='<h1 class="h-pag">Receitas</h1><input class="inp" id="rc-q" type="search" placeholder="Procurar receita ou ingrediente" aria-label="Procurar no livro de receitas"><div id="rc-corpo" class="view"></div>';
@@ -1382,11 +1388,12 @@ V.receitas={
   },
   update(){
     const abertas=LIVRO.filter(aberta),fechadas=LIVRO.filter(r=>!aberta(r)),criadas=Object.values(S.receitas).sort((a,b)=>(b.criada||"").localeCompare(a.criada||""));
-    // Com busca, mostra o livro inteiro filtrado (suas receitas primeiro) no lugar das abas.
+    // Com busca, mostra tudo filtrado no lugar das abas: suas receitas, os pratos das aulas e o livro.
     if(RC.q.trim()){
-      const res=filtrarReceitas([...criadas,...LIVRO],RC.q);
-      $("#rc-corpo").innerHTML=res.length?`<p class="nota" role="status">${res.length===1?"1 receita":res.length+" receitas"}</p><div class="lista">${res.map(r=>linhaReceita(r,!aberta(r))).join("")}</div>`
-        :`<p class="vazio" role="status">Nenhuma receita com “${esc(RC.q.trim())}” no nome ou nos ingredientes.</p>`;
+      const aulas=ORDEM.map(id=>({titulo:AULAS[id].receita.titulo+" "+AULAS[id].titulo,ingredientes:AULAS[id].receita.ingredientes,aula:id}));
+      const res=filtrarReceitas([...criadas,...aulas,...LIVRO],RC.q);
+      $("#rc-corpo").innerHTML=res.length?`<p class="nota" role="status">${res.length===1?"1 resultado":res.length+" resultados"}</p><div class="lista">${res.map(r=>r.aula?linhaAulaBusca(r.aula):linhaReceita(r,!aberta(r))).join("")}</div>`
+        :`<p class="vazio" role="status">Nenhuma receita ou aula com “${esc(RC.q.trim())}” no nome ou nos ingredientes.</p>`;
       return;
     }
     const favs=Object.keys(S.favoritas).map(receitaDe).filter(Boolean);
@@ -2359,7 +2366,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão d166611b5a.
+// Guarda o app no aparelho para abrir sem internet. Versão 7d252c63eb.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
