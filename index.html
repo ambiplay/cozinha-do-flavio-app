@@ -2102,7 +2102,7 @@ const COLS_COPIA=["progresso","receitas","favoritas","compras","conversas","conf
 function lerCopia(txt){
   const nao=motivo=>({ok:false,motivo});
   let o;try{o=JSON.parse(String(txt??""))}catch{return nao("Este arquivo não é uma cópia do app Minha Cozinha.")}
-  if(!o||typeof o!=="object"||Array.isArray(o)||o.app!=="cozinha-do-flavio")return nao("Este arquivo não é uma cópia do app Minha Cozinha.");
+  if(!o||typeof o!=="object"||Array.isArray(o)||o.app!=="minha-cozinha"&&!/^cozinha-do-[a-z]+$/.test(o.app))return nao("Este arquivo não é uma cópia do app Minha Cozinha.");
   if(!o.dados||typeof o.dados!=="object"||Array.isArray(o.dados))return nao("A cópia está vazia ou incompleta.");
   const dados={};
   for(const c of COLS_COPIA){
@@ -2287,7 +2287,7 @@ AC["dg-esc"]=d=>{
 
 // ---------- cópia do progresso ----------
 AC.exportar=()=>{
-  const txt=JSON.stringify({app:"cozinha-do-flavio",versao:1,exportado:new Date().toISOString(),dados:Object.fromEntries(COLS.map(c=>[c,S[c]]))});
+  const txt=JSON.stringify({app:"minha-cozinha",versao:1,exportado:new Date().toISOString(),dados:Object.fromEntries(COLS.map(c=>[c,S[c]]))});
   // Dentro do claude.ai o download não funciona: lá a cópia é só o texto.
   const baixa=!window.claude;
   if(baixa)try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=`minha-cozinha-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch{}
@@ -2322,7 +2322,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 667add7356.
+// Guarda o app no aparelho para abrir sem internet. Versão 94df1db4d4.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>

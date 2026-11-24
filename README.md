@@ -1,4 +1,4 @@
-# Cozinha do Flavio (app)
+# Minha Cozinha (app)
 
 O app instalável do curso, gerado automaticamente. Não edite aqui: o código-fonte fica em outro repositório.
 
