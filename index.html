@@ -251,6 +251,27 @@ dialog::backdrop{background:rgba(8,16,12,.55)}
 .escolha[aria-pressed="true"]{background:var(--verde);color:var(--verde-ink);border-color:var(--verde)}
 .escolha:focus-visible{outline:3px solid var(--tomate);outline-offset:2px}
 
+/* Início: cartão de topo com a panela e o gráfico da semana */
+.hero{position:relative;overflow:hidden;background:var(--verde);color:var(--verde-ink);border-radius:22px;padding:22px 24px;min-height:150px;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:6px;box-shadow:inset 0 0 0 3px var(--verde),inset 0 0 0 4.5px var(--verde-ink)}
+.hero .sobre{color:inherit;opacity:.8}
+.hero .h-pag{max-width:calc(100% - 120px);position:relative}
+.panela{position:absolute;right:12px;bottom:16px;width:120px;height:111px}
+.panela .corpo{fill:var(--verde-ink)} .panela .tampa{fill:var(--verde-ink);opacity:.85}
+.panela .alca{fill:none;stroke:var(--verde-ink);stroke-width:5;stroke-linecap:round}
+.panela .chama{fill:var(--fogo-on);transform-box:fill-box;transform-origin:50% 100%}
+.panela .vapor{fill:none;stroke:var(--verde-ink);stroke-width:3;stroke-linecap:round;opacity:.55}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:150px}
+.week .wcol{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.week .bw{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.week .b{width:100%;max-width:38px;background:var(--verde);border-radius:8px 8px 4px 4px}
+.week .b.zero{height:3px!important;background:var(--line)}
+.week .wcol.today .b:not(.zero){background:var(--tomate)}
+.week .wcol.today .l{color:var(--ink);font-weight:800}
+.week .l{font-size:13px;color:var(--muted)}
+.week .n{font-size:13px;font-weight:700;min-height:18px;font-variant-numeric:tabular-nums}
+.seq{font-size:15px;color:var(--muted)} .seq b{color:var(--tomate-t);font-size:18px}
+
 /* avisos rápidos */
 .toasts{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -324,6 +345,34 @@ body.cozinhando .view{flex:1;gap:0}
   .barra i{transition:width .4s}
   .relogio.fim:not(.curto){animation:pulsa 1.2s ease-out infinite}
   @keyframes pulsa{0%{box-shadow:0 0 0 0 var(--tomate)}100%{box-shadow:0 0 0 9px transparent}}
+  /* Movimento igual ao dos outros apps: ao trocar de tela (classe vin no #view por ~1 s) os blocos sobem
+     um depois do outro, barras crescem e colunas sobem. Re-renderizações depois disso não reanimam. */
+  @keyframes vUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes vGrow{from{transform:scaleX(0)}to{transform:none}}
+  @keyframes vRise{from{transform:scaleY(0)}to{transform:none}}
+  @keyframes vPop{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:none}}
+  @keyframes vFade{from{opacity:0}to{opacity:1}}
+  @keyframes vToast{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  body:not(.cozinhando) #view.vin>:not(.view),body:not(.cozinhando) #view.vin>.view>*{animation:vUp .4s cubic-bezier(.2,.8,.2,1) backwards}
+  #view.vin>:nth-child(2),#view.vin>.view>:nth-child(2){animation-delay:.04s}
+  #view.vin>:nth-child(3),#view.vin>.view>:nth-child(3){animation-delay:.08s}
+  #view.vin>:nth-child(4),#view.vin>.view>:nth-child(4){animation-delay:.12s}
+  #view.vin>:nth-child(5),#view.vin>.view>:nth-child(5){animation-delay:.16s}
+  #view.vin>:nth-child(6),#view.vin>.view>:nth-child(6){animation-delay:.2s}
+  #view.vin>:nth-child(n+7),#view.vin>.view>:nth-child(n+7){animation-delay:.24s}
+  #view.vin .barra i{transform-origin:left;animation:vGrow .7s .2s cubic-bezier(.2,.8,.2,1) backwards}
+  #view.vin .week .b{transform-origin:bottom;animation:vRise .55s .15s cubic-bezier(.2,.8,.2,1) backwards}
+  .nav button[aria-current="page"] svg,.abas button[aria-selected="true"]{animation:vPop .3s cubic-bezier(.2,.8,.2,1)}
+  dialog[open]{animation:vUp .24s cubic-bezier(.2,.8,.2,1)}
+  dialog[open]::backdrop{animation:vFade .2s}
+  .toast{animation:vToast .28s cubic-bezier(.2,.8,.2,1)}
+  /* panela do Início: vapor sobe e some, chama tremula */
+  @keyframes vapor{0%{opacity:0;transform:translateY(8px)}35%{opacity:.6}100%{opacity:0;transform:translateY(-12px)}}
+  @keyframes chama{from{transform:scaleY(.86)}to{transform:scaleY(1.12)}}
+  .panela .vapor{transform-box:fill-box;animation:vapor 2.4s ease-out infinite backwards}
+  .panela .v2{animation-delay:.8s} .panela .v3{animation-delay:1.6s}
+  .panela .chama{animation:chama .5s ease-in-out infinite alternate}
+  .panela .c2{animation-delay:.17s} .panela .c3{animation-delay:.34s}
 }
 </style>
 
@@ -1168,13 +1217,15 @@ function estadoAula(id){const p=S.progresso[id];return p&&p.estado?p.estado:"nov
 const sabe=id=>{const e=estadoAula(id);return e==="feita"||e==="pulada"};
 function proximaAula(){return ORDEM.find(id=>estadoAula(id)==="nova")||ORDEM.find(id=>estadoAula(id)==="repetir")||null}
 function tecnicasSabidas(){const s=new Set();ORDEM.forEach(id=>{if(sabe(id))AULAS[id].ensina.forEach(t=>s.add(t))});return s}
+// Histórico para o gráfico da semana: a data de cada vez (até 60). Entrada antiga começa pela data que já tinha.
+const comDatas=p=>[...(Array.isArray(p.datas)?p.datas:p.data?[p.data]:[]),hoje()].slice(-60);
 function avaliar(id,nota,anotacao){
   if(LS.get("pendente",null)===id)LS.del("pendente");
   const p=S.progresso[id]||{};
-  if(!AULAS[id]){put("progresso",id,{...p,estado:"feita",nota,anotacao:anotacao||"",data:hoje(),vezes:(p.vezes||0)+1});toast(nota==="bom"?"Prato feito. Bom apetite!":"Anotado. Da próxima vez, confira os sinais de pronto com calma.");return}
+  if(!AULAS[id]){put("progresso",id,{...p,estado:"feita",nota,anotacao:anotacao||"",data:hoje(),datas:comDatas(p),vezes:(p.vezes||0)+1});toast(nota==="bom"?"Prato feito. Bom apetite!":"Anotado. Da próxima vez, confira os sinais de pronto com calma.");return}
   const estado=nota==="bom"||p.estado==="feita"?"feita":"repetir";
   const antes=moduloFeito(AULAS[id].modulo),tecAntes=tecnicasSabidas(),livroAntes=new Set(LIVRO.filter(aberta).map(r=>r.id));
-  put("progresso",id,{...p,estado,nota,anotacao:anotacao||"",data:hoje(),vezes:(p.vezes||0)+1,diagnostico:""});
+  put("progresso",id,{...p,estado,nota,anotacao:anotacao||"",data:hoje(),datas:comDatas(p),vezes:(p.vezes||0)+1,diagnostico:""});
   const mod=MODULOS.find(m=>m.id===AULAS[id].modulo),fechouModulo=!antes&&moduloFeito(mod.id);
   // Concluir uma aula pela primeira vez merece uma tela própria; repetir só confirma.
   if(estado==="feita"&&p.estado!=="feita"){
@@ -1247,6 +1298,17 @@ function mostrar(v,arg){
   cur=v;curArg=arg;const el=$("#view");el.innerHTML="";
   document.body.classList.toggle("cozinhando",v==="cozinhar");
   V[v].mount(el,arg);V[v].update();nav();window.scrollTo(0,0);
+  // Entrada animada só na troca de tela; com movimento reduzido o CSS não anima e os números não contam.
+  clearTimeout(VIN);el.classList.remove("vin");void el.offsetWidth;el.classList.add("vin");VIN=setTimeout(()=>el.classList.remove("vin"),900);
+  if(matchMedia("(prefers-reduced-motion: no-preference)").matches)el.querySelectorAll(".numeros b").forEach(contar);
+}
+let VIN=0;
+// Conta do zero até o número (ex.: "12" ou "3 de 33"), como nos outros apps.
+function contar(el){
+  const m=/^(\d+)(.*)$/.exec(el.textContent.trim());if(!m||+m[1]<2)return;
+  const n=+m[1],resto=m[2],t0=performance.now();
+  const f=t=>{const k=Math.min(1,(t-t0)/600),v=Math.round(n*(1-Math.pow(1-k,3)));el.textContent=v+resto;if(k<1)requestAnimationFrame(f)};
+  el.textContent=0+resto;requestAnimationFrame(f);
 }
 function refresh(){if(cur)V[cur].update()}
 addEventListener("hashchange",()=>{const[v,a]=rota();mostrar(v,a)});
@@ -1288,6 +1350,23 @@ function avisoCopia(){
   if(!l)return "";
   return `<div class="painel acoes" style="justify-content:space-between"><span>${l.nunca?"Seu progresso e suas receitas estão só neste aparelho. Salve uma cópia para não perder nada.":`Sua última cópia do progresso tem ${l.dias} dias. Salve outra para guardar o que mudou.`}</span><button class="btn soft" data-ac="exportar">Salvar cópia agora</button></div>`;
 }
+// Panela do cartão de topo: o vapor sobe e a chama tremula (CSS, só sem movimento reduzido).
+const PANELA=`<svg class="panela" viewBox="0 0 128 118" aria-hidden="true">
+  <path class="vapor v1" d="M44 40c-6-8 6-12 0-20s6-12 0-18"/><path class="vapor v2" d="M64 38c-6-8 6-12 0-20s6-12 0-18"/><path class="vapor v3" d="M84 40c-6-8 6-12 0-20s6-12 0-18"/>
+  <rect class="tampa" x="26" y="46" width="76" height="8" rx="4"/><rect class="tampa" x="56" y="40" width="16" height="7" rx="3"/>
+  <path class="alca" d="M24 64h-10M104 64h10"/><path class="corpo" d="M24 56h80v30a14 14 0 0 1-14 14H38a14 14 0 0 1-14-14z"/>
+  <path class="chama c1" d="M42 118c-6 0-8-5-6-9 1 2 3 3 4 2-1-4 2-7 4-9 0 4 4 5 4 10 0 3-2 6-6 6z"/>
+  <path class="chama c2" d="M64 118c-7 0-9-6-7-10 1 2 3 3 4 2-1-5 2-8 5-10 0 5 5 6 5 12 0 3-3 6-7 6z"/>
+  <path class="chama c3" d="M86 118c-6 0-8-5-6-9 1 2 3 3 4 2-1-4 2-7 4-9 0 4 4 5 4 10 0 3-2 6-6 6z"/></svg>`;
+// "Esta semana": pratos registrados por dia e semanas seguidas cozinhando.
+function blocoSemana(){
+  const cont=diasCozinhados(S.progresso);if(!Object.keys(cont).length)return "";
+  const h=hoje(),sem=semanaAtual(cont,h),tot=sem.reduce((n,d)=>n+d.n,0),seq=sequenciaSemanas(cont,h),max=Math.max(1,...sem.map(d=>d.n));
+  return `<section class="sec"><div class="sec-topo"><h2 class="h-sec">Esta semana</h2><span class="nota">${tot?`${tot} ${tot===1?"prato":"pratos"}`:""}</span></div>
+    ${tot?"":'<p class="nota">Nenhum prato registrado esta semana ainda.</p>'}
+    <div class="week" role="img" aria-label="Pratos registrados esta semana: ${sem.map(d=>`${d.rotulo} ${d.n}`).join(", ")}">${sem.map(d=>`<div class="wcol${d.hoje?" today":""}"><span class="n">${d.n||""}</span><div class="bw"><div class="b${d.n?"":" zero"}" style="height:${d.n?Math.max(10,Math.round(d.n/max*100)):0}%"></div></div><span class="l">${d.rotulo}</span></div>`).join("")}</div>
+    ${seq>=2?`<p class="seq"><b>${seq}</b> semanas seguidas cozinhando</p>`:""}</section>`;
+}
 V.inicio={
   mount(el){el.innerHTML='<div id="in-corpo" class="view"></div>'},
   update(){
@@ -1310,8 +1389,9 @@ V.inicio={
         <p class="prosa">${esc(a.ideia.split(". ")[0])}.</p>
         <div class="acoes"><button class="btn acao" data-ac="go" data-v="aula" data-id="${prox}">Abrir a aula</button></div></section>`}
     else topo=`<section class="aro"><h2 class="h-pag">Agora você cozinha sozinho.</h2><p class="prosa">Todas as aulas do curso estão feitas, e o livro de receitas está inteiro aberto.</p><div class="acoes"><button class="btn acao" data-ac="go" data-v="receitas">Abrir o livro</button></div></section>`;
-    $("#in-corpo").innerHTML=`<h1 class="h-pag">${oi}! Vamos cozinhar?</h1>
-      ${avisoPendente()}${topo}${depois}${avisoCopia()}
+    const dataExt=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"}).replace("-feira","").toUpperCase();
+    $("#in-corpo").innerHTML=`<section class="hero"><span class="sobre">${esc(dataExt)}</span><h1 class="h-pag">${oi}! Vamos cozinhar?</h1>${PANELA}</section>
+      ${avisoPendente()}${topo}${depois}${avisoCopia()}${blocoSemana()}
       ${!feitas&&!pratos?`<p class="nota prosa">Cada aula concluída vira uma técnica que você sabe, e as técnicas abrem receitas no livro.</p>`:`<section class="sec"><h2 class="h-sec">O que você já sabe</h2>
         <div class="numeros"><div><b>${feitas} de ${ORDEM.length}</b><span>aulas</span></div><div><b>${tec}</b><span>técnicas</span></div><div><b>${pratos}</b><span>${pratos===1?"prato feito":"pratos feitos"}</span></div></div>
         <div class="barra" role="img" aria-label="${feitas} de ${ORDEM.length} aulas"><i style="width:${ORDEM.length?feitas/ORDEM.length*100:0}%"></i></div></section>`}
@@ -1868,6 +1948,33 @@ function filtrarReceitas(receitas,q){
   return achou.sort((a,b)=>a.nome-b.nome||a.i-b.i).map(x=>x.r);
 }
 /*LIVRO-FIM*/
+/*SEMANA-INI*/
+// Contas do Início: pratos por dia, a semana atual (segunda a domingo) e semanas seguidas cozinhando.
+// Datas são "AAAA-MM-DD" locais; as contas usam UTC sobre essas strings para não sofrer com horário de verão.
+const smDia=iso=>Date.UTC(+iso.slice(0,4),+iso.slice(5,7)-1,+iso.slice(8,10));
+const smIso=t=>new Date(t).toISOString().slice(0,10);
+const smSegunda=iso=>{const t=smDia(iso),w=(new Date(t).getUTCDay()+6)%7;return t-w*864e5};
+function diasCozinhados(progresso){
+  const c={};
+  for(const p of Object.values(progresso||{})){
+    const ds=Array.isArray(p&&p.datas)?p.datas:p&&p.data?[p.data]:[];
+    for(const d of ds)if(/^\d{4}-\d{2}-\d{2}$/.test(d))c[d]=(c[d]||0)+1;
+  }
+  return c;
+}
+function semanaAtual(contagem,hojeISO){
+  const seg=smSegunda(hojeISO),R=["seg","ter","qua","qui","sex","sáb","dom"];
+  return R.map((rotulo,i)=>{const dia=smIso(seg+i*864e5);return {dia,rotulo,n:contagem[dia]||0,hoje:dia===hojeISO}});
+}
+function sequenciaSemanas(contagem,hojeISO){
+  const tem=seg=>{for(let i=0;i<7;i++)if(contagem[smIso(seg+i*864e5)])return true;return false};
+  let seg=smSegunda(hojeISO),n=0;
+  // A semana atual ainda vazia não quebra a sequência: ela só acaba no domingo.
+  if(!tem(seg))seg-=7*864e5;
+  while(tem(seg)){n++;seg-=7*864e5}
+  return n;
+}
+/*SEMANA-FIM*/
 /*AJUDANTE-INI*/
 // Ajudante: a ajuda offline do app. Só dados e funções puras (sem DOM, sem S),
 // para rodar sem o Claude e ser testado no Node (testar-ajudante.mjs).
@@ -2394,7 +2501,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 0e73b7305d.
+// Guarda o app no aparelho para abrir sem internet. Versão ed19f9bc92.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
