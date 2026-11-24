@@ -36,14 +36,14 @@
   --verde:#86cfa9; --verde-ink:#0f1f19;
   --tomate:#ff7d66; --tomate-ink:#2b0903; --tomate-t:#ff8f7b;
   --good:#86cfa9; --bad:#ff8f7b; --warn:#f0c060;
-  --fogo-on:#ff9a4d; --fogo-off:#6a8574; --traco:#6a8574; --salpico:rgba(237,242,234,.06); color-scheme:dark}}
+  --fogo-on:#ffb547; --fogo-off:#6a8574; --traco:#6a8574; --salpico:rgba(237,242,234,.06); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1f19; --surface:#172b23; --chip:#213a30; --line:#35513f;
   --ink:#edf2ea; --muted:#a6b8ab;
   --verde:#86cfa9; --verde-ink:#0f1f19;
   --tomate:#ff7d66; --tomate-ink:#2b0903; --tomate-t:#ff8f7b;
   --good:#86cfa9; --bad:#ff8f7b; --warn:#f0c060;
-  --fogo-on:#ff9a4d; --fogo-off:#6a8574; --traco:#6a8574; --salpico:rgba(237,242,234,.06); color-scheme:dark}
+  --fogo-on:#ffb547; --fogo-off:#6a8574; --traco:#6a8574; --salpico:rgba(237,242,234,.06); color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -88,6 +88,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .nav button svg{width:22px;height:22px}
   .pagina{padding-bottom:104px}
   .toasts{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
+  .faixa-timer{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+  body.com-faixa .toasts{bottom:calc(144px + env(safe-area-inset-bottom,0px))!important}
+  body.com-faixa .pagina{padding-bottom:176px}
 }
 
 /* tipografia */
@@ -234,7 +237,7 @@ dialog::backdrop{background:rgba(8,16,12,.55)}
 .sintomas summary::-webkit-details-marker{display:none}
 .sintomas summary::after{content:"+";margin-left:auto;font-size:24px;line-height:1;font-weight:400;color:var(--verde);flex:none}
 .sintomas details[open] summary::after{content:"−"}
-.sintomas summary:focus-visible{outline:3px solid var(--verde);outline-offset:2px;border-radius:8px}
+.sintomas summary:focus-visible{outline:3px solid var(--tomate);outline-offset:2px;border-radius:8px}
 .sintomas p{padding:0 0 14px}
 .dlg-pe{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 .chat{display:flex;flex-direction:column;gap:8px;max-height:44vh;overflow-y:auto}
@@ -261,7 +264,7 @@ dialog::backdrop{background:rgba(8,16,12,.55)}
 .panela .alca{fill:none;stroke:var(--verde-ink);stroke-width:5;stroke-linecap:round}
 .panela .chama{fill:var(--verde-ink);opacity:.8;transform-box:fill-box;transform-origin:50% 100%}
 .panela .vapor{fill:none;stroke:var(--verde-ink);stroke-width:3;stroke-linecap:round;opacity:.55}
-.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:150px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:150px;max-width:560px}
 .week .wcol{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
 .week .bw{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
 .week .b{width:100%;max-width:38px;background:var(--verde);border-radius:8px 8px 4px 4px}
@@ -286,7 +289,7 @@ body.cozinhando .view{flex:1;gap:0}
 .cz-topo{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:2px solid var(--verde)}
 .cz-tit{flex:1;min-width:0;display:flex;flex-direction:column}
 .cz-tit b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cz-tit span{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cz-tit span{font-size:16px;color:var(--muted);font-variant-numeric:tabular-nums}
 .cz-timers{display:flex;flex-direction:column;gap:8px;padding:8px 0}
 .cz-timers:empty{display:none}
 .relogio{border:2px solid var(--verde);background:var(--surface);border-radius:999px;padding:2px 2px 2px 18px;min-height:52px;display:flex;align-items:center;gap:10px;min-width:0}
@@ -317,6 +320,25 @@ body.cozinhando .view{flex:1;gap:0}
 .ajuda-sec{display:flex;flex-direction:column;gap:4px}
 .ajuda-sec h3{font-family:var(--f-disp);font-weight:400;font-size:21px;line-height:1.2;color:var(--verde)}
 .ajuda-sec li{padding:8px 0;border-bottom:1px solid var(--line)}
+/* No fogão (Arm's Length Rule): socorro e preparo em 18px. */
+body.cozinhando .sintomas summary,body.cozinhando .sintomas p,body.cozinhando .ajuda-sec li{font-size:18px}
+.cz-intro{font-size:18px;color:var(--muted)}
+/* Texto de exemplo dos campos: cor própria, para não parecer preenchido e ter contraste nos dois temas. */
+.inp::placeholder{color:var(--muted);opacity:1}
+h1[tabindex="-1"]:focus{outline:none}
+/* Favorito: ícone ao lado do título da receita. */
+.cab-tit{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.fav-btn{border:0;cursor:pointer;width:44px;height:44px;border-radius:50%;background:var(--chip);color:var(--muted);display:inline-grid;place-items:center;flex:none}
+.fav-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+.fav-btn[aria-pressed="true"]{color:var(--verde)} .fav-btn[aria-pressed="true"] svg{fill:currentColor}
+/* Timer correndo fora do fogão: faixa fina acima do menu. */
+.faixa-timer{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:7;width:min(520px,calc(100vw - 32px));
+  display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--verde);border-radius:999px;padding:4px 4px 4px 18px;min-height:52px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.faixa-timer span{flex:1;min-width:0;font-weight:600}
+.faixa-timer b{font-variant-numeric:tabular-nums;font-size:18px}
+.faixa-timer.fim{border-color:var(--tomate);color:var(--tomate-t)}
+body.com-faixa .toasts{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+body.com-faixa .pagina{padding-bottom:120px}
 .ajuda-sec li:last-child{border-bottom:0}
 .cz-corpo{flex:1;display:flex;flex-direction:column;gap:20px;padding:24px 0;min-width:0}
 .cz-passo{font-size:clamp(22px,4.6vw,32px);line-height:1.3;font-weight:500;overflow-wrap:anywhere}
@@ -389,6 +411,7 @@ body.cozinhando .view{flex:1;gap:0}
   <div class="aviso" id="aviso" hidden></div>
   <div class="view" id="view"></div>
 </div>
+<div class="faixa-timer" id="faixa-timer" role="status" hidden></div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 <dialog id="dlg" aria-labelledby="dlg-tit"><div class="dlg"><div class="dlg-cab"><h2 id="dlg-tit" tabindex="-1" autofocus></h2><button class="iconbtn" id="dlg-x" type="button" aria-label="Fechar">✕</button></div><div class="dlg-corpo" id="dlg-corpo"></div><div class="dlg-pe"><button class="btn soft" id="dlg-nao" type="button">Cancelar</button><button class="btn acao" id="dlg-ok" type="button">Salvar</button></div></div></dialog>
 
@@ -1303,6 +1326,20 @@ function mostrar(v,arg){
   // Entrada animada só na troca de tela; com movimento reduzido o CSS não anima e os números não contam.
   clearTimeout(VIN);el.classList.remove("vin");void el.offsetWidth;el.classList.add("vin");VIN=setTimeout(()=>el.classList.remove("vin"),900);
   if(matchMedia("(prefers-reduced-motion: no-preference)").matches)el.querySelectorAll(".numeros b").forEach(contar);
+  // Leitor de tela e teclado: a tela nova começa no título (só depois da primeira).
+  if(JA_MOSTROU){const h=el.querySelector("h1");if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}}
+  JA_MOSTROU=true;faixaTimer();
+}
+let JA_MOSTROU=false;
+// Fora do fogão e do Início, um timer correndo (ou que acabou) fica numa faixa fina acima do menu.
+function faixaTimer(){
+  const f=$("#faixa-timer");if(!f)return;
+  const ts=CZ&&CZ.timers||[],acabou=ts.find(t=>t.tocou),corre=ts.filter(t=>!t.tocou).sort((a,b)=>a.fim-b.fim)[0];
+  const mostra=(acabou||corre)&&cur!=="cozinhar"&&cur!=="inicio";
+  f.hidden=!mostra;document.body.classList.toggle("com-faixa",!!mostra);if(!mostra)return;
+  f.classList.toggle("fim",!!acabou);
+  f.innerHTML=acabou?`<span>Acabou o tempo do passo ${acabou.passo}</span><button type="button" class="btn acao sm" data-ac="go" data-v="cozinhar">Ver</button>`
+    :`<span>Timer do passo ${corre.passo} · <b data-tfim="${corre.fim}">${relogio(corre.fim-Date.now())}</b></span><button type="button" class="btn soft sm" data-ac="go" data-v="cozinhar">Voltar ao fogão</button>`;
 }
 let VIN=0;
 // Conta do zero até o número (ex.: "12" ou "3 de 33"), como nos outros apps.
@@ -1334,7 +1371,7 @@ function dlgAvaliar(id){
     <label><input type="radio" name="nota" id="nota-bom" value="bom"><span>Ficou bom<small>${aula?"Eu serviria de novo. Conclui a aula.":"Eu serviria de novo."}</small></span></label>
     <label><input type="radio" name="nota" id="nota-medio" value="medio"><span>Mais ou menos<small>Deu para comer, mas algo saiu do ponto.</small></span></label>
     <label><input type="radio" name="nota" id="nota-errado" value="errado"><span>Deu errado<small>${aula?"Acontece. Fica na lista para repetir.":"Acontece. Anote o que houve para acertar da próxima."}</small></span></label></div>
-    <p class="nota erro" id="nota-erro" role="alert" hidden>Escolha uma das três opções para salvar.</p>
+    <p class="nota" id="nota-erro" role="alert" style="font-weight:600;color:var(--ink)" hidden>Escolha como ficou para salvar.</p>
     <label class="campo" for="nota-txt">O que aconteceu? (opcional)<textarea class="inp" id="nota-txt" placeholder="${esc(p.anotacao?"Da última vez: "+p.anotacao:"Ex.: o arroz ficou empapado no fundo")}"></textarea></label>`,
   d=>{const n=$("input[name=nota]:checked",d);if(!n){$("#nota-erro",d).hidden=false;return false}avaliar(id,n.value,$("#nota-txt",d).value.trim().slice(0,500))},"Salvar");
 }
@@ -1400,8 +1437,10 @@ V.inicio={
         <div class="numeros"><div><b>${feitas} de ${ORDEM.length}</b><span>aulas</span></div><div><b>${tec}</b><span>técnicas</span></div><div><b>${pratos}</b><span>${pratos===1?"prato feito":"pratos feitos"}</span></div></div>
         <div class="barra" role="img" aria-label="${feitas} de ${ORDEM.length} aulas"><i style="width:${ORDEM.length?feitas/ORDEM.length*100:0}%"></i></div></section>`}
       ${rep.length?`<section class="sec"><h2 class="h-sec">Para repetir</h2><div class="lista">${rep.map(linhaAula).join("")}</div></section>`:""}
-      <section class="sec"><h2 class="h-sec">Seu progresso</h2><p class="nota prosa">${modo==="claude"?"Fica salvo na sua conta do Claude.":"Fica salvo neste aparelho."} Para levar para outro celular ou navegador, salve uma cópia aqui e carregue lá.</p>
-        <div class="acoes"><button class="btn soft" data-ac="exportar">Salvar cópia do progresso</button><button class="btn soft" data-ac="importar">Carregar cópia</button></div></section>`;
+      ${Object.keys(S.progresso).length+Object.keys(S.receitas).length?`<section class="sec"><h2 class="h-sec">Seu progresso</h2><p class="nota prosa">${modo==="claude"?"Fica salvo na sua conta do Claude.":"Fica salvo neste aparelho."} Para levar para outro celular ou navegador, salve uma cópia aqui e carregue lá.</p>
+        <div class="acoes"><button class="btn soft" data-ac="exportar">Salvar cópia do progresso</button><button class="btn soft" data-ac="importar">Carregar cópia</button></div></section>`
+        :`<section class="sec"><h2 class="h-sec">Já usou o app em outro lugar?</h2><p class="nota prosa">Se você salvou uma cópia do progresso em outro celular ou navegador, carregue aqui para continuar de onde parou.</p>
+        <div class="acoes"><button class="btn soft" data-ac="importar">Carregar cópia</button></div></section>`}`;
   }
 };
 function linhaAula(id){
@@ -1445,11 +1484,12 @@ V.aula={
         ${p.anotacao?`<span>“${esc(p.anotacao)}”</span>`:""}
         ${DG.busy===a.id?`<div class="diag" id="au-diag">Pensando…</div>`:p.diagnostico?`<div class="diag">${esc(p.diagnostico)}</div>`:""}
         ${p.nota&&p.nota!=="bom"&&!p.diagnostico&&DG.busy!==a.id?`<div><button class="btn soft sm" data-ac="diag" data-id="${a.id}">${SAMPLE?"Perguntar ao Claude o que deu errado":"O que deu errado?"}</button></div>`:""}</div>`:""}
-      <section class="sec"><h2 class="h-sec">A ideia</h2><div class="prosa"><p>${esc(a.ideia)}</p></div></section>
-      <section class="sec"><h2 class="h-sec">O que observar</h2><ul class="observar prosa">${a.observar.map(o=>`<li>${esc(o)}</li>`).join("")}</ul></section>
       <div class="acoes"><button class="btn acao" data-ac="cozinhar" data-id="${a.id}">${CZ&&CZ.id===a.id&&CZ.passo>0?"Continuar cozinhando":"Cozinhar agora"}</button>
         <button class="btn soft" data-ac="compras-add" data-id="${a.id}">Pôr na lista de compras</button>
         <button class="btn soft" data-ac="duvida" data-id="${a.id}">Tirar uma dúvida</button></div>
+      <section class="sec"><h2 class="h-sec">A ideia</h2><div class="prosa"><p>${esc(a.ideia)}</p></div></section>
+      <section class="sec"><h2 class="h-sec">O que observar</h2><ul class="observar prosa">${a.observar.map(o=>`<li>${esc(o)}</li>`).join("")}</ul></section>
+      
       ${blocoReceita(a.receita)}
       <section class="sec"><h2 class="h-sec">Se der errado</h2><ul class="erros prosa">${a.erros.map(x=>`<li><b>${esc(x.problema)}</b>${esc(x.conserto)}</li>`).join("")}</ul></section>
       <div class="acoes"><button class="btn contorno" data-ac="avaliar" data-id="${a.id}">${p.vezes?"Fiz de novo: registrar":"Já cozinhei: registrar como ficou"}</button>
@@ -1489,7 +1529,7 @@ V.receitas={
     }
     const favs=Object.keys(S.favoritas).map(receitaDe).filter(Boolean);
     const n=k=>`<span class="n">${k}</span>`;
-    const abas=[["abertas",`Abertas${n(abertas.length)}`],["favoritas",`Favoritas${n(favs.length)}`],["criadas",`Criadas${n(criadas.length)}`],["proximas",`Próximas${n(fechadas.length)}`]];
+    const abas=[["abertas",`Abertas${n(abertas.length)}`],["favoritas",`Favoritas${n(favs.length)}`],["criadas",`Minhas${n(criadas.length)}`],["proximas",`Próximas${n(fechadas.length)}`]];
     if(!abas.some(([a])=>a===RC.aba))RC.aba="abertas";
     let corpo;
     if(RC.aba==="proximas")corpo=fechadas.length?`<p class="nota prosa">Estas receitas abrem quando você concluir as aulas das técnicas que elas usam. Dá para ver e cozinhar antes, se quiser.</p><div class="lista">${fechadas.map(r=>linhaReceita(r,true)).join("")}</div>`:'<p class="vazio">Nenhuma receita esperando: o livro inteiro está aberto.</p>';
@@ -1508,22 +1548,21 @@ V.receita={
     if(!r){box.innerHTML=`<p class="vazio">${modo==="carregando"?"Carregando a receita…":"Essa receita não existe mais."} <button class="linkbtn" data-ac="go" data-v="receitas">Ver o livro</button></p>`;return}
     const f=faltam(r),criada=!!S.receitas[r.id],minha=criada&&r.origem==="sua",p=S.progresso[r.id];
     box.innerHTML=`<div class="cab"><button class="linkbtn voltar" data-ac="go" data-v="receitas">← Receitas</button>
-        <h1 class="h-pag">${esc(r.titulo)}</h1>${minha?`<p class="meta">Sua receita${rpLink(r.link)?` · <a href="${esc(rpLink(r.link))}" target="_blank" rel="noopener noreferrer">Ver a receita original</a>`:""}</p>`:criada?`<p class="meta">Criada pelo Claude${r.origem?` · ${esc(r.origem)}`:""}</p>`:""}
+        <div class="cab-tit"><h1 class="h-pag">${esc(r.titulo)}</h1><button type="button" class="fav-btn" data-ac="fav" data-id="${esc(r.id)}" aria-pressed="${!!S.favoritas[r.id]}" aria-label="${S.favoritas[r.id]?"Tirar das favoritas":"Favoritar"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linejoin="round" d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button></div>${minha?`<p class="meta">Sua receita${rpLink(r.link)?` · <a href="${esc(rpLink(r.link))}" target="_blank" rel="noopener noreferrer">Ver a receita original</a>`:""}</p>`:criada?`<p class="meta">Criada pelo Claude${r.origem?` · ${esc(r.origem)}`:""}</p>`:""}
         ${r.exige&&r.exige.length?`<p class="meta">Técnicas: ${esc(listaE(r.exige.map(t=>TECNICAS[t]?TECNICAS[t].nome:t)))}</p>`:""}
         ${p&&p.vezes?`<span class="nota">Você já fez ${p.vezes}×, a última em ${dataBR(p.data)}${p.nota?` (${{bom:"ficou bom",medio:"mais ou menos",errado:"deu errado"}[p.nota]})`:""}.</span>`:""}
         ${p&&p.anotacao?`<p class="nota prosa">Da última vez você anotou: “${esc(p.anotacao)}”</p>`:""}</div>
       ${avisoPendente(r.id)}
       ${!criada&&f.length?`<div class="painel"><b>Esta receita usa técnicas que você ainda não viu.</b><p class="nota">Aulas que faltam: ${f.map(id=>`<button class="linkbtn" data-ac="go" data-v="aula" data-id="${id}">${esc(AULAS[id].titulo)}</button>`).join(", ")}. Você pode cozinhar mesmo assim.</p></div>`:""}
       <div class="acoes"><button class="btn acao" data-ac="cozinhar" data-id="${esc(r.id)}">${CZ&&CZ.id===r.id&&CZ.passo>0?"Continuar cozinhando":"Cozinhar agora"}</button>
-        <button class="btn soft" data-ac="compras-add" data-id="${esc(r.id)}">Pôr na lista de compras</button>
-        <button class="btn soft" data-ac="fav" data-id="${esc(r.id)}" aria-pressed="${!!S.favoritas[r.id]}">${S.favoritas[r.id]?"Tirar das favoritas":"Favoritar"}</button>
-        <button class="btn soft" data-ac="receita-enviar" data-id="${esc(r.id)}">Enviar a receita</button>
+        <button class="btn soft" data-ac="compras-add" data-id="${esc(r.id)}">Pôr na lista de compras</button></div>
+      ${blocoReceita(r)}
+      <section class="sec"><h2 class="h-sec">Mais opções</h2><div class="acoes"><button class="btn soft" data-ac="receita-enviar" data-id="${esc(r.id)}">Enviar a receita</button>
         ${minha?"":SAMPLE?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}"${RC.busy?" disabled":""}>Adaptar com o Claude</button>`:(()=>{const o=opcoesAdaptar(r);return o.trocas.length||o.equipamentos.length?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}">Adaptar</button>`:""})()}<button class="btn soft" data-ac="duvida" data-id="${esc(r.id)}">Tirar uma dúvida</button>
-        ${minha?`<button class="btn contorno" data-ac="receita-propria" data-id="${esc(r.id)}">Editar</button>`:""}${criada?`<button class="btn contorno" data-ac="apagar-receita" data-id="${esc(r.id)}">Apagar</button>`:""}</div>
-      ${blocoReceita(r)}`;
+        ${minha?`<button class="btn contorno" data-ac="receita-propria" data-id="${esc(r.id)}">Editar</button>`:""}${criada?`<button class="btn contorno" data-ac="apagar-receita" data-id="${esc(r.id)}">Apagar</button>`:""}</div></section>`;
   }
 };
-AC["apagar-receita"]=d=>{const r=S.receitas[d.id];if(!r)return;del("receitas",d.id);if(S.favoritas[d.id])del("favoritas",d.id);go("receitas");toast("Receita apagada.",{undo:()=>put("receitas",d.id,r)})};
+AC["apagar-receita"]=d=>{const r=S.receitas[d.id];if(!r)return;const fav=S.favoritas[d.id];del("receitas",d.id);if(fav)del("favoritas",d.id);go("receitas");toast("Receita apagada.",{undo:()=>{put("receitas",d.id,r);if(fav)put("favoritas",d.id,fav)}})};
 
 // ---------- Compras ----------
 const chave=(item,u)=>item.trim().toLowerCase()+"|"+(u||"");
@@ -1657,7 +1696,7 @@ function tique(){
   CZ.timers.forEach(t=>{if(!t.tocou&&agora>=t.fim){t.tocou=true;mudou=true;bip();const s=r&&r.passos[t.passo-1];
     if(cur!=="cozinhar")toast(`Acabou o tempo do passo ${t.passo}${r?` de ${r.titulo}`:""}.${s&&s.pronto?` Confira: ${s.pronto}.`:""}`,{ms:12000,acao:{rotulo:"Ver",fn:()=>go("cozinhar")}})}});
   // Um diálogo aberto no fogão cobriria o aviso: o tempo que acabou fala mais alto.
-  if(mudou){salvaCZ();if(cur==="cozinhar"){const d=$("#dlg");if(d.open)d.close();V.cozinhar.update()}else if(cur==="inicio")refresh()}
+  if(mudou){salvaCZ();if(cur==="cozinhar"){const d=$("#dlg");if(d.open)d.close();V.cozinhar.update()}else if(cur==="inicio")refresh();faixaTimer()}
   $$("[data-tfim]").forEach(el=>{el.textContent=relogio(+el.dataset.tfim-agora)});
 }
 setInterval(tique,500);
@@ -1782,7 +1821,7 @@ V.cozinhar={
   mount(el){
     el.innerHTML=`<header class="cz-topo"><button class="iconbtn" data-ac="cz-sair" aria-label="Sair do modo cozinhar">✕</button>
         <div class="cz-tit"><b id="cz-nome"></b><span id="cz-prog"></span></div></header>
-      <div class="cz-timers" id="cz-timers"></div><main class="cz-corpo" id="cz-corpo"></main>
+      <div class="cz-timers" id="cz-timers"></div><main class="cz-corpo" id="cz-corpo" aria-live="polite"></main>
       <footer class="cz-pe" id="cz-pe"><div class="cz-ferr"><button class="btn soft" data-ac="cz-ing">Ingredientes</button><button class="btn soft" data-ac="cz-ajuda">Deu problema?</button></div>
         <div class="cz-nav"><button class="btn soft grande" data-ac="cz-ant" id="cz-ant">Anterior</button><button class="btn acao grande" data-ac="cz-prox" id="cz-prox">Próximo</button></div></footer>`;
     acordar();
@@ -1799,13 +1838,13 @@ V.cozinhar={
       if(t.tocou){const s=r.passos[t.passo-1];
         // Depois que ele já passou daquele passo, o aviso encolhe para uma linha e o passo atual volta a mandar.
         if(t.passo<k)return `<div class="relogio fim curto" role="status"><span class="nome"><b>Passo ${t.passo}: acabou</b></span><button type="button" class="relogio-ir" data-ac="cz-ir" data-p="${t.passo}">Ver o passo</button><button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Dispensar o aviso do passo ${t.passo}">×</button></div>`;
-        return `<div class="relogio fim" role="status"><span class="nome"><b>Passo ${t.passo}: acabou o tempo</b><span>${esc(s&&s.pronto?"Confira: "+s.pronto:nome)}</span></span>${t.passo!==k?`<button type="button" class="relogio-ir" data-ac="cz-ir" data-p="${t.passo}">Ver o passo</button>`:""}<button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Dispensar o aviso do passo ${t.passo}">×</button>
+        return `<div class="relogio fim" role="status"><span class="nome"><b>Passo ${t.passo}: acabou o tempo</b><span>${esc(s&&s.pronto?"Confira: "+s.pronto:s?"Confira o ponto: "+s.txt:nome)}</span></span>${t.passo!==k?`<button type="button" class="relogio-ir" data-ac="cz-ir" data-p="${t.passo}">Ver o passo</button>`:""}<button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Dispensar o aviso do passo ${t.passo}">×</button>
           <div class="relogio-mais"><span>Ainda não?</span><button type="button" class="relogio-ir" data-ac="timer-mais" data-i="${i}" data-m="1" aria-label="Mais 1 minuto no passo ${t.passo}">+1 min</button><button type="button" class="relogio-ir" data-ac="timer-mais" data-i="${i}" data-m="3" aria-label="Mais 3 minutos no passo ${t.passo}">+3 min</button></div></div>`}
       // O passo que está na tela não precisa do próprio resumo; os outros, sim.
       return `<div class="relogio"><span class="nome"><b>${t.passo===k?"Este passo":"Passo "+t.passo}</b>${t.passo===k?"":`<span>${esc(nome)}</span>`}</span><b class="tempo" role="timer" data-tfim="${t.fim}">${relogio(t.fim-agora)}</b><button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Cancelar o timer do passo ${t.passo}: ${esc(nome)}">×</button></div>`}).join("");
     const ant=$("#cz-ant"),prox=$("#cz-prox");ant.disabled=k===0;
     if(k===0){
-      box.innerHTML=`<h1 class="h-pag">Separe tudo antes de acender o fogo</h1><p class="nota">Para ${CZ.porcoes} ${CZ.porcoes>1?"porções":"porção"}. Leia os ${n} passos uma vez e marque o que já está na bancada. Para trocar de passo, toque em Próximo ou deslize o dedo para o lado.</p>
+      box.innerHTML=`<h1 class="h-pag">Separe tudo antes de acender o fogo</h1><p class="cz-intro">Para ${CZ.porcoes} ${CZ.porcoes>1?"porções":"porção"}. Leia os ${n} passos uma vez e marque o que já está na bancada. Para trocar de passo, toque em Próximo ou deslize o dedo para o lado.</p>
         <ul class="cz-lista">${r.ingredientes.map((i,x)=>`<li><label><input type="checkbox" id="czi-${x}" data-czok="i${x}"${CZ.ok&&CZ.ok["i"+x]?" checked":""}><span>${ingHTML(i,CZ.porcoes,r.porcoes||3)}</span></label></li>`).join("")}
         ${(r.utensilios||[]).map((u,x)=>`<li><label><input type="checkbox" id="czu-${x}" data-czok="u${x}"${CZ.ok&&CZ.ok["u"+x]?" checked":""}><span>${esc(u)}</span></label></li>`).join("")}</ul>
         <ol class="passos">${r.passos.map(s=>`<li><span>${esc(s.txt)}</span></li>`).join("")}</ol>`;
@@ -2507,7 +2546,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 6cef17696d.
+// Guarda o app no aparelho para abrir sem internet. Versão 272edd5158.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
