@@ -14,7 +14,7 @@
 </style>
 </head>
 <body>
-<title>Cozinha do Flavio</title>
+<title>Minha Cozinha</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Mundo: louça de ágata. Esmalte claro salpicado, filete duplo verde-garrafa, vermelho-tomate para agir.
@@ -329,7 +329,7 @@ body.cozinhando .view{flex:1;gap:0}
 
 <header class="topo">
   <div class="topo-in">
-    <div class="marca">Cozinha <b>do Flavio</b></div>
+    <div class="marca">Minha <b>Cozinha</b></div>
     <nav class="nav" id="nav" aria-label="Seções"></nav>
     <button class="iconbtn" id="btn-tema" data-ac="tema" aria-label="Trocar entre tema claro e escuro">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
@@ -2101,8 +2101,8 @@ function diagnosticar(anotacao,erros){
 const COLS_COPIA=["progresso","receitas","favoritas","compras","conversas","config"];
 function lerCopia(txt){
   const nao=motivo=>({ok:false,motivo});
-  let o;try{o=JSON.parse(String(txt??""))}catch{return nao("Este arquivo não é uma cópia do Cozinha do Flavio.")}
-  if(!o||typeof o!=="object"||Array.isArray(o)||o.app!=="cozinha-do-flavio")return nao("Este arquivo não é uma cópia do Cozinha do Flavio.");
+  let o;try{o=JSON.parse(String(txt??""))}catch{return nao("Este arquivo não é uma cópia do app Minha Cozinha.")}
+  if(!o||typeof o!=="object"||Array.isArray(o)||o.app!=="cozinha-do-flavio")return nao("Este arquivo não é uma cópia do app Minha Cozinha.");
   if(!o.dados||typeof o.dados!=="object"||Array.isArray(o.dados))return nao("A cópia está vazia ou incompleta.");
   const dados={};
   for(const c of COLS_COPIA){
@@ -2290,7 +2290,7 @@ AC.exportar=()=>{
   const txt=JSON.stringify({app:"cozinha-do-flavio",versao:1,exportado:new Date().toISOString(),dados:Object.fromEntries(COLS.map(c=>[c,S[c]]))});
   // Dentro do claude.ai o download não funciona: lá a cópia é só o texto.
   const baixa=!window.claude;
-  if(baixa)try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=`cozinha-do-flavio-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch{}
+  if(baixa)try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=`minha-cozinha-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch{}
   openDlg("Cópia do progresso",`<p class="prosa">${baixa?"O arquivo foi para os downloads. Se ele não aparecer, copie o texto abaixo":"Copie o texto abaixo"} e guarde num lugar seguro, como um e-mail para você mesmo. No app instalado, use \"Carregar cópia\" e cole o texto.</p>
     <textarea class="inp" id="ex-txt" rows="4" readonly aria-label="Texto da cópia">${esc(txt)}</textarea>
     <div class="acoes"><button class="btn soft" type="button" id="ex-copiar">Copiar o texto</button><span class="nota" id="ex-st" aria-live="polite"></span></div>`,null);
@@ -2322,7 +2322,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 9eb691c26a.
+// Guarda o app no aparelho para abrir sem internet. Versão 1e351a2a91.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
