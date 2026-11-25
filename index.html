@@ -99,7 +99,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .sobre{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .muted,.nota{color:var(--muted)}
 .nota{font-size:14px}
-.prosa{max-width:62ch}
+.prosa{max-width:34em}
 .prosa p+p{margin-top:8px}
 
 /* botões */
@@ -204,6 +204,8 @@ textarea.inp{min-height:88px;resize:vertical}
 .frow{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
 .frow>.inp{flex:1 1 180px;min-width:0}
 .campo{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;color:var(--muted)}
+.rp-erro{color:var(--bad);font-weight:600;margin-top:-4px}.rp-erro:empty{display:none}
+.inp[aria-invalid="true"]{border-color:var(--bad)}
 .notas{display:flex;flex-direction:column;gap:8px}
 .notas label{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:52px;border:2px solid var(--traco);border-radius:14px;cursor:pointer;font-weight:700}
 .notas label:has(input:checked){border-color:var(--verde);background:var(--chip)}
@@ -337,8 +339,10 @@ h1[tabindex="-1"]:focus{outline:none}
 .faixa-timer span{flex:1;min-width:0;font-weight:600}
 .faixa-timer b{font-variant-numeric:tabular-nums;font-size:18px}
 .faixa-timer.fim{border-color:var(--tomate);color:var(--tomate-t)}
-body.com-faixa .toasts{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
-body.com-faixa .pagina{padding-bottom:120px}
+@media (min-width:761px){
+  body.com-faixa .toasts{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+  body.com-faixa .pagina{padding-bottom:120px}
+}
 .ajuda-sec li:last-child{border-bottom:0}
 .cz-corpo{flex:1;display:flex;flex-direction:column;gap:20px;padding:24px 0;min-width:0}
 .cz-passo{font-size:clamp(22px,4.6vw,32px);line-height:1.3;font-weight:500;overflow-wrap:anywhere}
@@ -491,7 +495,7 @@ function A(modulo,id,titulo,d){
     receita:{id,titulo:d.prato||titulo,porcoes:3,minutos:d.min,ingredientes:d.ing,utensilios:d.ut,passos:d.passos,exige:[]}};
 }
 const LIVRO=[];
-function R(id,titulo,d){LIVRO.push({id,titulo,porcoes:3,minutos:d.min,ingredientes:d.ing,utensilios:d.ut,passos:d.passos,exige:d.exige})}
+function R(id,titulo,d){LIVRO.push({id,titulo,porcoes:3,minutos:d.min,ingredientes:d.ing,utensilios:d.ut,passos:d.passos,exige:d.exige,erros:(d.erros||[]).map(([problema,conserto])=>({problema,conserto}))})}
 
 // ===== Módulo 0: antes de acender o fogo =====
 A("m0","pao-na-chapa","Ler, separar e só depois acender",{prato:"Pão na chapa",min:10,ensina:["organizar"],
@@ -503,7 +507,7 @@ A("m0","pao-na-chapa","Ler, separar e só depois acender",{prato:"Pão na chapa"
     P("Corte cada pão ao meio no comprimento e passe manteiga no lado do miolo."),
     P("Aqueça a frigideira vazia.",2,60,"uma gota d'água chia e evapora em dois segundos"),
     P("Coloque os pães com a manteiga para baixo e aperte de leve com a espátula. Não saia de perto.",2,120,"o lado de baixo está dourado, cor de caramelo claro"),
-    P("Vire os pães só para aquecer o outro lado e desligue o fogo.",2,30)],
+    P("Vire os pães só para aquecer o outro lado e desligue o fogo.",2,30,"o outro lado está morno e firme ao toque")],
   erros:[["Queimou antes de dourar por igual.","O fogo estava alto demais. Use fogo médio e levante um pão para espiar depois de um minuto."],
     ["Ficou pálido e mole.","A frigideira estava fria. Espere o teste da gota d'água antes de pôr o pão."],
     ["Faltou alguma coisa no meio do preparo.","É para isso que serve separar tudo antes. Na próxima, confira a lista com os olhos na bancada."]]});
@@ -541,8 +545,8 @@ A("m1","ovo-cozido","Ovo cozido nos três pontos",{min:20,ensina:["ferver"],
   ing:[I(6,"","ovos"),I(null,"","água para cobrir os ovos")],
   ut:["Panela pequena","Colher","Tigela com água fria e gelo"],
   passos:[P("Encha a panela com água suficiente para cobrir os ovos por dois dedos e leve para ferver, sem os ovos.",3,null,"bolhas grandes sobem sem parar"),
-    P("Baixe o fogo para médio e coloque os ovos na água com a colher, um de cada vez.",2),
-    P("Marque o tempo do ponto que você quer: 6 minutos para gema mole, 8 para cremosa, 10 para firme. O timer está em 8.",2,480),
+    P("Baixe o fogo para médio e coloque os ovos na água com a colher, um de cada vez.",2,null,"os ovos estão no fundo e a água voltou a borbulhar de leve"),
+    P("Marque o tempo do ponto que você quer: 6 minutos para gema mole, 8 para cremosa, 10 para firme. O timer está em 8.",2,480,"o tempo do ponto escolhido acabou: a casca esconde a gema, então aqui quem decide é o relógio"),
     P("Passe os ovos para a tigela de água fria e deixe dois minutos.",null,120),
     P("Bata o ovo de leve na bancada, role para trincar a casca toda e descasque debaixo da água.")],
   erros:[["A casca rachou e a clara vazou.","O ovo bateu no fundo ou estava gelado demais. Baixe com a colher e tire da geladeira dez minutos antes."],
@@ -555,7 +559,7 @@ A("m1","ovo-mexido","Ovo mexido cremoso",{min:10,ensina:["brando"],
   ut:["Frigideira antiaderente","Espátula de silicone","Tigela","Garfo"],
   passos:[P("Quebre os ovos na tigela, junte o sal e bata com o garfo só até a gema e a clara se misturarem."),
     P("Derreta a manteiga na frigideira.",1,null,"a manteiga derreteu sem chiar e sem mudar de cor"),
-    P("Despeje os ovos e espere dez segundos sem mexer.",1),
+    P("Despeje os ovos e espere dez segundos sem mexer.",1,null,"a borda do ovo começou a ficar opaca"),
     P("Puxe a espátula devagar das bordas para o centro, sem parar, raspando o fundo.",1,180,"coalhos grandes e macios, ainda brilhantes e um pouco úmidos"),
     P("Desligue o fogo e passe para o prato na hora.")],
   erros:[["Ficou seco e em pedaços pequenos.","Fogo alto ou tempo demais. Use fogo baixo e tire quando ainda parecer um pouco cru."],
@@ -568,7 +572,7 @@ A("m1","ovo-frito","Ovo frito de gema mole",{min:10,ensina:["fritar"],
   ut:["Frigideira antiaderente com tampa","Espátula","Xícara"],
   passos:[P("Quebre um ovo na xícara. Assim você tira qualquer casca e não fura a gema na frigideira."),
     P("Aqueça o óleo na frigideira.",2,60,"o óleo corre solto quando você inclina a frigideira"),
-    P("Deslize o ovo da xícara para a frigideira, bem de perto. Repita com os outros, deixando espaço entre eles.",2),
+    P("Deslize o ovo da xícara para a frigideira, bem de perto. Repita com os outros, deixando espaço entre eles.",2,null,"a clara ficou branca nas bordas"),
     P("Baixe o fogo, salgue e tampe.",1,120,"a clara está toda branca e a gema ainda treme"),
     P("Solte as bordas com a espátula e sirva.")],
   erros:[["A borda queimou e a clara de cima ficou crua.","Fogo alto e frigideira sem tampa. Fogo baixo depois que o ovo entra, e tampe."],
@@ -581,10 +585,10 @@ A("m1","omelete","Omelete de queijo",{min:15,ensina:["virar"],
   ut:["Frigideira antiaderente grande","Espátula larga","Tigela","Garfo"],
   passos:[P("Bata os ovos com o sal na tigela, só até misturar."),
     P("Derreta a manteiga e espalhe pela frigideira toda.",2,null,"a manteiga espuma de leve"),
-    P("Despeje os ovos. Nos primeiros trinta segundos, puxe as bordas para o centro e incline a frigideira para o ovo cru escorrer para o lugar vazio.",2,30),
+    P("Despeje os ovos. Nos primeiros trinta segundos, puxe as bordas para o centro e incline a frigideira para o ovo cru escorrer para o lugar vazio.",2,30,"quase não escorre mais ovo cru; o centro ainda está mole"),
     P("Baixe o fogo e pare de mexer. Espalhe o queijo e a cebolinha em uma metade.",1,90,"a borda está opaca e o centro ainda brilha"),
     P("Passe a espátula por baixo da metade sem queijo e dobre de uma vez sobre a outra."),
-    P("Espere o queijo derreter e deslize a omelete para o prato.",1,30)],
+    P("Espere o queijo derreter e deslize a omelete para o prato.",1,30,"o queijo derreteu e a omelete desliza solta na frigideira")],
   erros:[["Rasgou na hora de dobrar.","Estava grudada ou crua demais embaixo. Espere a borda soltar e passe a espátula por baixo inteira antes de dobrar."],
     ["Ficou marrom e seca por fora.","Fogo alto. Depois de despejar os ovos, fogo baixo."],
     ["O recheio vazou.","Recheio demais ou espalhado até a borda. Deixe um dedo livre em volta."]]});
@@ -642,7 +646,7 @@ A("m3","arroz-branco","Refogar e o arroz soltinho",{prato:"Arroz branco",min:30,
   passos:[P("Ponha a água para esquentar na chaleira. Pique a cebola e o alho antes de acender a panela."),
     P("Aqueça o óleo na panela e refogue a cebola, mexendo.",2,120,"a cebola ficou transparente e macia"),
     P("Junte o alho e mexa sem parar.",2,30,"subiu o cheiro do alho e ele ainda está claro"),
-    P("Junte o arroz e mexa até os grãos ficarem brilhantes.",2,60),
+    P("Junte o arroz e mexa até os grãos ficarem brilhantes.",2,60,"os grãos estão brilhantes e chiam no fundo"),
     P("Despeje a água quente, junte o sal, mexa uma vez e prove a água.",3,null,"a água ferveu e está levemente salgada"),
     P("Baixe o fogo, tampe deixando uma frestinha e não mexa mais.",1,900,"furinhos na superfície e nenhum som de água no fundo"),
     P("Desligue, tampe por completo e deixe descansar. Depois solte com o garfo.",null,300)],
@@ -658,7 +662,7 @@ A("m3","arroz-legumes","Arroz com legumes",{min:35,ensina:["absorcao"],
   passos:[P("Corte a cenoura em cubos pequenos e iguais. Esquente a água."),
     P("Refogue a cebola no óleo.",2,120,"cebola transparente"),
     P("Junte o alho e a cenoura e mexa.",2,60,"cheiro de alho, cenoura brilhante"),
-    P("Junte o arroz e mexa até brilhar.",2,60),
+    P("Junte o arroz e mexa até brilhar.",2,60,"os grãos estão brilhantes e chiam no fundo"),
     P("Despeje a água quente, o sal e a ervilha ou o milho. Mexa uma vez e prove a água.",3,null,"ferveu e está levemente salgada"),
     P("Fogo baixo, tampa com frestinha, sem mexer.",1,900,"furinhos na superfície, sem som de água"),
     P("Desligue, tampe e deixe descansar. Solte com o garfo.",null,300)],
@@ -688,7 +692,7 @@ A("m4","feijao-pressao","Panela de pressão sem medo",{prato:"Feijão cozido",mi
   passos:[P("Espalhe o feijão na bancada, tire pedrinhas e grãos estragados e lave no escorredor."),
     P("Confira a panela: borracha inteira, válvula limpa. Ponha o feijão, a água e o louro. O nível não pode passar de dois terços da panela."),
     P("Feche a tampa até travar e leve ao fogo.",3,null,"a panela chia de forma constante e a válvula gira"),
-    P("Baixe o fogo e marque o tempo.",1,1500),
+    P("Baixe o fogo e marque o tempo.",1,1500,"o tempo acabou: com a tampa fechada não dá para ver o feijão; o sinal vem no fim, no grão amassado"),
     P("Desligue o fogo e espere a pressão sair sozinha. Não mexa na válvula e não force a tampa.",null,900,"o pino baixou e não sai mais vapor nenhum"),
     P("Abra a tampa virando o rosto para o lado. Amasse um grão entre os dedos.",null,null,"o grão amassa fácil, sem miolo duro")],
   erros:[["O feijão ficou duro.","Feijão velho demora mais. Feche de novo e cozinhe mais dez minutos depois de pegar pressão. Deixar de molho por oito horas ajuda."],
@@ -702,7 +706,7 @@ A("m4","feijao-temperado","Feijão temperado de caldo grosso",{min:25,ensina:["t
   ut:["Frigideira","Colher de pau","Concha","Garfo"],
   passos:[P("Aqueça o óleo na frigideira e refogue a cebola.",2,120,"cebola transparente"),
     P("Junte o alho e mexa.",2,45,"alho dourado claro e cheiroso"),
-    P("Passe duas conchas de feijão com pouco caldo para a frigideira e amasse os grãos com o garfo, misturando ao refogado.",2),
+    P("Passe duas conchas de feijão com pouco caldo para a frigideira e amasse os grãos com o garfo, misturando ao refogado.",2,null,"virou uma pasta grossa misturada à cebola"),
     P("Devolva tudo para a panela do feijão, mexa e deixe ferver sem tampa, mexendo de vez em quando.",1,600,"o caldo engrossou e cobre as costas da colher"),
     P("Junte o sal aos poucos, prove e ajuste. Finalize com o cheiro-verde.")],
   erros:[["O caldo ficou ralo.","Amasse mais uma concha de grãos e ferva mais cinco minutos sem tampa."],
@@ -714,7 +718,7 @@ A("m4","prato-feito","O prato feito completo",{prato:"Prato feito: arroz, feijã
   ing:[I(1.5,"xíc","arroz branco"),I(3,"xíc","água quente"),I(.5,"","cebola picada"),I(2,"dente","alho picado"),I(2,"c. sopa","óleo"),I(1,"c. chá","sal"),I(null,"","feijão temperado pronto","da aula anterior"),I(3,"","ovos"),I(.5,"","pé de alface"),I(2,"","tomates"),I(1,"c. sopa","suco de limão"),I(3,"c. sopa","azeite")],
   ut:["Panela média com tampa","Panela do feijão","Frigideira com tampa","Tigela de salada","Faca e tábua"],
   passos:[P("Separe tudo e defina a ordem: feijão, arroz, salada, ovo."),
-    P("Ponha o feijão para esquentar, tampado, mexendo de vez em quando.",1),
+    P("Ponha o feijão para esquentar, tampado, mexendo de vez em quando.",1,null,"o feijão borbulha e está quente por inteiro"),
     P("Faça o arroz até o ponto de tampar, como na aula do arroz branco: refogue cebola e alho, junte o arroz, a água quente e o sal.",2,null,"a água ferveu; baixe o fogo e tampe"),
     P("Com o arroz tampado em fogo baixo, lave e seque a alface, corte o tomate e prepare o molho num pote. Não tempere ainda.",1,900,"arroz com furinhos e sem som de água"),
     P("Desligue o arroz e deixe tampado. Frite os ovos como na aula do ovo frito.",2,180,"clara firme, gema mole"),
@@ -730,7 +734,7 @@ A("m5","alho-e-oleo","Massa al dente",{prato:"Espaguete ao alho e óleo",min:25,
   ing:[I(300,"g","espaguete"),I(6,"dente","alho fatiado fino"),I(5,"c. sopa","azeite"),I(1,"c. sopa","sal","para a água"),I(2,"c. sopa","salsinha picada")],
   ut:["Panela grande","Frigideira grande","Escorredor","Xícara","Pegador"],
   passos:[P("Encha a panela grande com uns três litros de água, tampe e leve para ferver.",3,null,"bolhas grandes subindo sem parar"),
-    P("Junte o sal e o espaguete. Mexa no primeiro minuto para os fios não grudarem.",3),
+    P("Junte o sal e o espaguete. Mexa no primeiro minuto para os fios não grudarem.",3,null,"a água voltou a ferver e os fios afundaram por inteiro"),
     P("Cozinhe um minuto a menos que o tempo da embalagem. O timer está em 9 minutos.",3,540,"um fio mordido está macio, com um pontinho firme no centro"),
     P("Enquanto isso, ponha o azeite e o alho na frigideira ainda fria e leve ao fogo.",1,180,"o alho está dourado claro; desligue o fogo"),
     P("Tire uma xícara da água do cozimento e reserve. Escorra a massa."),
@@ -761,7 +765,7 @@ A("m5","molho-branco","Molho branco sem grumos",{prato:"Parafuso ao molho branco
   observar:["A farinha na manteiga vira uma pasta que borbulha e cheira a biscoito.","A pasta não deve escurecer: fogo baixo.","A cada porção de leite, a mistura empelota e depois alisa. Só então ponha mais.","Molho pronto: cobre as costas da colher, e o risco do dedo fica marcado."],
   ing:[I(2,"c. sopa","manteiga"),I(2,"c. sopa","farinha de trigo"),I(500,"ml","leite"),I(.5,"c. chá","sal"),I(null,"","noz-moscada","uma pitada, opcional"),I(50,"g","queijo parmesão ralado"),I(300,"g","macarrão parafuso"),I(1,"c. sopa","sal","para a água")],
   ut:["Panela média","Panela grande","Batedor de arame (fouet) ou colher de pau","Escorredor"],
-  passos:[P("Ponha a água da massa para ferver na panela grande.",3),
+  passos:[P("Ponha a água da massa para ferver na panela grande.",3,null,"bolhas grandes sobem sem parar"),
     P("Na panela média, derreta a manteiga, junte a farinha e mexa sem parar.",1,120,"uma pasta que borbulha e cheira a biscoito, sem escurecer"),
     P("Junte um pouco do leite, cerca de meia xícara, e mexa até alisar. Repita até acabar o leite.",1,null,"líquido liso, sem pelotas"),
     P("Aumente o fogo e mexa até ferver e engrossar.",2,300,"o molho cobre as costas da colher"),
@@ -785,7 +789,7 @@ A("m6","bife-acebolado","Selar: bife acebolado",{prato:"Bife acebolado",min:25,e
     P("Vire com o pegador e doure o outro lado.",3,90,"ao apertar com o dedo, o bife cede e volta devagar: ao ponto"),
     P("Passe os bifes para o prato e deixe descansar.",null,180),
     P("Na mesma frigideira, sem lavar, junte o resto do óleo e as cebolas com uma pitada de sal.",2,240,"cebolas macias e douradas nas bordas"),
-    P("Junte duas colheres de sopa de água e raspe o fundo com a colher para soltar o dourado. Despeje as cebolas e o caldo sobre os bifes.",2)],
+    P("Junte duas colheres de sopa de água e raspe o fundo com a colher para soltar o dourado. Despeje as cebolas e o caldo sobre os bifes.",2,null,"o fundo da frigideira ficou limpo e o caldo ficou marrom")],
   erros:[["O bife ficou cinza e soltou água.","Frigideira fria, carne molhada ou bifes demais de uma vez. Seque, espere a fumacinha e frite em duas levas se precisar."],
     ["Ficou duro.","Passou do ponto ou o corte era fino demais. Bife de um dedo, dois minutos de um lado e um e meio do outro."],
     ["Fez muita fumaça.","Selar faz fumaça mesmo. Abra a janela e ligue o exaustor antes."],
@@ -813,7 +817,7 @@ A("m6","carne-moida","Carne moída refogada",{min:30,ensina:["dourar"],
     P("Espalhe a carne em uma camada e não mexa.",3,120,"dourou por baixo"),
     P("Quebre a carne com a colher e mexa de vez em quando, até a água secar.",3,360,"o som virou fritura e a carne está marrom, sem rosado"),
     P("Baixe o fogo, abra um espaço no meio, junte a cebola e refogue. Depois o alho.",2,180,"cebola macia e cheiro de alho"),
-    P("Junte o tomate, o extrato, o sal e o cominho. Misture tudo.",2),
+    P("Junte o tomate, o extrato, o sal e o cominho. Misture tudo.",2,null,"tudo misturado e começando a borbulhar"),
     P("Cozinhe até o tomate desmanchar. Se secar demais, junte um pouco de água.",1,300,"molho curto e brilhante envolvendo a carne"),
     P("Prove o sal e finalize com o cheiro-verde.")],
   erros:[["Ficou cinza e sem gosto.","Panela pequena ou você mexeu cedo. Panela larga, fogo alto e paciência até a água secar."],
@@ -955,7 +959,7 @@ A("m9","strogonoff","Strogonoff de frango",{min:40,ensina:["engrossar"],
   passos:[P("Seque os cubos de frango e tempere com o sal."),
     P("Aqueça o óleo e doure metade do frango. Passe para o prato e doure a outra metade.",3,300,"cubos dourados por fora"),
     P("Baixe o fogo, derreta a manteiga e refogue a cebola, depois o alho.",2,150,"cebola macia"),
-    P("Volte o frango, junte o ketchup, a mostarda, o champignon e meia xícara de água. Raspe o fundo.",2),
+    P("Volte o frango, junte o ketchup, a mostarda, o champignon e meia xícara de água. Raspe o fundo.",2,null,"o fundo ficou limpo e o molho começou a borbulhar"),
     P("Cozinhe até o molho encorpar.",1,480,"molho grosso; um cubo cortado está branco por inteiro"),
     P("Ponha o fogo no mínimo, junte o creme de leite e misture só até aquecer. Não deixe ferver.",1,60,"molho rosado e liso"),
     P("Prove o sal e sirva com arroz branco e batata palha.")],
@@ -969,7 +973,7 @@ A("m10","provar-e-corrigir","Provar e corrigir",{prato:"Macarrão do que tem em 
   observar:["Prove em três momentos: o refogado, o molho antes da massa e o prato pronto.","Corrija uma coisa de cada vez e prove de novo.","Sal se põe aos poucos. Passou do ponto, só dá para diluir: mais massa, mais legume, um pouco de água.","Umas gotas de limão no final acordam quase qualquer prato."],
   ing:[I(300,"g","macarrão curto"),I(1,"","cebola picada"),I(2,"dente","alho picado"),I(2,"xíc","legumes que tiver, picados","abobrinha, tomate, cenoura, brócolis, milho"),I(3,"c. sopa","azeite"),I(1,"","limão"),I(null,"","sal"),I(null,"","queijo ralado, ervas ou pimenta","o que tiver")],
   ut:["Panela grande","Frigideira grande","Escorredor","Xícara","Colher para provar"],
-  passos:[P("Olhe a geladeira e escolha os legumes. Corte os duros menores e os macios maiores. Ponha a água da massa para ferver.",3),
+  passos:[P("Olhe a geladeira e escolha os legumes. Corte os duros menores e os macios maiores. Ponha a água da massa para ferver.",3,null,"a água ferve com bolhas grandes"),
     P("Refogue a cebola e o alho no azeite. Junte os legumes mais duros primeiro, depois os macios, com uma pitada de sal.",2,null,"legumes macios, ainda com cor"),
     P("Prove um legume. Sem graça? Mais uma pitada de sal."),
     P("Cozinhe a massa na água fervente e salgada, um minuto a menos que a embalagem. Reserve uma xícara da água.",3,540,"macia com leve resistência"),
@@ -997,18 +1001,28 @@ A("m10","almoco-completo","Prova final: um almoço completo sozinho",{prato:"Arr
 
 // ===== Livro: receitas que abrem conforme as técnicas =====
 R("r-queijo-quente","Queijo quente na frigideira",{min:10,exige:["organizar","fogo"],
+  erros:[["O pão queimou e o queijo não derreteu.","Fogo alto demais. Fogo baixo e tampa: o vapor preso derrete o queijo enquanto o pão doura devagar."],
+    ["Ficou encharcado de manteiga.","Manteiga demais ou frigideira fria. Passe uma camada fina e só ponha o pão com a frigideira já quente."],
+    ["O queijo escorreu para a frigideira.","Queijo até a borda do pão. Deixe um dedo de borda sem queijo em volta."]],
   ing:[I(6,"","fatias de pão de forma"),I(150,"g","queijo muçarela fatiado"),I(2,"c. sopa","manteiga")],ut:["Frigideira com tampa","Espátula"],
   passos:[P("Passe manteiga em um lado de cada fatia de pão. Monte os sanduíches com o queijo no meio e a manteiga para fora."),
     P("Aqueça a frigideira.",2,60,"uma gota d'água chia"),
     P("Coloque os sanduíches, baixe o fogo e tampe.",1,150,"dourado embaixo"),
     P("Vire, tampe de novo e espere o queijo derreter.",1,120,"dourado dos dois lados e queijo escorrendo")]});
 R("r-tapioca","Tapioca de queijo coalho",{min:15,exige:["fogo"],
+  erros:[["Não virou disco, ficou esfarelando.","A goma estava seca ou a frigideira fria. Esfarele a goma entre os dedos, peneire de novo e espere a frigideira esquentar bem."],
+    ["Grudou na frigideira.","Frigideira com gordura ou riscada. Use antiaderente seca e espere o disco soltar sozinho antes de mexer."],
+    ["Ficou dura e borrachuda.","Camada grossa ou tempo demais. Meia xícara espalhada fina, e tire logo que o queijo derreter."]],
   ing:[I(1.5,"xíc","goma de tapioca hidratada"),I(150,"g","queijo coalho ralado"),I(1,"c. sopa","manteiga")],ut:["Frigideira antiaderente","Peneira","Espátula"],
-  passos:[P("Aqueça a frigideira seca, sem gordura.",2,60),
+  passos:[P("Aqueça a frigideira seca, sem gordura.",2,60,"uma gota d'água chia e some em dois segundos"),
     P("Peneire meia xícara de goma direto na frigideira, cobrindo o fundo por igual.",2,60,"os grãos se uniram num disco que desliza inteiro"),
     P("Vire o disco, espalhe queijo em uma metade e dobre.",1,60,"queijo derretido"),
     P("Passe um pouco de manteiga por cima e repita com o resto da goma.")]});
 R("r-cuscuz","Cuscuz nordestino com ovo",{min:25,exige:["medir","fritar"],
+  erros:[["Ficou empapado.","Água demais na hidratação ou flocão apertado no cesto. Meça a água e solte o flocão no cesto sem apertar."],
+    ["Ficou seco e esfarelando.","Hidratou pouco. Da próxima vez, um pouco mais de água e os dez minutos inteiros de espera. Agora, manteiga derretida por cima ajuda."],
+    ["A água da cuscuzeira secou.","Pouca água no fundo. Se sentir cheiro de queimado, desligue, complete com água quente com cuidado e volte ao fogo."],
+    ["A gema endureceu.","Ovo tempo demais ou fogo alto. Tire quando a clara firmar e a gema ainda tremer."]],
   ing:[I(1.5,"xíc","flocão de milho"),I(.75,"xíc","água"),I(.5,"c. chá","sal"),I(1,"c. sopa","manteiga"),I(3,"","ovos"),I(1,"c. sopa","óleo")],ut:["Cuscuzeira","Tigela","Frigideira com tampa"],
   passos:[P("Na tigela, misture o flocão, o sal e a água com as mãos. Deixe hidratar.",null,600,"a farinha úmida forma um torrão quando apertada e se desfaz fácil"),
     P("Ponha água na cuscuzeira até abaixo do cesto. Passe o flocão para o cesto sem apertar e tampe."),
@@ -1016,23 +1030,35 @@ R("r-cuscuz","Cuscuz nordestino com ovo",{min:25,exige:["medir","fritar"],
     P("Frite os ovos como na aula do ovo frito.",2,180,"clara firme, gema mole"),
     P("Desenforme o cuscuz, espalhe a manteiga por cima e sirva com os ovos.")]});
 R("r-mexido-tomate","Ovos mexidos com tomate e queijo",{min:15,exige:["brando","picar"],
+  erros:[["Soltou água no prato.","O tomate tinha sementes ou cozinhou pouco. Tire as sementes e deixe o tomate soltar o caldo e secar antes dos ovos."],
+    ["Ficou seco e borrachudo.","Fogo alto ou tempo demais. Fogo baixo e tire ainda brilhante: ele termina de cozinhar no prato."],
+    ["O queijo grudou no fundo.","Cubos grandes ou mexeu pouco. Cubinhos pequenos e mexa raspando o fundo."]],
   ing:[I(6,"","ovos"),I(1,"","tomate sem sementes picado"),I(.5,"","cebola pequena picada miúda"),I(80,"g","queijo coalho em cubinhos"),I(1,"c. sopa","manteiga"),I(.5,"c. chá","sal")],ut:["Frigideira antiaderente","Espátula","Tigela"],
   passos:[P("Bata os ovos com o sal."),
     P("Derreta a manteiga e amoleça a cebola e o tomate.",2,120,"cebola macia, tomate começando a soltar caldo"),
     P("Baixe o fogo, junte os ovos e o queijo e mexa devagar, das bordas para o centro.",1,180,"coalhos grandes, ainda brilhantes"),
     P("Tire do fogo e sirva na hora.")]});
 R("r-sanduiche-ovo","Sanduíche de ovo na chapa",{min:15,exige:["fritar","organizar"],
+  erros:[["O pão ficou murcho.","O vapor do ovo amoleceu o pão fechado. Doure bem o miolo e monte só na hora de comer."],
+    ["A gema estourou.","O ovo caiu de alto. Quebre na xícara e deslize bem de perto da frigideira."],
+    ["O queijo não derreteu.","Faltou tampa. Tampe e baixe o fogo: o vapor derrete o queijo sem queimar o ovo."]],
   ing:[I(3,"","pães franceses"),I(3,"","ovos"),I(3,"","fatias de queijo muçarela"),I(1,"","tomate em rodelas"),I(1,"c. sopa","manteiga"),I(1,"c. sopa","óleo"),I(null,"","sal")],ut:["Frigideira com tampa","Espátula"],
   passos:[P("Abra os pães, passe manteiga e doure o miolo na frigideira. Reserve.",2,120,"miolo dourado"),
-    P("Aqueça o óleo e frite os ovos, um ao lado do outro.",2,60),
+    P("Aqueça o óleo e frite os ovos, um ao lado do outro.",2,60,"a clara ficou branca nas bordas"),
     P("Salgue, ponha uma fatia de queijo sobre cada ovo, baixe o fogo e tampe.",1,120,"clara firme e queijo derretido"),
     P("Monte cada pão com o ovo e as rodelas de tomate.")]});
 R("r-salada-pepino","Salada de tomate, pepino e cebola",{min:15,exige:["faca","temperar-cru"],
+  erros:[["Ficou aguada no fundo.","Foi temperada cedo: o sal puxa a água do pepino e do tomate. Tempere só na hora de servir."],
+    ["A cebola ficou forte demais.","Faltou o banho de água fria. Dez minutos de molho e escorra bem."],
+    ["Ficou sem graça.","Falta sal ou ácido. Uma pitada de sal e umas gotas de vinagre, e prove de novo."]],
   ing:[I(3,"","tomates em gomos"),I(1,"","pepino em rodelas"),I(.5,"","cebola roxa em fatias finas"),I(1,"c. sopa","vinagre"),I(3,"c. sopa","azeite"),I(.5,"c. chá","sal"),I(1,"c. chá","orégano")],ut:["Faca e tábua","Tigela"],
   passos:[P("Corte os tomates, o pepino e a cebola. Deixe a cebola dez minutos em água fria e escorra, para suavizar.",null,600),
     P("Dissolva o sal no vinagre e bata com o azeite e o orégano."),
     P("Misture tudo só na hora de servir e prove.",null,null,"cada pedaço brilha, sem poça no fundo")]});
 R("r-arroz-alho","Arroz de alho tostado",{min:30,exige:["refogar","absorcao"],
+  erros:[["O alho queimou e amargou.","Fogo alto. Comece com a panela fria, fogo baixo, e tire no dourado claro. Queimou, refaça só o alho."],
+    ["O alho por cima ficou mole.","Pegou o vapor da panela. Espalhe o alho reservado só na hora de servir."],
+    ["Ficou empapado.","Água demais ou mexeu depois de tampar. Meça com a mesma xícara e não mexa."]],
   ing:[I(1.5,"xíc","arroz branco"),I(3,"xíc","água quente"),I(6,"dente","alho fatiado"),I(2,"c. sopa","óleo"),I(1,"c. chá","sal"),I(2,"c. sopa","cheiro-verde picado")],ut:["Panela média com tampa","Colher de pau","Garfo"],
   passos:[P("Ponha o óleo e o alho na panela fria e leve ao fogo, mexendo.",1,180,"alho dourado claro"),
     P("Tire metade do alho com uma colher e reserve. Junte o arroz e mexa.",2,60,"grãos brilhantes"),
@@ -1040,6 +1066,9 @@ R("r-arroz-alho","Arroz de alho tostado",{min:30,exige:["refogar","absorcao"],
     P("Fogo baixo, tampa com fresta, sem mexer.",1,900,"furinhos, sem som de água"),
     P("Descanse tampado, solte com o garfo e espalhe o alho reservado e o cheiro-verde por cima.",null,300)]});
 R("r-baiao","Baião de dois com queijo coalho",{min:60,exige:["pressao","absorcao","refogar"],
+  erros:[["O feijão ficou duro.","Feijão velho demora mais. Volte à pressão por mais cinco minutos antes de juntar ao arroz."],
+    ["Ficou empapado.","Caldo demais ou mexeu depois de tampar. Meça as duas xícaras e não mexa."],
+    ["Grudou no fundo.","Fogo alto no fim. Fogo bem baixo e tampa com fresta. Se grudar, não raspe o fundo ao servir."]],
   ing:[I(1,"xíc","feijão-fradinho ou feijão-verde"),I(1,"xíc","arroz branco"),I(200,"g","queijo coalho em cubos"),I(1,"","cebola picada"),I(3,"dente","alho picado"),I(2,"c. sopa","manteiga"),I(1,"c. chá","sal"),I(3,"c. sopa","coentro picado")],ut:["Panela de pressão","Panela larga com tampa","Concha","Xícara de medida"],
   passos:[P("Cozinhe o feijão na pressão com quatro xícaras de água.",1,720,"12 minutos depois de pegar pressão; espere o pino baixar sozinho"),
     P("Escorra o feijão guardando o caldo. Meça duas xícaras do caldo; complete com água quente se faltar."),
@@ -1048,6 +1077,9 @@ R("r-baiao","Baião de dois com queijo coalho",{min:60,exige:["pressao","absorca
     P("Fogo baixo, tampa com fresta, sem mexer.",1,900,"arroz macio e quase sem caldo"),
     P("Espalhe o queijo e o coentro por cima, tampe e desligue.",null,180,"queijo amolecido")]});
 R("r-ovos-no-molho","Ovos no molho de tomate",{min:35,exige:["refogar","reduzir"],
+  erros:[["A clara ficou crua em cima.","Faltou tampa ou o fogo estava fraco demais. Tampe e espere mais um ou dois minutos."],
+    ["A gema endureceu.","Tempo demais. Tire quando a clara firmar e a gema ainda tremer: o molho quente continua cozinhando."],
+    ["Ficou ácido.","Reduziu pouco. Mais uns minutos sem tampa e uma pitada de açúcar, antes de pôr os ovos."]],
   ing:[I(6,"","ovos"),I(800,"g","tomate pelado em lata"),I(1,"","cebola picada"),I(3,"dente","alho picado"),I(.5,"","pimentão picado"),I(1,"c. chá","cominho"),I(3,"c. sopa","azeite"),I(1,"c. chá","sal"),I(2,"c. sopa","coentro picado")],ut:["Frigideira funda com tampa","Colher de pau"],
   passos:[P("Refogue a cebola e o pimentão no azeite, depois o alho e o cominho.",2,240,"cebola macia"),
     P("Junte o tomate amassado e o sal e deixe reduzir sem tampa.",1,900,"molho grosso; a colher abre caminho no fundo"),
@@ -1055,20 +1087,29 @@ R("r-ovos-no-molho","Ovos no molho de tomate",{min:35,exige:["refogar","reduzir"
     P("Tampe e cozinhe.",1,300,"claras firmes, gemas ainda moles"),
     P("Espalhe o coentro e sirva com pão.")]});
 R("r-macarrao-atum","Macarrão com atum e tomate",{min:30,exige:["al-dente","reduzir"],
+  erros:[["A massa ficou mole.","Passou do ponto. Prove um minuto antes do tempo da embalagem e tire ainda firme no centro."],
+    ["O molho ficou seco.","Faltou a água do cozimento. Junte um pouco da água reservada e mexa."],
+    ["O atum ficou duro.","Cozinhou demais. Junte o atum só no fim, para aquecer."]],
   ing:[I(300,"g","espaguete ou penne"),I(2,"","latas de atum escorrido"),I(400,"g","tomate pelado em lata"),I(3,"dente","alho picado"),I(3,"c. sopa","azeite"),I(1,"c. chá","sal"),I(2,"c. sopa","salsinha picada")],ut:["Panela grande","Frigideira grande","Escorredor"],
-  passos:[P("Ponha a água da massa para ferver e salgue.",3),
+  passos:[P("Ponha a água da massa para ferver e salgue.",3,null,"bolhas grandes sobem sem parar"),
     P("Doure o alho no azeite, mexendo sem parar.",2,60,"cheiro de alho e ele ainda claro"),
     P("Junte o tomate amassado e o sal e reduza.",1,600,"molho encorpado"),
     P("Cozinhe a massa um minuto a menos que a embalagem. Reserve uma xícara da água.",3,540,"macia com leve resistência"),
     P("Junte o atum ao molho, depois a massa e um pouco da água reservada.",2,60,"molho gruda na massa"),
     P("Prove, acerte o sal e junte a salsinha.")]});
 R("r-branco-brocolis","Macarrão ao molho branco com brócolis",{min:35,exige:["roux","al-dente","vapor"],
+  erros:[["O molho empelotou.","O leite entrou de uma vez. Bata forte com o batedor ou passe pela peneira."],
+    ["O brócolis ficou mole e amarelado.","Vapor demais. Quatro minutos e tire da panela."],
+    ["O molho ficou grosso demais.","Junte um pouco de leite quente ou da água da massa e mexa até soltar."]],
   ing:[I(300,"g","macarrão parafuso"),I(1,"","brócolis em buquês"),I(2,"c. sopa","manteiga"),I(2,"c. sopa","farinha de trigo"),I(500,"ml","leite"),I(50,"g","queijo parmesão ralado"),I(1,"c. chá","sal")],ut:["Panela grande","Panela média","Cesto de vapor","Batedor de arame"],
   passos:[P("Cozinhe o brócolis no vapor.",2,240,"verde vivo, leve resistência"),
     P("Faça o molho branco: manteiga e farinha em fogo baixo por dois minutos, leite aos poucos, e ferva mexendo até engrossar.",2,420,"cobre as costas da colher"),
     P("Cozinhe a massa em água fervente e salgada, um minuto a menos que a embalagem.",3,540,"macia com leve resistência"),
     P("Misture a massa, o brócolis, o queijo e o sal ao molho. Prove.")]});
 R("r-bolonhesa","Macarrão à bolonhesa",{min:50,exige:["dourar","reduzir","al-dente"],
+  erros:[["A carne ficou cinza e soltou água.","Panela pequena ou mexeu cedo. Panela larga, fogo alto e espere a água secar."],
+    ["O molho ficou ácido.","Reduziu pouco. Mais dez minutos de fogo baixo e uma pitada de açúcar."],
+    ["Grudou no fundo.","Fogo alto na redução. Fogo baixo e raspe o fundo de vez em quando."]],
   ing:[I(300,"g","espaguete"),I(400,"g","carne moída"),I(800,"g","tomate pelado em lata"),I(1,"","cebola picada"),I(3,"dente","alho picado"),I(1,"","cenoura ralada"),I(2,"c. sopa","azeite"),I(1.5,"c. chá","sal"),I(50,"g","queijo parmesão ralado")],ut:["Panela larga","Panela grande","Escorredor","Colher de pau"],
   passos:[P("Doure a carne no azeite, em panela larga, até a água secar.",3,480,"carne marrom, som de fritura"),
     P("Junte a cebola, a cenoura e o alho e refogue.",2,180,"cebola macia"),
@@ -1076,19 +1117,28 @@ R("r-bolonhesa","Macarrão à bolonhesa",{min:50,exige:["dourar","reduzir","al-d
     P("Cozinhe o espaguete um minuto a menos que a embalagem.",3,540,"macio com leve resistência"),
     P("Misture a massa ao molho e sirva com o queijo.")]});
 R("r-frango-acebolado","Frango acebolado",{min:35,exige:["grelhar"],
+  erros:[["O frango ficou seco.","Tiras finas ou tempo demais. Tiras grossas, e tire assim que a mais grossa estiver branca por dentro."],
+    ["O frango cozinhou na água em vez de dourar.","Frigideira cheia ou frango molhado. Seque bem e grelhe em levas."],
+    ["A cebola queimou.","Fogo alto. Fogo médio e uma pitada de sal para ela soltar água e amaciar."]],
   ing:[I(500,"g","filés de peito de frango em tiras grossas"),I(2,"","cebolas em rodelas"),I(2,"dente","alho amassado"),I(1,"","limão"),I(2,"c. sopa","azeite"),I(1,"c. chá","sal")],ut:["Frigideira grande","Pegador","Prato"],
   passos:[P("Tempere o frango com alho, limão e sal. Deixe descansar e lave as mãos e a tábua.",null,600),
     P("Seque as tiras e grelhe no azeite, sem encher a frigideira.",2,360,"douradas; uma tira cortada está branca por inteiro"),
     P("Passe o frango para o prato. Na mesma frigideira, cozinhe as cebolas com uma pitada de sal.",2,300,"macias e douradas"),
-    P("Volte o frango, junte duas colheres de sopa de água e raspe o fundo.",2,60)]});
+    P("Volte o frango, junte duas colheres de sopa de água e raspe o fundo.",2,60,"o fundo ficou limpo e o frango está quente")]});
 R("r-hamburguer","Hambúrguer caseiro",{min:30,exige:["selar"],
+  erros:[["Encolheu e virou bola.","Faltou a covinha no centro ou a carne foi apertada. Covinha com o polegar e não aperte na frigideira."],
+    ["Ficou seco.","Carne magra demais ou foi amassado com a espátula. Use carne com um pouco de gordura e não aperte."],
+    ["Queimou por fora e ficou cru por dentro.","Fogo alto até o fim. Depois de virar, baixe o fogo e tampe."]],
   ing:[I(450,"g","carne moída com um pouco de gordura","acém ou fraldinha"),I(3,"","pães de hambúrguer"),I(3,"","fatias de queijo"),I(1,"","tomate em rodelas"),I(3,"","folhas de alface"),I(1,"c. sopa","óleo"),I(1,"c. chá","sal")],ut:["Frigideira pesada com tampa","Espátula larga"],
   passos:[P("Divida a carne em três, molde discos de dois centímetros de altura sem apertar demais e faça uma covinha no centro com o polegar."),
     P("Aqueça a frigideira com o óleo.",3,120,"primeiro fio de fumaça"),
     P("Salgue os discos na hora e coloque na frigideira. Não aperte e não mexa.",3,180,"crosta marrom embaixo"),
     P("Vire, ponha o queijo, baixe o fogo e tampe.",2,240,"queijo derretido e nenhum rosado no centro"),
-    P("Toste o miolo dos pães na frigideira e monte.",2,60)]});
+    P("Toste o miolo dos pães na frigideira e monte.",2,60,"o miolo está dourado")]});
 R("r-picadinho","Picadinho de carne com legumes",{min:70,exige:["selar","ensopar"],
+  erros:[["A carne ficou dura.","Ainda falta tempo: carne de panela amacia devagar. Mais quinze minutos tampada, em fogo baixo."],
+    ["O caldo ficou ralo.","Destampe nos últimos minutos e deixe reduzir. Amassar um pedaço de batata no caldo também engrossa."],
+    ["A batata desmanchou.","Cubos pequenos demais. Corte maior e só junte quando a carne estiver quase macia."]],
   ing:[I(500,"g","carne em cubos","acém ou patinho"),I(2,"","batatas em cubos"),I(1,"","cenoura em cubos"),I(1,"","cebola picada"),I(3,"dente","alho picado"),I(2,"","tomates picados"),I(2,"xíc","água quente"),I(2,"c. sopa","óleo"),I(1.5,"c. chá","sal"),I(2,"c. sopa","cheiro-verde picado")],ut:["Panela funda com tampa","Colher de pau","Prato"],
   passos:[P("Seque a carne e sele em duas levas, no óleo bem quente. Reserve no prato.",3,360,"cubos dourados"),
     P("Refogue a cebola, o alho e o tomate, raspando o fundo.",2,240,"tomate desmanchado"),
@@ -1096,27 +1146,39 @@ R("r-picadinho","Picadinho de carne com legumes",{min:70,exige:["selar","ensopar
     P("Junte a batata e a cenoura e cozinhe tampado.",1,1200,"legumes macios, carne desfiando no garfo, caldo encorpado"),
     P("Prove o sal e junte o cheiro-verde.")]});
 R("r-batata-rustica","Batata rústica na airfryer",{min:35,exige:["assar"],
+  erros:[["Ficaram moles e pálidas.","Cesto cheio ou batata molhada. Seque bem e asse em uma camada só, em levas se precisar."],
+    ["Douraram por fora e ficaram cruas por dentro.","Gomos grossos demais ou temperatura alta. Gomos iguais e, se dourar cedo, baixe para 180 graus."],
+    ["O alho queimou.","Alho amassado queima rápido. Junte o alho só depois de sacudir o cesto."]],
   ing:[I(4,"","batatas com casca, bem lavadas"),I(2,"c. sopa","azeite"),I(1,"c. chá","sal"),I(1,"c. chá","páprica doce"),I(2,"dente","alho amassado")],ut:["Airfryer ou forno","Tigela"],
   passos:[P("Corte cada batata em oito gomos e seque com um pano."),
     P("Misture com o azeite, o sal, a páprica e o alho."),
     P("Asse na airfryer a 200 graus, em uma camada só. No forno, 220 graus por o dobro do tempo.",null,720,"douradas embaixo"),
     P("Sacuda o cesto e asse mais.",null,600,"douradas e crocantes, macias por dentro")]});
 R("r-yakisoba","Yakisoba simples de frango",{min:40,exige:["saltear","al-dente","grelhar"],
+  erros:[["Os legumes murcharam.","Fogo baixo ou frigideira cheia. Fogo alto, pouco de cada vez, e tire ainda firmes."],
+    ["O molho ficou ralo.","O amido assentou no pote. Mexa o pote antes de despejar e deixe ferver até brilhar."],
+    ["O macarrão grudou num bloco.","Ficou parado depois de escorrer. Passe um fio de óleo e solte com o garfo antes de juntar."]],
   ing:[I(300,"g","macarrão para yakisoba ou espaguete"),I(300,"g","peito de frango em tiras"),I(1,"","cenoura em fatias finas"),I(2,"xíc","repolho em tiras"),I(1,"","brócolis pequeno em buquês"),I(1,"","cebola em gomos"),I(5,"c. sopa","molho shoyu"),I(1,"c. sopa","amido de milho"),I(2,"c. sopa","óleo"),I(1,"c. chá","açúcar")],ut:["Frigideira grande e funda","Panela grande","Escorredor","Pote"],
   passos:[P("Cozinhe o macarrão um minuto a menos que a embalagem e escorra.",3,480,"macio com leve resistência"),
     P("No pote, dissolva o amido e o açúcar no shoyu com uma xícara de água."),
     P("Doure o frango em uma colher de óleo e reserve.",3,300,"dourado, branco por inteiro"),
     P("Salteie a cenoura, o brócolis e a cebola no resto do óleo. Por último o repolho.",3,240,"legumes brilhantes e ainda firmes"),
     P("Volte o frango, junte o molho mexido e ferva até engrossar.",2,120,"molho brilhante e grosso"),
-    P("Junte o macarrão e misture.",2,60)]});
+    P("Junte o macarrão e misture.",2,60,"o macarrão está quente e coberto de molho")]});
 R("r-creme-abobora","Creme de abóbora",{min:45,exige:["ensopar","amassar"],
+  erros:[["Ficou ralo.","Água demais. Deixe ferver sem tampa até encorpar."],
+    ["Ficou com pedaços.","A abóbora cozinhou pouco. Mais cinco minutos tampada, até desmanchar na colher."],
+    ["O creme de leite talhou.","Ferveu depois do creme. Fogo no mínimo e desligue na primeira bolha."]],
   ing:[I(600,"g","abóbora cabotiá descascada em cubos"),I(1,"","cebola picada"),I(2,"dente","alho picado"),I(750,"ml","água quente"),I(2,"c. sopa","azeite"),I(1,"c. chá","sal"),I(100,"g","creme de leite","opcional")],ut:["Panela funda com tampa","Amassador ou liquidificador","Concha"],
   passos:[P("Refogue a cebola no azeite, depois o alho.",2,150,"cebola macia"),
     P("Junte a abóbora, a água e o sal.",3,null,"ferveu"),
     P("Fogo baixo, tampado.",1,1200,"a abóbora desmancha na colher"),
     P("Amasse na panela com o amassador. Se usar liquidificador, espere amornar, encha só até a metade e segure a tampa com um pano.",null,null,"creme liso"),
-    P("Volte ao fogo baixo, prove o sal e misture o creme de leite sem deixar ferver.",1,60)]});
+    P("Volte ao fogo baixo, prove o sal e misture o creme de leite sem deixar ferver.",1,60,"o creme está quente e solta vapor, sem bolhas")]});
 R("r-bolo-fuba","Bolo de fubá",{min:60,exige:["bolo"],
+  erros:[["Murchou no meio.","O forno foi aberto cedo ou o bolo saiu cru. Só abra depois de 25 minutos e faça o teste do palito."],
+    ["Ficou pesado e duro.","Mexeu demais depois da farinha. Misture só até a farinha sumir."],
+    ["Grudou na forma.","Faltou untar ou desenformou quente demais. Unte, polvilhe bem e espere os dez minutos."]],
   ing:[I(3,"","ovos"),I(1.5,"xíc","açúcar"),I(.5,"xíc","óleo"),I(1,"xíc","leite"),I(1.5,"xíc","fubá"),I(1,"xíc","farinha de trigo"),I(1,"c. sopa","fermento químico em pó"),I(1,"c. chá","erva-doce","opcional")],ut:["Liquidificador","Tigela","Forma com furo no meio","Peneira","Palito de dente"],
   passos:[P("Ligue o forno a 180 graus. Unte a forma com manteiga e polvilhe fubá."),
     P("Bata no liquidificador os ovos, o açúcar, o óleo e o leite.",null,120),
@@ -1124,6 +1186,9 @@ R("r-bolo-fuba","Bolo de fubá",{min:60,exige:["bolo"],
     P("Asse sem abrir o forno nos primeiros 25 minutos.",null,2400,"o palito sai seco"),
     P("Esfrie dez minutos e desenforme.",null,600)]});
 R("r-lasanha","Lasanha de carne",{min:100,exige:["dourar","reduzir","roux","gratinar"],
+  erros:[["Ficou aguada.","Molho de carne ralo. Reduza até a colher abrir caminho no fundo antes de montar."],
+    ["A massa ficou dura.","Faltou molho cobrindo a massa ou faltou o papel-alumínio. Cubra bem cada camada e asse tampada primeiro."],
+    ["Desmontou ao cortar.","Faltou o descanso. Espere dez minutos fora do forno."]],
   ing:[I(250,"g","massa de lasanha pré-cozida"),I(500,"g","carne moída"),I(800,"g","tomate pelado em lata"),I(1,"","cebola picada"),I(3,"dente","alho picado"),I(2,"c. sopa","manteiga"),I(2,"c. sopa","farinha de trigo"),I(500,"ml","leite"),I(300,"g","queijo muçarela fatiado"),I(2,"c. chá","sal"),I(1,"c. sopa","óleo")],ut:["Panela larga","Panela média","Refratário fundo","Papel-alumínio","Luva térmica"],
   passos:[P("Doure a carne no óleo, em panela larga, até a água secar.",3,480,"carne marrom, som de fritura"),
     P("Junte a cebola e o alho e refogue.",2,180,"cebola macia"),
@@ -1134,6 +1199,9 @@ R("r-lasanha","Lasanha de carne",{min:100,exige:["dourar","reduzir","roux","grat
     P("Tire o papel-alumínio e gratine.",null,600,"queijo dourado e borbulhando nas bordas"),
     P("Deixe descansar antes de cortar.",null,600)]});
 R("r-moqueca","Moqueca simples de peixe",{min:40,exige:["refogar","ensopar"],
+  erros:[["O peixe desmanchou.","A panela foi mexida. Só balance a panela pelas alças."],
+    ["O caldo ficou ralo.","Destampe nos últimos minutos e deixe reduzir em fogo baixo."],
+    ["Ficou sem gosto.","Pouco sal ou limão. Prove o caldo, acerte o sal e pingue limão no prato."]],
   ing:[I(600,"g","filé de peixe branco em pedaços grandes","tilápia ou pescada"),I(1,"","cebola em rodelas"),I(1,"","pimentão em rodelas"),I(2,"","tomates em rodelas"),I(3,"dente","alho picado"),I(200,"ml","leite de coco"),I(1,"","limão"),I(3,"c. sopa","azeite"),I(1.5,"c. chá","sal"),I(4,"c. sopa","coentro picado")],ut:["Panela larga com tampa","Colher"],
   passos:[P("Tempere o peixe com o limão e metade do sal. Deixe descansar.",null,600),
     P("Refogue o alho e metade da cebola no azeite.",2,120,"cebola macia"),
@@ -1141,22 +1209,31 @@ R("r-moqueca","Moqueca simples de peixe",{min:40,exige:["refogar","ensopar"],
     P("Tampe e cozinhe sem mexer; só balance a panela.",1,900,"peixe opaco, soltando em lascas"),
     P("Prove o caldo, acerte o sal e espalhe o coentro.")]});
 R("r-caldo-feijao","Caldo de feijão",{min:30,exige:["pressao","temperar-feijao"],
+  erros:[["Grudou no fundo.","Fogo alto ou parou de mexer. Fogo baixo e raspe o fundo sempre."],
+    ["Ficou grosso demais.","Junte água quente aos poucos e mexa até ficar no ponto de tomar."],
+    ["Ficou sem graça.","Falta sal ou refogado. Acerte o sal e um fio de azeite no prato."]],
   ing:[I(3,"xíc","feijão cozido com caldo"),I(1,"xíc","água quente"),I(.5,"","cebola picada"),I(3,"dente","alho picado"),I(2,"c. sopa","azeite"),I(1,"c. chá","sal"),I(2,"c. sopa","cheiro-verde picado")],ut:["Liquidificador","Panela média","Concha"],
   passos:[P("Bata o feijão morno com a água no liquidificador, enchendo só até a metade e segurando a tampa com um pano.",null,60,"creme liso"),
     P("Refogue a cebola e o alho no azeite.",2,150,"alho dourado claro"),
     P("Junte o feijão batido e ferva em fogo baixo, mexendo e raspando o fundo.",1,600,"caldo grosso"),
     P("Acerte o sal no final e sirva com o cheiro-verde.")]});
 R("r-panqueca","Panqueca de carne",{min:60,exige:["virar","dourar","reduzir"],
+  erros:[["Rasgou ao virar.","Virou cedo. Espere a borda soltar e a superfície ficar opaca."],
+    ["Ficou grossa.","Massa demais na frigideira. Meia concha e gire logo para espalhar fino."],
+    ["A primeira grudou.","Frigideira fria ou sem gordura. Unte de leve e espere esquentar; a primeira costuma ser de teste."]],
   ing:[I(1,"xíc","farinha de trigo"),I(1,"xíc","leite"),I(2,"","ovos"),I(400,"g","carne moída"),I(400,"g","tomate pelado em lata"),I(1,"","cebola picada"),I(2,"dente","alho picado"),I(100,"g","queijo muçarela ralado"),I(2,"c. sopa","óleo"),I(1.5,"c. chá","sal")],ut:["Liquidificador","Frigideira antiaderente","Concha","Panela larga","Refratário"],
   passos:[P("Bata a farinha, o leite, os ovos e uma pitada de sal no liquidificador. Deixe descansar.",null,600),
     P("Doure a carne em uma colher de óleo até a água secar.",3,420,"carne marrom, som de fritura"),
     P("Junte a cebola e o alho e refogue.",2,120,"cebola macia"),
     P("Junte metade do tomate e o sal e reduza.",1,600,"recheio com molho curto"),
     P("Unte a frigideira, despeje meia concha de massa e gire para cobrir o fundo.",2,60,"a borda solta e a superfície fica opaca"),
-    P("Vire com a espátula e doure o outro lado. Repita até acabar a massa.",2,30),
+    P("Vire com a espátula e doure o outro lado. Repita até acabar a massa.",2,30,"o outro lado tem pintinhas douradas"),
     P("Recheie, enrole, arrume no refratário, cubra com o resto do tomate e o queijo."),
     P("Leve ao forno a 220 graus.",null,600,"queijo derretido e dourado")]});
 R("r-fricasse","Fricassê de frango",{min:60,exige:["pressao","engrossar","gratinar"],
+  erros:[["O creme talhou.","Ferveu. Aqueça em fogo baixo e desligue antes de borbulhar."],
+    ["Ficou seco no forno.","Pouco creme ou forno tempo demais. Cubra bem o frango e tire quando o queijo dourar."],
+    ["A batata palha murchou.","Foi ao forno junto. Ponha só na hora de servir."]],
   ing:[I(500,"g","peito de frango"),I(1,"","lata de milho escorrido"),I(200,"g","creme de leite"),I(200,"g","requeijão cremoso"),I(150,"g","queijo muçarela ralado"),I(.5,"","cebola picada"),I(1,"c. sopa","manteiga"),I(1,"c. chá","sal"),I(100,"g","batata palha")],ut:["Panela de pressão","Liquidificador","Panela média","Refratário","Dois garfos"],
   passos:[P("Cozinhe o frango na pressão com três xícaras de água e metade do sal.",1,900,"15 minutos depois de pegar pressão; espere o pino baixar sozinho"),
     P("Desfie o frango com dois garfos.",null,null,"fios soltos, brancos por inteiro"),
@@ -1291,11 +1368,11 @@ function fmtNum(v,u,item){
 }
 const un=(u,v)=>u==="dente"?(v>1?"dentes de":"dente de"):u;
 function ingHTML(i,p,base){const q=i.q==null?"":fmtNum(i.q*p/base,i.u,i.item);return esc([q,un(i.u,i.q*p/base),i.item].filter(Boolean).join(" "))+(i.obs?` <span class="obs">(${esc(i.obs)})</span>`:"")}
-function blocoReceita(r){
+function blocoReceita(r,acoes=""){
   const p=porc();
   return `<div class="rec-meta"><span class="tag">${fmtMin(r.minutos)}</span>
     <span class="porc"><button class="iconbtn" data-ac="porc" data-d="-1" aria-label="Menos porções"${p<=1?" disabled":""}>−</button><b>${p} ${p>1?"porções":"porção"}</b><button class="iconbtn" data-ac="porc" data-d="1" aria-label="Mais porções"${p>=6?" disabled":""}>+</button></span></div>
-  <div class="duas">
+  ${acoes}<div class="duas">
     <section class="sec"><h2 class="h-sec">Ingredientes</h2><ul class="ing">${r.ingredientes.map(i=>`<li>${ingHTML(i,p,r.porcoes||3)}</li>`).join("")}</ul></section>
     <section class="sec"><h2 class="h-sec">Utensílios</h2><ul class="uts">${(r.utensilios||[]).map(u=>`<li>${esc(u)}</li>`).join("")||'<li class="muted">Nada além do básico.</li>'}</ul></section>
   </div>
@@ -1336,10 +1413,11 @@ function faixaTimer(){
   const f=$("#faixa-timer");if(!f)return;
   const ts=CZ&&CZ.timers||[],acabou=ts.find(t=>t.tocou),corre=ts.filter(t=>!t.tocou).sort((a,b)=>a.fim-b.fim)[0];
   const mostra=(acabou||corre)&&cur!=="cozinhar"&&cur!=="inicio";
-  f.hidden=!mostra;document.body.classList.toggle("com-faixa",!!mostra);if(!mostra)return;
+  f.hidden=!mostra;document.body.classList.toggle("com-faixa",!!mostra);if(!mostra){f.dataset.k="";return}
   f.classList.toggle("fim",!!acabou);
+  const chave=acabou?"f"+acabou.passo:"c"+corre.passo+"-"+corre.fim;if(f.dataset.k===chave)return;f.dataset.k=chave;
   f.innerHTML=acabou?`<span>Acabou o tempo do passo ${acabou.passo}</span><button type="button" class="btn acao sm" data-ac="go" data-v="cozinhar">Ver</button>`
-    :`<span>Timer do passo ${corre.passo} · <b data-tfim="${corre.fim}">${relogio(corre.fim-Date.now())}</b></span><button type="button" class="btn soft sm" data-ac="go" data-v="cozinhar">Voltar ao fogão</button>`;
+    :`<span>Timer do passo ${corre.passo}<span aria-hidden="true"> · <b data-tfim="${corre.fim}">${relogio(corre.fim-Date.now())}</b></span></span><button type="button" class="btn soft sm" data-ac="go" data-v="cozinhar">Voltar ao fogão</button>`;
 }
 let VIN=0;
 // Conta do zero até o número (ex.: "12" ou "3 de 33"), como nos outros apps.
@@ -1536,7 +1614,7 @@ V.receitas={
     else if(RC.aba==="criadas")corpo=`<div class="acoes"><button class="btn acao" data-ac="receita-propria">Adicionar receita</button><button class="btn soft" data-ac="nova-receita"${RC.busy?" disabled":""}>${SAMPLE?(RC.busy?"O Claude está escrevendo…":"Pedir receita nova ao Claude"):"O que dá pra fazer com o que tenho"}</button></div>
       ${criadas.length?`<div class="lista">${criadas.map(r=>linhaReceita(r)).join("")}</div>`:`<p class="vazio">Adicione receitas que você viu em vídeos e sites. Elas ficam aqui, com timer e lista de compras.${SAMPLE?" Ou peça uma ao Claude, com o que você tem em casa.":" As receitas que você adaptar também aparecem aqui."}</p>`}`;
     else if(RC.aba==="favoritas")corpo=favs.length?`<div class="lista">${favs.map(r=>linhaReceita(r)).join("")}</div>`:'<p class="vazio">Marque uma receita como favorita para ela aparecer aqui.</p>';
-    else corpo=abertas.length?`<div class="lista">${abertas.map(r=>linhaReceita(r)).join("")}</div>`:'<p class="vazio">As receitas abrem conforme você conclui as aulas. A primeira abre depois das duas primeiras aulas do curso.</p>';
+    else corpo=abertas.length?`<div class="lista">${abertas.map(r=>linhaReceita(r)).join("")}</div>`:'<div class="vazio"><p>As receitas do livro abrem conforme você faz as aulas, e cada aula já tem um prato para cozinhar hoje.</p>${proximaAula()?`<div class="acoes"><button class="btn soft" data-ac="go" data-v="aula" data-id="${proximaAula()}">Abrir a próxima aula</button></div>`:""}</div>';
     $("#rc-corpo").innerHTML=`<div class="abas" role="tablist" aria-label="Partes do livro">${abas.map(([a,r])=>`<button type="button" role="tab" id="aba-${a}" aria-controls="rc-painel" data-ac="aba" data-a="${a}" aria-selected="${RC.aba===a}" tabindex="${RC.aba===a?0:-1}">${r}</button>`).join("")}</div>
       <div class="view" id="rc-painel" role="tabpanel" aria-labelledby="aba-${RC.aba}">${corpo}</div>`;
   }
@@ -1554,9 +1632,8 @@ V.receita={
         ${p&&p.anotacao?`<p class="nota prosa">Da última vez você anotou: “${esc(p.anotacao)}”</p>`:""}</div>
       ${avisoPendente(r.id)}
       ${!criada&&f.length?`<div class="painel"><b>Esta receita usa técnicas que você ainda não viu.</b><p class="nota">Aulas que faltam: ${f.map(id=>`<button class="linkbtn" data-ac="go" data-v="aula" data-id="${id}">${esc(AULAS[id].titulo)}</button>`).join(", ")}. Você pode cozinhar mesmo assim.</p></div>`:""}
-      <div class="acoes"><button class="btn acao" data-ac="cozinhar" data-id="${esc(r.id)}">${CZ&&CZ.id===r.id&&CZ.passo>0?"Continuar cozinhando":"Cozinhar agora"}</button>
-        <button class="btn soft" data-ac="compras-add" data-id="${esc(r.id)}">Pôr na lista de compras</button></div>
-      ${blocoReceita(r)}
+      ${blocoReceita(r,`<div class="acoes"><button class="btn acao" data-ac="cozinhar" data-id="${esc(r.id)}">${CZ&&CZ.id===r.id&&CZ.passo>0?"Continuar cozinhando":"Cozinhar agora"}</button>
+        <button class="btn soft" data-ac="compras-add" data-id="${esc(r.id)}">Pôr na lista de compras</button></div>`)}
       <section class="sec"><h2 class="h-sec">Mais opções</h2><div class="acoes"><button class="btn soft" data-ac="receita-enviar" data-id="${esc(r.id)}">Enviar a receita</button>
         ${minha?"":SAMPLE?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}"${RC.busy?" disabled":""}>Adaptar com o Claude</button>`:(()=>{const o=opcoesAdaptar(r);return o.trocas.length||o.equipamentos.length?`<button class="btn soft" data-ac="adaptar" data-id="${esc(r.id)}">Adaptar</button>`:""})()}<button class="btn soft" data-ac="duvida" data-id="${esc(r.id)}">Tirar uma dúvida</button>
         ${minha?`<button class="btn contorno" data-ac="receita-propria" data-id="${esc(r.id)}">Editar</button>`:""}${criada?`<button class="btn contorno" data-ac="apagar-receita" data-id="${esc(r.id)}">Apagar</button>`:""}</div></section>`;
@@ -1694,7 +1771,7 @@ function tique(){
   const agora=Date.now(),r=receitaDe(CZ.id);let mudou=false;
   // No modo cozinhar o aviso vermelho no topo já diz tudo; o toast só aparece fora dele.
   CZ.timers.forEach(t=>{if(!t.tocou&&agora>=t.fim){t.tocou=true;mudou=true;bip();const s=r&&r.passos[t.passo-1];
-    if(cur!=="cozinhar")toast(`Acabou o tempo do passo ${t.passo}${r?` de ${r.titulo}`:""}.${s&&s.pronto?` Confira: ${s.pronto}.`:""}`,{ms:12000,acao:{rotulo:"Ver",fn:()=>go("cozinhar")}})}});
+    if(cur!=="cozinhar")toast(`Acabou o tempo do passo ${t.passo}${r?` de ${r.titulo}`:""}.${s&&s.pronto?` Pronto quando ${s.pronto}.`:""}`,{ms:12000,acao:{rotulo:"Ver",fn:()=>go("cozinhar")}})}});
   // Um diálogo aberto no fogão cobriria o aviso: o tempo que acabou fala mais alto.
   if(mudou){salvaCZ();if(cur==="cozinhar"){const d=$("#dlg");if(d.open)d.close();V.cozinhar.update()}else if(cur==="inicio")refresh();faixaTimer()}
   $$("[data-tfim]").forEach(el=>{el.textContent=relogio(+el.dataset.tfim-agora)});
@@ -1761,12 +1838,13 @@ AC["cz-ing"]=()=>{const r=CZ&&receitaDe(CZ.id);if(!r)return;openDlg("Ingrediente
 // Ajuda no fogão: o que pode dar errado nesta receita, sem sair do modo cozinhar.
 function errosDa(r){
   if(AULAS[r.id])return{erros:AULAS[r.id].erros,obs:AULAS[r.id].observar};
-  const aulas=ORDEM.filter(id=>AULAS[id].ensina.some(t=>(r.exige||[]).includes(t)));
-  return{erros:aulas.flatMap(id=>AULAS[id].erros).slice(0,8),obs:[]};
+  return{erros:Array.isArray(r.erros)?r.erros:[],obs:[]};
 }
 // Os problemas que dividem palavras com o passo atual vêm primeiro: no passo de refogar, "o alho amargou" sobe.
 const semAcento=t=>String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
-const raizes=t=>new Set(semAcento(t).split(/[^a-z]+/).filter(w=>w.length>=4).map(w=>w.slice(0,5)));
+// Palavras de cozinha que aparecem em quase todo passo não servem para ordenar.
+const COMUNS=new Set("agua fogo panel frigi minut mexer mexa junte deixe tempo antes depoi quand ainda pouco mais menos fundo baixo medio alto".split(" "));
+const raizes=t=>new Set(semAcento(t).split(/[^a-z]+/).filter(w=>w.length>=4).map(w=>w.slice(0,5)).filter(w=>!COMUNS.has(w)));
 function ordenaPorPasso(erros,s){
   const p=raizes(s.txt+" "+(s.pronto||""));
   const nota=x=>[...raizes(x.problema+" "+x.conserto)].filter(w=>p.has(w)).length;
@@ -1793,7 +1871,7 @@ AC["cz-ajuda"]=()=>{
     ${erros.length?`<section class="ajuda-sec"><h3>O que aconteceu?</h3><div class="sintomas">${erros.map(x=>`<details><summary>${esc(x.problema)}</summary><p>${esc(x.conserto)}</p></details>`).join("")}</div></section>`:""}
     ${obs.length?`<section class="ajuda-sec"><div class="sintomas"><details><summary>O que observar nesta aula</summary><ul>${obs.map(o=>`<li>${esc(o)}</li>`).join("")}</ul></details></div></section>`:""}
     <section class="ajuda-sec"><h3>Ponto seguro</h3><ul>${seg.map(x=>`<li>${x}</li>`).join("")}</ul></section>
-    <div><button class="btn soft" type="button" data-ac="duvida" data-id="${esc(r.id)}">${SAMPLE?"Perguntar ao Claude":"Fazer uma pergunta"}</button></div>`,null);
+    <div><button class="btn soft" type="button" data-ac="duvida" data-id="${esc(r.id)}">Tirar uma dúvida</button></div>`,null);
 };
 document.addEventListener("change",e=>{const i=e.target.dataset&&e.target.dataset.czok;if(i!=null&&CZ){CZ.ok=CZ.ok||{};CZ.ok[i]=e.target.checked;salvaCZ()}});
 // Teclado: setas trocam de passo no modo cozinhar e de aba em qualquer lista de abas.
@@ -1838,16 +1916,18 @@ V.cozinhar={
       if(t.tocou){const s=r.passos[t.passo-1];
         // Depois que ele já passou daquele passo, o aviso encolhe para uma linha e o passo atual volta a mandar.
         if(t.passo<k)return `<div class="relogio fim curto" role="status"><span class="nome"><b>Passo ${t.passo}: acabou</b></span><button type="button" class="relogio-ir" data-ac="cz-ir" data-p="${t.passo}">Ver o passo</button><button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Dispensar o aviso do passo ${t.passo}">×</button></div>`;
-        return `<div class="relogio fim" role="status"><span class="nome"><b>Passo ${t.passo}: acabou o tempo</b><span>${esc(s&&s.pronto?"Confira: "+s.pronto:s?"Confira o ponto: "+s.txt:nome)}</span></span>${t.passo!==k?`<button type="button" class="relogio-ir" data-ac="cz-ir" data-p="${t.passo}">Ver o passo</button>`:""}<button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Dispensar o aviso do passo ${t.passo}">×</button>
+        // Com sinal, o aviso leva ao sinal; sem fogo, era só espera: pode seguir.
+        const msg=s&&s.pronto?"Pronto quando "+s.pronto+".":s&&!s.fogo?(t.passo<n?`Pode seguir para o passo ${t.passo+1}.`:"Pode terminar a receita."):s?"Confira o ponto: "+s.txt:nome;
+        return `<div class="relogio fim" role="status"><span class="nome"><b>Passo ${t.passo}: ${s&&s.pronto?"confira o ponto":"acabou o tempo"}</b><span>${esc(msg)}</span></span>${t.passo!==k?`<button type="button" class="relogio-ir" data-ac="cz-ir" data-p="${t.passo}">Ver o passo</button>`:""}<button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Dispensar o aviso do passo ${t.passo}">×</button>
           <div class="relogio-mais"><span>Ainda não?</span><button type="button" class="relogio-ir" data-ac="timer-mais" data-i="${i}" data-m="1" aria-label="Mais 1 minuto no passo ${t.passo}">+1 min</button><button type="button" class="relogio-ir" data-ac="timer-mais" data-i="${i}" data-m="3" aria-label="Mais 3 minutos no passo ${t.passo}">+3 min</button></div></div>`}
       // O passo que está na tela não precisa do próprio resumo; os outros, sim.
       return `<div class="relogio"><span class="nome"><b>${t.passo===k?"Este passo":"Passo "+t.passo}</b>${t.passo===k?"":`<span>${esc(nome)}</span>`}</span><b class="tempo" role="timer" data-tfim="${t.fim}">${relogio(t.fim-agora)}</b><button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Cancelar o timer do passo ${t.passo}: ${esc(nome)}">×</button></div>`}).join("");
     const ant=$("#cz-ant"),prox=$("#cz-prox");ant.disabled=k===0;
     if(k===0){
       box.innerHTML=`<h1 class="h-pag">Separe tudo antes de acender o fogo</h1><p class="cz-intro">Para ${CZ.porcoes} ${CZ.porcoes>1?"porções":"porção"}. Leia os ${n} passos uma vez e marque o que já está na bancada. Para trocar de passo, toque em Próximo ou deslize o dedo para o lado.</p>
-        <ul class="cz-lista">${r.ingredientes.map((i,x)=>`<li><label><input type="checkbox" id="czi-${x}" data-czok="i${x}"${CZ.ok&&CZ.ok["i"+x]?" checked":""}><span>${ingHTML(i,CZ.porcoes,r.porcoes||3)}</span></label></li>`).join("")}
-        ${(r.utensilios||[]).map((u,x)=>`<li><label><input type="checkbox" id="czu-${x}" data-czok="u${x}"${CZ.ok&&CZ.ok["u"+x]?" checked":""}><span>${esc(u)}</span></label></li>`).join("")}</ul>
-        <ol class="passos">${r.passos.map(s=>`<li><span>${esc(s.txt)}</span></li>`).join("")}</ol>`;
+        <h2 class="h-sec">Ingredientes</h2><ul class="cz-lista">${r.ingredientes.map((i,x)=>`<li><label><input type="checkbox" id="czi-${x}" data-czok="i${x}"${CZ.ok&&CZ.ok["i"+x]?" checked":""}><span>${ingHTML(i,CZ.porcoes,r.porcoes||3)}</span></label></li>`).join("")}</ul>
+        ${(r.utensilios||[]).length?`<h2 class="h-sec">Utensílios</h2><ul class="cz-lista">`:""}${(r.utensilios||[]).map((u,x)=>`<li><label><input type="checkbox" id="czu-${x}" data-czok="u${x}"${CZ.ok&&CZ.ok["u"+x]?" checked":""}><span>${esc(u)}</span></label></li>`).join("")}${(r.utensilios||[]).length?"</ul>":""}
+        <h2 class="h-sec">Os passos</h2><ol class="passos">${r.passos.map(s=>`<li><span>${esc(s.txt)}</span></li>`).join("")}</ol>`;
       prox.textContent="Começar";prox.dataset.ac="cz-prox";return;
     }
     const s=r.passos[k-1],meu=CZ.timers.find(t=>t.passo===k&&!t.tocou),acabou=CZ.timers.some(t=>t.passo===k&&t.tocou);
@@ -1959,15 +2039,15 @@ function rpLink(t){
 function montarReceitaPropria(c){
   // Nada é cortado sem aviso: o que passa do limite volta como erro para o usuário ajustar.
   const titulo=String(c.titulo??"").trim();
-  if(!titulo)return {ok:false,erro:"Dê um nome para a receita."};
-  if(titulo.length>80)return {ok:false,erro:"O nome pode ter no máximo 80 letras."};
+  if(!titulo)return {ok:false,erro:"Dê um nome para a receita.",campo:"titulo"};
+  if(titulo.length>80)return {ok:false,erro:"O nome pode ter no máximo 80 letras.",campo:"titulo"};
   const li=rpLinhas(c.ingredientes),lp=rpLinhas(c.passos);
-  if(!li.length)return {ok:false,erro:"Escreva pelo menos um ingrediente."};
-  if(li.length>40)return {ok:false,erro:"Use no máximo 40 ingredientes."};
-  if(li.some(l=>l.length>120))return {ok:false,erro:"Um ingrediente passou de 120 letras. Divida em duas linhas."};
-  if(lp.length<2)return {ok:false,erro:"Escreva pelo menos dois passos, um por linha."};
-  if(lp.length>30)return {ok:false,erro:"Use no máximo 30 passos."};
-  if(lp.some(l=>l.length>400))return {ok:false,erro:"Um passo passou de 400 letras. Divida em dois passos."};
+  if(!li.length)return {ok:false,erro:"Escreva pelo menos um ingrediente.",campo:"ingredientes"};
+  if(li.length>40)return {ok:false,erro:"Use no máximo 40 ingredientes.",campo:"ingredientes"};
+  if(li.some(l=>l.length>120))return {ok:false,erro:"Um ingrediente passou de 120 letras. Divida em duas linhas.",campo:"ingredientes"};
+  if(lp.length<2)return {ok:false,erro:"Escreva pelo menos dois passos, um por linha.",campo:"passos"};
+  if(lp.length>30)return {ok:false,erro:"Use no máximo 30 passos.",campo:"passos"};
+  if(lp.some(l=>l.length>400))return {ok:false,erro:"Um passo passou de 400 letras. Divida em dois passos.",campo:"passos"};
   const ingredientes=li.map(lerIngrediente).filter(Boolean),passos=lp.map(lerPasso).filter(Boolean);
   const porcoes=Math.min(12,Math.max(1,parseInt(c.porcoes,10)||3));
   let minutos=parseInt(c.minutos,10);
@@ -2365,14 +2445,18 @@ function formReceitaPropria(r){
     <label class="campo" for="rp-pas">Modo de fazer (um por linha)<textarea class="inp" id="rp-pas" rows="6" placeholder="Corte o frango em cubos.&#10;Doure em fogo médio por 8 minutos.&#10;Junte o molho e mexa.">${esc(pas)}</textarea></label>
     <label class="campo" for="rp-link">Link do vídeo ou site (opcional)<input class="inp" id="rp-link" type="url" inputmode="url" value="${esc(v.link||"")}" placeholder="youtube.com/…"></label>
     <p class="nota">Quando um passo fala em tempo, como “8 minutos”, ele ganha timer.</p>
-    <p class="nota" id="rp-erro" role="alert" style="color:var(--bad)"></p>`;
+    <p class="nota rp-erro" id="rp-erro" role="alert"></p>`;
 }
 AC["receita-propria"]=d=>{
   const velha=d&&d.id?S.receitas[d.id]:null;if(d&&d.id&&!velha)return;
   openDlg(velha?"Editar receita":"Adicionar receita",formReceitaPropria(velha),dl=>{
     const g=id=>$(id,dl).value;
     const o=montarReceitaPropria({titulo:g("#rp-titulo"),minutos:g("#rp-min"),porcoes:g("#rp-porc"),ingredientes:g("#rp-ing"),passos:g("#rp-pas"),link:g("#rp-link")});
-    if(!o.ok){const e=$("#rp-erro",dl);e.textContent=o.erro;e.scrollIntoView({block:"nearest"});return false}
+    if(!o.ok){
+      const e=$("#rp-erro",dl),c=$({titulo:"#rp-titulo",ingredientes:"#rp-ing",passos:"#rp-pas"}[o.campo]||"#rp-titulo",dl);
+      $$("[aria-invalid]",dl).forEach(x=>{x.removeAttribute("aria-invalid");x.removeAttribute("aria-describedby")});
+      e.textContent=o.erro;c.closest("label").after(e);c.setAttribute("aria-invalid","true");c.setAttribute("aria-describedby","rp-erro");
+      c.focus();c.closest("label").scrollIntoView({block:"nearest"});return false}
     const id=velha?velha.id:"m-"+uid();
     put("receitas",id,{...o.receita,id,criada:velha&&velha.criada||new Date().toISOString()});
     // Editada no meio do preparo: o passo atual e os timers não podem passar do último passo.
@@ -2546,7 +2630,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão 272edd5158.
+// Guarda o app no aparelho para abrir sem internet. Versão d934e64f24.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
