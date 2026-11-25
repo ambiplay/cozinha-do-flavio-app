@@ -171,6 +171,16 @@ div.linha:hover{background:transparent}
 .erros b{display:block}
 .rec-meta{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
 .porc{display:inline-flex;align-items:center;gap:8px}
+.espera{font-weight:700;color:var(--ink);background:var(--chip);border-radius:12px;padding:8px 12px;margin:0;align-self:flex-start}
+.ru-grupo{border-top:1px solid var(--line)}
+.ru-grupo:last-of-type{border-bottom:1px solid var(--line)}
+.ru-grupo summary{display:flex;align-items:center;gap:12px;min-height:56px;cursor:pointer;list-style:none}
+.ru-grupo summary::-webkit-details-marker{display:none}
+.ru-grupo summary::after{content:"";width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin:-4px 4px 0 auto;transition:transform .2s}
+.ru-grupo[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.ru-grupo summary .n{font-size:14px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.ru-grupo summary:focus-visible{outline:3px solid var(--tomate);outline-offset:2px;border-radius:8px}
+.ru-grupo .lista{margin-bottom:16px;max-width:680px}
 .porc b{min-width:86px;text-align:center;font-variant-numeric:tabular-nums}
 .duas{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px}
 @media (max-width:640px){.duas{grid-template-columns:minmax(0,1fr)}}
@@ -191,7 +201,8 @@ div.linha:hover{background:transparent}
 .abas button{border:0;background:transparent;border-radius:999px;padding:8px 14px;min-height:44px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
 .abas button[aria-selected="true"]{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.14),inset 0 0 0 1.5px var(--traco)}
 .abas .n{margin-left:6px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}
-/* No celular as quatro abas dividem a largura e o número desce para baixo do nome. */
+/* No celular as cinco abas dividem a largura e o número desce para baixo do nome. */
+@media (max-width:380px){.abas{padding:3px;gap:2px}.abas button{font-size:13px!important;padding-inline:1px!important}}
 @media (max-width:520px){
   .abas{align-self:stretch;overflow:visible;border-radius:22px}
   .abas button{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 2px;min-height:52px;border-radius:18px;line-height:1.15;font-size:14px}
@@ -336,7 +347,7 @@ h1[tabindex="-1"]:focus{outline:none}
 /* Timer correndo fora do fogão: faixa fina acima do menu. */
 .faixa-timer{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:7;width:min(520px,calc(100vw - 32px));
   display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--verde);border-radius:999px;padding:4px 4px 4px 18px;min-height:52px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
-.faixa-timer span{flex:1;min-width:0;font-weight:600}
+.faixa-timer span{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .faixa-timer b{font-variant-numeric:tabular-nums;font-size:18px}
 .faixa-timer.fim{border-color:var(--tomate);color:var(--tomate-t)}
 @media (min-width:761px){
@@ -876,7 +887,7 @@ A("m8","frango-assado","Frango assado com batatas",{min:90,ensina:["forno"],
   observar:["Pré-aquecer leva de dez a quinze minutos. Entrar em forno frio resseca a carne.","A pele para cima fica exposta ao calor e doura.","Ponto seguro: fure a parte mais grossa, perto do osso. O suco sai claro, sem nenhum rosado.","A batata embaixo cozinha no caldo do frango: garfo entra fácil e as bordas douram."],
   ing:[I(6,"","sobrecoxas de frango com pele e osso"),I(4,"","batatas em gomos"),I(1,"","cebola em gomos"),I(4,"dente","alho amassado"),I(1,"","limão"),I(2,"c. sopa","azeite"),I(1.5,"c. chá","sal"),I(1,"c. chá","páprica doce"),I(null,"","pimenta-do-reino")],
   ut:["Assadeira grande","Tigela","Luva térmica","Faca de ponta ou garfo"],
-  passos:[P("Na tigela, misture o alho, o suco do limão, o azeite, a páprica, a pimenta e uma colher de chá do sal. Esfregue no frango, por cima e por baixo da pele. Deixe descansar. Lave as mãos.",null,1800),
+  passos:[P("Na tigela, misture o alho, o suco do limão, o azeite, a páprica, a pimenta e dois terços do sal. Esfregue no frango, por cima e por baixo da pele. Deixe descansar. Lave as mãos.",null,1800),
     P("Ligue o forno a 200 graus quando faltarem quinze minutos do descanso."),
     P("Espalhe as batatas e a cebola na assadeira com o resto do sal e um fio de azeite. Ponha o frango por cima, com a pele para cima."),
     P("Asse na grade do meio, sem abrir a porta na primeira meia hora.",null,3000,"pele dourada e batatas macias"),
@@ -1161,7 +1172,7 @@ R("r-yakisoba","Yakisoba simples de frango",{min:40,exige:["saltear","al-dente",
   ing:[I(300,"g","macarrão para yakisoba ou espaguete"),I(300,"g","peito de frango em tiras"),I(1,"","cenoura em fatias finas"),I(2,"xíc","repolho em tiras"),I(1,"","brócolis pequeno em buquês"),I(1,"","cebola em gomos"),I(5,"c. sopa","molho shoyu"),I(1,"c. sopa","amido de milho"),I(2,"c. sopa","óleo"),I(1,"c. chá","açúcar")],ut:["Frigideira grande e funda","Panela grande","Escorredor","Pote"],
   passos:[P("Cozinhe o macarrão um minuto a menos que a embalagem e escorra.",3,480,"macio com leve resistência"),
     P("No pote, dissolva o amido e o açúcar no shoyu com uma xícara de água."),
-    P("Doure o frango em uma colher de óleo e reserve.",3,300,"dourado, branco por inteiro"),
+    P("Doure o frango em metade do óleo e reserve.",3,300,"dourado, branco por inteiro"),
     P("Salteie a cenoura, o brócolis e a cebola no resto do óleo. Por último o repolho.",3,240,"legumes brilhantes e ainda firmes"),
     P("Volte o frango, junte o molho mexido e ferva até engrossar.",2,120,"molho brilhante e grosso"),
     P("Junte o macarrão e misture.",2,60,"o macarrão está quente e coberto de molho")]});
@@ -1223,7 +1234,7 @@ R("r-panqueca","Panqueca de carne",{min:60,exige:["virar","dourar","reduzir"],
     ["A primeira grudou.","Frigideira fria ou sem gordura. Unte de leve e espere esquentar; a primeira costuma ser de teste."]],
   ing:[I(1,"xíc","farinha de trigo"),I(1,"xíc","leite"),I(2,"","ovos"),I(400,"g","carne moída"),I(400,"g","tomate pelado em lata"),I(1,"","cebola picada"),I(2,"dente","alho picado"),I(100,"g","queijo muçarela ralado"),I(2,"c. sopa","óleo"),I(1.5,"c. chá","sal")],ut:["Liquidificador","Frigideira antiaderente","Concha","Panela larga","Refratário"],
   passos:[P("Bata a farinha, o leite, os ovos e uma pitada de sal no liquidificador. Deixe descansar.",null,600),
-    P("Doure a carne em uma colher de óleo até a água secar.",3,420,"carne marrom, som de fritura"),
+    P("Doure a carne em metade do óleo até a água secar.",3,420,"carne marrom, som de fritura"),
     P("Junte a cebola e o alho e refogue.",2,120,"cebola macia"),
     P("Junte metade do tomate e o sal e reduza.",1,600,"recheio com molho curto"),
     P("Unte a frigideira, despeje meia concha de massa e gire para cobrir o fundo.",2,60,"a borda solta e a superfície fica opaca"),
@@ -1246,7 +1257,7 @@ R("r-fricasse","Fricassê de frango",{min:60,exige:["pressao","engrossar","grati
 // Onde o livro não diz temperatura, tempo ou fogo, o passo completa e avisa: "o livro não diz".
 const RU=[];
 function U(id,titulo,d){RU.push({id,titulo,porcoes:d.por,minutos:d.min,ingredientes:d.ing,utensilios:d.ut,passos:d.passos,exige:[],
-  erros:d.erros.map(([problema,conserto])=>({problema,conserto})),fonte:{livro:"Livro de receitas do RU UFRN",pag:d.pag},grupo:d.grupo,inteira:!!d.inteira})}
+  erros:d.erros.map(([problema,conserto])=>({problema,conserto})),fonte:{livro:"Livro de receitas do RU UFRN",pag:d.pag},grupo:d.grupo,inteira:!!d.inteira,espera:d.espera||""})}
 
 // --- Pratos ---
 U("u-batata-doce-rustica","Batata-doce rústica",{por:4,min:50,pag:17,grupo:"pratos",
@@ -1272,7 +1283,7 @@ U("u-canelone-abobrinha","Canelone de abobrinha",{por:2,min:35,pag:16,grupo:"pra
 U("u-frango-curry","Frango ao curry",{por:4,min:40,pag:7,grupo:"pratos",
   ing:[I(500,"g","filé de peito de frango"),I(1,"c. sopa","curry em pó"),I(4,"c. sopa","azeite"),I(3,"dente","alho picado ou amassado"),I(.5,"xíc","água"),I(2,"","limões","o caldo"),I(null,"","sal","a gosto")],
   ut:["Frigideira antiaderente grande","Tigela","Peneira","Papel-alumínio"],
-  passos:[P("Numa tigela, misture o caldo de limão, 3 colheres de sopa do azeite, o curry e o alho."),
+  passos:[P("Numa tigela, misture o caldo de limão, três quartos do azeite, o curry e o alho."),
     P("Junte o frango, tempere com sal, misture e cubra com filme. Deixe marinar. Lave as mãos e a tábua.",null,900),
     P("Aqueça a frigideira com o resto do azeite e ponha os filés aos poucos, sem encher. Não mexa.",2,240,"dourados embaixo; soltam sozinhos da frigideira"),
     P("Vire e doure o outro lado.",2,240,"dourado dos dois lados e sem parte rosada no centro"),
@@ -1297,7 +1308,7 @@ U("u-frango-xadrez","Frango xadrez",{por:4,min:30,pag:6,grupo:"pratos",
   ing:[I(500,"g","filé de peito de frango em cubos"),I(1,"","pimentão vermelho em cubos médios"),I(1,"","pimentão amarelo em cubos médios"),I(1,"","cebola média em cubos médios"),I(.5,"","cenoura em rodelas"),I(.5,"xíc","amendoim torrado e descascado"),I(3,"c. sopa","óleo"),I(6,"c. sopa","shoyu"),I(2,"c. sopa","amido de milho"),I(1,"c. sopa","óleo de gergelim torrado"),I(1,"c. chá","sal"),I(150,"ml","água")],
   ut:["Frigideira grande e funda","Tigela","Faca e tábua"],
   passos:[P("Misture o frango com metade do amido e o sal. Dissolva o resto do amido na água fria."),
-    P("Aqueça a frigideira com 1 colher de sopa do óleo e doure o frango. Reserve.",3,null,"o frango está dourado por fora"),
+    P("Aqueça a frigideira com um terço do óleo e doure o frango. Reserve.",3,null,"o frango está dourado por fora"),
     P("Na mesma frigideira, junte o resto do óleo e refogue os pimentões, a cebola e a cenoura.",3,180,"os legumes estão brilhantes e ainda firmes"),
     P("Junte a água com o amido, o shoyu, o óleo de gergelim e o frango. Cozinhe.",2,600,"o molho engrossou e um cubo cortado está branco por inteiro"),
     P("Prove o sal, junte o amendoim e sirva.")],
@@ -1366,7 +1377,7 @@ U("u-nhoque-batata-doce","Nhoque de batata-doce",{por:3,min:50,pag:18,grupo:"pra
   erros:[["Desmancharam na água.","Massa mole. Junte farinha aos poucos até não grudar nas mãos."],
     ["Ficaram duros e pesados.","Farinha demais. Pare de juntar assim que a massa parar de grudar."],
     ["Grudaram uns nos outros.","Muitos na panela de uma vez. Cozinhe em levas e passe logo para a água fria."]]});
-U("u-pacoca-feijao-verde","Paçoca com feijão verde",{por:6,min:90,pag:10,grupo:"pratos",
+U("u-pacoca-feijao-verde","Paçoca com feijão verde",{espera:"Começa na véspera: a carne de sol fica de molho de 12 a 24 horas.",por:6,min:90,pag:10,grupo:"pratos",
   ing:[I(1000,"g","carne de sol"),I(500,"g","feijão verde"),I(1,"xíc","farinha de mandioca"),I(1,"","cebola"),I(3,"c. sopa","manteiga"),I(1,"c. sopa","nata"),I(1,"c. chá","sal")],
   ut:["Panela","Assadeira","Frigideira","Processador ou liquidificador"],
   passos:[P("Na véspera, dessalgue a carne de sol: deixe de molho em água na geladeira, trocando a água algumas vezes (o livro não diz como; de 12 a 24 horas costuma bastar)."),
@@ -1398,7 +1409,7 @@ U("u-pao-gratinado","Pão gratinado",{por:4,min:45,pag:34,grupo:"pratos",inteira
     P("Asse até gratinar.",null,1800,"o queijo dourou e borbulha nas bordas")],
   erros:[["O molho empelotou.","O leite entrou de uma vez. Bata forte com o batedor ou passe pela peneira."],
     ["Ficou encharcado.","Molho ralo. Deixe engrossar bem antes de montar."]]});
-U("u-salada-grao-de-bico","Salada de grão-de-bico com atum",{por:3,min:75,pag:26,grupo:"pratos",
+U("u-salada-grao-de-bico","Salada de grão-de-bico com atum",{espera:"Leva 1 hora na geladeira antes de servir.",por:3,min:75,pag:26,grupo:"pratos",
   ing:[I(1,"xíc","grão-de-bico cozido al dente"),I(1,"","lata de atum ralado em óleo","ou sardinha"),I(2,"c. sopa","azeitona em rodelas"),I(1,"","tomate pequeno em cubos"),I(1/3,"","cebola picada"),I(null,"","coentro","a gosto"),I(null,"","sal, pimenta em pó e azeite","a gosto")],
   ut:["Tigela"],
   passos:[P("Misture todos os ingredientes numa tigela e tempere."),
@@ -1473,7 +1484,7 @@ U("u-bolinho-grao-de-bico","Bolinho de grão-de-bico com cenoura",{por:3,min:30,
   ut:["Ralador","Liquidificador","Frigideira antiaderente"],
   passos:[P("Rale a cenoura, o alho e a cebola e triture no liquidificador com os outros ingredientes, menos a aveia. Junte a água aos poucos, na função pulsar."),
     P("Junte a aveia e mexa até a massa ficar mais firme.",null,null,"dá para modelar uma bolinha sem grudar na mão"),
-    P("Modele as bolinhas e doure na frigideira antiaderente, virando. Se precisar, use um fio de óleo ou uma colher de sopa de manteiga.",2,null,"dourados por fora")],
+    P("Modele as bolinhas e doure na frigideira antiaderente, virando. Se precisar, use um fio de óleo ou um pouco de manteiga.",2,null,"dourados por fora")],
   erros:[["A massa ficou mole demais.","Água demais. Junte mais aveia, uma colher de cada vez."],
     ["Grudaram na frigideira.","Frigideira fria ou sem gordura. Espere esquentar e use um fio de óleo."],
     ["Queimaram por fora e ficaram crus no meio.","Fogo alto ou bolinhas grandes. Fogo médio e bolinhas menores, achatadas."]]});
@@ -1498,7 +1509,7 @@ U("u-crepioca-alface","Crepioca de alface",{por:1,min:10,pag:14,grupo:"lanches",
   erros:[["Grudou na frigideira.","Frigideira fria. Espere esquentar antes de despejar e use antiaderente."],
     ["Rasgou ao virar.","Virou cedo. Espere a borda soltar sozinha."],
     ["A goma ficou no fundo da tigela.","A goma assenta. Mexa a massa logo antes de despejar."]]});
-U("u-focaccia","Focaccia de abobrinha",{por:8,min:1080,pag:30,grupo:"lanches",inteira:true,
+U("u-focaccia","Focaccia de abobrinha",{espera:"Começa na véspera: a massa fica 16 horas na geladeira.",por:8,min:1080,pag:30,grupo:"lanches",inteira:true,
   ing:[I(1.75,"xíc","água morna"),I(3.25,"xíc","farinha de trigo"),I(2,"c. sopa","azeite"),I(2,"c. chá","sal"),I(.5,"c. chá","fermento biológico seco"),I(1,"","abobrinha pequena","cobertura"),I(.5,"c. sopa","orégano","cobertura"),I(.5,"dente","alho","cobertura"),I(.25,"xíc","azeite","cobertura")],
   ut:["2 tigelas","Assadeira","Pano de prato"],
   passos:[P("Numa tigela, misture bem a água, a farinha, o sal e o fermento, sem o azeite."),
@@ -1540,7 +1551,7 @@ U("u-panqueca-cenoura","Panqueca de cenoura",{por:3,min:25,pag:38,grupo:"lanches
   erros:[["Rasgou ao virar.","Virou cedo. Espere a borda soltar e o centro firmar."],
     ["Ficou grossa.","Massa demais na frigideira. Pouca massa e gire logo para espalhar fino."],
     ["A primeira grudou.","Frigideira fria ou sem gordura. Unte de leve e espere esquentar; a primeira costuma ser de teste."]]});
-U("u-pastel-forno","Pastel de forno (massa de batata-doce)",{por:3,min:100,pag:37,grupo:"lanches",
+U("u-pastel-forno","Pastel de forno (massa de batata-doce)",{espera:"Leva quase 2 horas: a massa gela por 1 delas.",por:3,min:100,pag:37,grupo:"lanches",
   ing:[I(300,"g","batata-doce"),I(.25,"xíc","farelo de aveia"),I(1,"c. sobremesa","manteiga"),I(2,"","pitadas de sal"),I(3,"c. sopa","recheio","sugestão: tomate, queijo e palmito"),I(1,"","gema de ovo")],
   ut:["Panela","Garfo","Plástico ou filme","Pote redondo para cortar","Pincel"],
   passos:[P("Cozinhe a batata-doce em água até ficar macia.",2,null,"a faca entra sem esforço"),
@@ -1586,7 +1597,7 @@ U("u-pao-queijo-rosa","Pão de queijo rosa",{por:3,min:25,pag:35,grupo:"lanches"
     P("Arrume numa forma untada com óleo e asse.",null,900,"firmes por fora e soltando da forma")],
   erros:[["A massa esfarelou.","Pouca umidade. Junte um pouco mais de requeijão ou uma colher de água."],
     ["Ficaram duros.","Forno tempo demais. Tire assim que firmarem por fora."]]});
-U("u-pao-integral-aveia","Pão integral de aveia",{por:6,min:300,pag:33,grupo:"lanches",inteira:true,
+U("u-pao-integral-aveia","Pão integral de aveia",{espera:"Leva 5 horas: a massa cresce por 3 delas.",por:6,min:300,pag:33,grupo:"lanches",inteira:true,
   ing:[I(800,"g","farinha de trigo"),I(200,"g","farinha de aveia"),I(1,"xíc","aveia em flocos"),I(2,"xíc","leite"),I(100,"ml","óleo"),I(3,"","ovos"),I(3,"c. sopa","açúcar"),I(1,"","pacote de fermento biológico seco"),I(1,"c. sopa","sal"),I(null,"","manteiga","para pincelar")],
   ut:["Vasilha com tampa","Rolo","Forma","Copo com água","Pincel"],
   passos:[P("Amorne o leite e, na vasilha, misture com o fermento, o óleo, o açúcar e o sal. Deixe tampado.",null,1800,"formou uma espuma por cima"),
@@ -1599,11 +1610,11 @@ U("u-pao-integral-aveia","Pão integral de aveia",{por:6,min:300,pag:33,grupo:"l
   erros:[["A massa não cresceu.","Leite quente demais mata o fermento. Amorne só até ficar como a pele."],
     ["Ficou cru no meio.","Forno fraco ou pão grosso. Asse mais e bata embaixo: pronto, soa oco."],
     ["Ficou pesado.","Farinha demais. Pare de juntar trigo assim que a massa soltar da mão."]]});
-U("u-snack-grao-de-bico","Snack de grão-de-bico",{por:4,min:60,pag:28,grupo:"lanches",
+U("u-snack-grao-de-bico","Snack de grão-de-bico",{espera:"Começa na véspera: o grão-de-bico fica 6 horas de molho.",por:4,min:60,pag:28,grupo:"lanches",
   ing:[I(2,"xíc","grão-de-bico cru"),I(3,"c. sopa","azeite"),I(2,"c. sobremesa","sal"),I(1,"c. sobremesa","orégano"),I(1,"c. café","páprica picante"),I(null,"","outros temperos secos","a gosto")],
   ut:["Tigela","Panela de pressão","Escorredor","Airfryer ou forno"],
   passos:[P("Na véspera, deixe o grão-de-bico de molho por umas 6 horas, com 2 xícaras de água para cada xícara de grão."),
-    P("Troque a água, junte 1 colher de sobremesa do sal, feche a panela de pressão e leve ao fogo.",3,null,"a panela chia de forma constante"),
+    P("Troque a água, junte metade do sal, feche a panela de pressão e leve ao fogo.",3,null,"a panela chia de forma constante"),
     P("Baixe o fogo e cozinhe.",2,600,"o tempo acabou: com a tampa fechada, o sinal vem depois, no grão macio por fora"),
     P("Desligue e espere a pressão sair sozinha antes de abrir.",null,null,"o pino baixou e não sai mais vapor"),
     P("Escorra e misture com o azeite, os temperos e o resto do sal."),
@@ -1706,7 +1717,7 @@ U("u-canjica","Canjica nordestina",{por:8,min:60,pag:61,grupo:"doces",inteira:tr
   erros:[["Grudou e queimou no fundo.","Faltou mexer. Mexa sem parar, raspando o fundo, principalmente no fogo alto."],
     ["Ficou rala.","Pouco tempo de fogo. Cozinhe mais em fogo baixo até a colher abrir caminho."],
     ["Empelotou.","O creme parou de ser mexido. Bata rápido com o batedor de arame."]]});
-U("u-cheesecake-goiabada","Cheesecake de goiabada",{por:4,min:180,pag:59,grupo:"doces",inteira:true,
+U("u-cheesecake-goiabada","Cheesecake de goiabada",{espera:"Leva 3 horas: 2 delas na geladeira.",por:4,min:180,pag:59,grupo:"doces",inteira:true,
   ing:[I(15,"","biscoitos cream cracker"),I(3,"c. sopa","aveia em flocos"),I(1/3,"xíc","creme de leite","massa"),I(100,"g","polpa de goiaba"),I(2,"c. sopa","açúcar"),I(4,"c. sopa","requeijão"),I(3,"c. sopa","creme de leite","recheio"),I(1,"c. sobremesa","queijo parmesão ralado")],
   ut:["Liquidificador ou processador","Tigela","Forma","Panela"],
   passos:[P("Ligue o forno a 180 graus (o livro não diz a temperatura). Triture o biscoito no liquidificador ou processador.",null,600),
@@ -1735,7 +1746,7 @@ U("u-cocada","Cocada com farelo de aveia",{por:4,min:20,pag:63,grupo:"doces",
     P("Espalhe num prato untado ou faça bolinhas com uma colher e deixe esfriar.")],
   erros:[["Queimou no fundo.","Faltou mexer no fim. Quando a água secar, mexa sem parar."],
     ["Ficou mole.","Saiu do fogo cedo. Mexa até a massa desgrudar inteira da panela."]]});
-U("u-cuscuz-tapioca","Cuscuz de tapioca",{por:6,min:360,pag:60,grupo:"doces",inteira:true,
+U("u-cuscuz-tapioca","Cuscuz de tapioca",{espera:"Leva 6 horas: 5 delas na geladeira.",por:6,min:360,pag:60,grupo:"doces",inteira:true,
   ing:[I(1,"xíc","tapioca granulada"),I(200,"ml","leite de coco"),I(.5,"xíc","leite condensado"),I(.5,"xíc","açúcar"),I(.5,"xíc","coco fresco ralado"),I(500,"ml","leite"),I(1,"","pitada de sal")],
   ut:["Panela média","Tigela grande","Espátula","Assadeira","Filme plástico"],
   passos:[P("Na panela, ponha o leite, o leite de coco, o açúcar e o sal. Misture com a espátula para dissolver o açúcar."),
@@ -1805,7 +1816,7 @@ U("u-petit-gateau-pote","Petit gâteau de pote com aveia",{por:1,min:20,pag:49,g
     P("Se usou forminha, desenforme ainda quente.")],
   erros:[["O chocolate queimou no micro-ondas.","Tempo seguido demais. Derreta de 30 em 30 segundos, mexendo entre uma vez e outra."],
     ["Ficou seco, sem creme no meio.","Passou do tempo. Tire assim que a borda firmar."]]});
-U("u-picole-frutas","Picolé de frutas (opção 1)",{por:6,min:320,pag:66,grupo:"doces",inteira:true,
+U("u-picole-frutas","Picolé de frutas (opção 1)",{espera:"Leva 5 horas no congelador.",por:6,min:320,pag:66,grupo:"doces",inteira:true,
   ing:[I(1,"xíc","água de coco","ou suco de maçã, laranja, limão ou uva"),I(.5,"","kiwi"),I(4,"","morangos"),I(5,"","uvas verdes"),I(7,"","uvas roxas"),I(.5,"","banana-anã"),I(1,"","manga espada")],
   ut:["Faca e tábua","Forminhas de picolé"],
   passos:[P("Corte as frutas em pedaços pequenos."),
@@ -1813,7 +1824,7 @@ U("u-picole-frutas","Picolé de frutas (opção 1)",{por:6,min:320,pag:66,grupo:
     P("Leve ao congelador.",null,18000,"firmes por inteiro")],
   erros:[["Não desenforma.","Passe a forminha rápido na água morna e puxe pelo palito."],
     ["Ficou com pedras de gelo.","Fruta demais e suco de menos. Encha bem com o suco para firmar por igual."]]});
-U("u-picole-melancia","Picolé de melancia, banana e kiwi (opção 2)",{por:3,min:300,pag:67,grupo:"doces",inteira:true,
+U("u-picole-melancia","Picolé de melancia, banana e kiwi (opção 2)",{espera:"Leva 4 horas no congelador.",por:3,min:300,pag:67,grupo:"doces",inteira:true,
   ing:[I(.5,"","kiwi processado"),I(1/3,"","banana processada","com 1 colher de sopa do suco"),I(2,"","fatias grandes de melancia","para o suco")],
   ut:["Liquidificador","Forminhas de picolé"],
   passos:[P("Bata a melancia no liquidificador e coe para fazer o suco."),
@@ -1840,7 +1851,7 @@ U("u-sorbet-amendoim","Sorbet de amendoim com granola",{por:2,min:10,pag:68,grup
     P("Por último, junte a granola e bata mais uma vez. Misture o chocolate e sirva.",null,null,"cremoso e firme na colher")],
   erros:[["Ficou mole como vitamina.","A banana ou o iogurte não estavam bem congelados. Leve ao congelador por 30 minutos e bata de novo."],
     ["O liquidificador travou.","Pedaços grandes. Pique a banana antes de congelar e use a função pulsar."]]});
-U("u-sorbet-acai","Sorbet de açaí",{por:3,min:130,pag:69,grupo:"doces",inteira:true,
+U("u-sorbet-acai","Sorbet de açaí",{espera:"Leva 2 horas no congelador.",por:3,min:130,pag:69,grupo:"doces",inteira:true,
   ing:[I(4,"","bananas bem maduras"),I(100,"g","polpa de açaí","2 polpas"),I(3,"c. sopa","leite em pó")],
   ut:["Liquidificador","Pote"],
   passos:[P("Ponha tudo no liquidificador e bata na função pulsar, até virar um creme liso.",null,null,"creme liso, sem pedaços"),
@@ -1848,7 +1859,7 @@ U("u-sorbet-acai","Sorbet de açaí",{por:3,min:130,pag:69,grupo:"doces",inteira
     P("Sirva com frutas, castanhas, amendoim ou coco ralado. Dá para trocar o açaí por morango ou manga.")],
   erros:[["Ficou duro demais.","Muito tempo no congelador. Deixe 10 minutos fora antes de servir."],
     ["O liquidificador travou.","Polpa muito dura. Deixe amolecer um pouco e use a função pulsar."]]});
-U("u-sorbet-manga","Sorbet de manga",{por:3,min:260,pag:70,grupo:"doces",inteira:true,
+U("u-sorbet-manga","Sorbet de manga",{espera:"Leva mais de 4 horas: a manga congela antes.",por:3,min:260,pag:70,grupo:"doces",inteira:true,
   ing:[I(2,"","mangas"),I(.5,"","limão","o suco")],
   ut:["Faca e tábua","Liquidificador"],
   passos:[P("Corte as mangas em pedaços e congele sem amontoar, por no mínimo 4 horas.",null,14400,"os pedaços estão duros"),
@@ -1981,6 +1992,7 @@ function fmtMin(m){return m<60?m+" min":Math.floor(m/60)+" h"+(m%60?" "+m%60+" m
 function fmtNum(v,u,item){
   if(u==="g"||u==="ml")return String(v>=100?Math.round(v/10)*10:v>=20?Math.round(v/5)*5:Math.max(1,Math.round(v)));
   if(!u&&/^ovos?\b/i.test(item||""))return String(Math.max(1,Math.round(v)));
+  if(u==="dente")return String(Math.max(1,Math.round(v)));
   return escalar(v,1,1);
 }
 const un=(u,v)=>u==="dente"?(v>1?"dentes de":"dente de"):u;
@@ -1988,7 +2000,7 @@ function ingHTML(i,p,base){const q=i.q==null?"":fmtNum(i.q*p/base,i.u,i.item);re
 function blocoReceita(r,acoes=""){
   const p=porcDe(r);
   return `<div class="rec-meta"><span class="tag">${fmtMin(r.minutos)}</span>
-    ${r.inteira?`<span class="porc"><b>Rende ${r.porcoes} ${r.porcoes>1?"porções":"porção"}</b></span>`:`<span class="porc"><button class="iconbtn" data-ac="porc" data-d="-1" aria-label="Menos porções"${p<=1?" disabled":""}>−</button><b>${p} ${p>1?"porções":"porção"}</b><button class="iconbtn" data-ac="porc" data-d="1" aria-label="Mais porções"${p>=6?" disabled":""}>+</button></span>`}</div>
+    ${r.inteira?`<span class="tag">Rende ${r.porcoes} ${r.porcoes>1?"porções":"porção"}</span>`:`<span class="porc"><button class="iconbtn" data-ac="porc" data-d="-1" aria-label="Menos porções"${p<=1?" disabled":""}>−</button><b>${p} ${p>1?"porções":"porção"}</b><button class="iconbtn" data-ac="porc" data-d="1" aria-label="Mais porções"${p>=6?" disabled":""}>+</button></span>`}</div>
   ${acoes}<div class="duas">
     <section class="sec"><h2 class="h-sec">Ingredientes</h2><ul class="ing">${r.ingredientes.map(i=>`<li>${ingHTML(i,p,r.porcoes||3)}</li>`).join("")}</ul></section>
     <section class="sec"><h2 class="h-sec">Utensílios</h2><ul class="uts">${(r.utensilios||[]).map(u=>`<li>${esc(u)}</li>`).join("")||'<li class="muted">Nada além do básico.</li>'}</ul></section>
@@ -2033,8 +2045,9 @@ function faixaTimer(){
   f.hidden=!mostra;document.body.classList.toggle("com-faixa",!!mostra);if(!mostra){f.dataset.k="";return}
   f.classList.toggle("fim",!!acabou);
   const chave=acabou?"f"+acabou.passo:"c"+corre.passo+"-"+corre.fim;if(f.dataset.k===chave)return;f.dataset.k=chave;
-  f.innerHTML=acabou?`<span>Acabou o tempo do passo ${acabou.passo}</span><button type="button" class="btn acao sm" data-ac="go" data-v="cozinhar">Ver</button>`
-    :`<span>Timer do passo ${corre.passo}<span aria-hidden="true"> · <b data-tfim="${corre.fim}">${relogio(corre.fim-Date.now())}</b></span></span><button type="button" class="btn soft sm" data-ac="go" data-v="cozinhar">Voltar ao fogão</button>`;
+  const rt=receitaDe(CZ.id),nomeR=rt?esc(rt.titulo)+" · ":"";
+  f.innerHTML=acabou?`<span>${nomeR}acabou o tempo do passo ${acabou.passo}</span><button type="button" class="btn acao sm" data-ac="go" data-v="cozinhar">Ver</button>`
+    :`<span>${nomeR}passo ${corre.passo}<span aria-hidden="true"> · <b data-tfim="${corre.fim}">${relogio(corre.fim-Date.now())}</b></span></span><button type="button" class="btn soft sm" data-ac="go" data-v="cozinhar">Voltar ao fogão</button>`;
 }
 let VIN=0;
 // Conta do zero até o número (ex.: "12" ou "3 de 33"), como nos outros apps.
@@ -2198,8 +2211,8 @@ AC.aba=d=>{RC.aba=d.a;LS.set("aba",d.a);refresh();const b=$('.abas [aria-selecte
 function linhaReceita(r,fechada){
   const p=S.progresso[r.id],f=fechada?faltam(r):[];
   return `<button type="button" class="linha" data-ac="go" data-v="receita" data-id="${esc(r.id)}"><span class="cresce"><span class="t">${esc(r.titulo)}</span><br>
-    <span class="m">${fmtMin(r.minutos)}${fechada?` · falta: ${f.map(id=>esc(AULAS[id].titulo)).join(", ")}`:p&&p.vezes?` · feita ${p.vezes}×`:""}</span></span>
-    ${S.favoritas[r.id]?'<span class="tag good">favorita</span>':""}${S.receitas[r.id]?`<span class="tag">${S.receitas[r.id].origem==="sua"?"minha":/^adaptada/.test(S.receitas[r.id].origem||"")?"adaptada":"do Claude"}</span>`:""}</button>`;
+    <span class="m">${fmtMin(r.minutos)}${r.espera?" · "+esc(r.espera.split(/[:.]/)[0].toLowerCase()):""}${fechada?` · falta: ${f.map(id=>esc(AULAS[id].titulo)).join(", ")}`:p&&p.vezes?` · feita ${p.vezes}×`:""}</span></span>
+    ${S.favoritas[r.id]?'<span class="tag good">favorita</span>':""}${r.fonte&&(RC.aba!=="ru"||RC.q.trim())?'<span class="tag">RU</span>':""}${S.receitas[r.id]?`<span class="tag">${S.receitas[r.id].origem==="sua"?"minha":/^adaptada/.test(S.receitas[r.id].origem||"")?"adaptada":"do Claude"}</span>`:""}</button>`;
 }
 // Prato de uma aula na busca: aparece pelo nome do prato e abre a aula.
 function linhaAulaBusca(id){
@@ -2224,16 +2237,17 @@ V.receitas={
     }
     const favs=Object.keys(S.favoritas).map(receitaDe).filter(Boolean);
     const n=k=>`<span class="n">${k}</span>`;
-    const abas=[["abertas",`Abertas${n(abertas.length)}`],["ru",`RU UFRN${n(RU.length)}`],["favoritas",`Favoritas${n(favs.length)}`],["criadas",`Minhas${n(criadas.length)}`],["proximas",`Próximas${n(fechadas.length)}`]];
+    const abas=[["abertas",`Abertas${n(abertas.length)}`],["favoritas",`Favoritas${n(favs.length)}`],["criadas",`Minhas${n(criadas.length)}`],["ru",`RU UFRN${n(RU.length)}`],["proximas",`Próximas${n(fechadas.length)}`]];
     if(!abas.some(([a])=>a===RC.aba))RC.aba="abertas";
     let corpo;
     if(RC.aba==="proximas")corpo=fechadas.length?`<p class="nota prosa">Estas receitas abrem quando você concluir as aulas das técnicas que elas usam. Dá para ver e cozinhar antes, se quiser.</p><div class="lista">${fechadas.map(r=>linhaReceita(r,true)).join("")}</div>`:'<p class="vazio">Nenhuma receita esperando: o livro inteiro está aberto.</p>';
     else if(RC.aba==="criadas")corpo=`<div class="acoes"><button class="btn acao" data-ac="receita-propria">Adicionar receita</button><button class="btn soft" data-ac="nova-receita"${RC.busy?" disabled":""}>${SAMPLE?(RC.busy?"O Claude está escrevendo…":"Pedir receita nova ao Claude"):"O que dá pra fazer com o que tenho"}</button></div>
       ${criadas.length?`<div class="lista">${criadas.map(r=>linhaReceita(r)).join("")}</div>`:`<p class="vazio">Adicione receitas que você viu em vídeos e sites. Elas ficam aqui, com timer e lista de compras.${SAMPLE?" Ou peça uma ao Claude, com o que você tem em casa.":" As receitas que você adaptar também aparecem aqui."}</p>`}`;
     else if(RC.aba==="ru")corpo=`<p class="nota prosa">As receitas do Livro de receitas do Restaurante Universitário da UFRN, todas abertas. Onde o livro não diz o tempo, a temperatura ou o fogo, o passo completa e avisa.</p>
-      ${[["pratos","Pratos"],["lanches","Lanches e pães"],["doces","Doces"]].map(([g,t])=>`<section class="sec"><h2 class="h-sec">${t}</h2><div class="lista">${RU.filter(r=>r.grupo===g).sort((a,b)=>a.titulo.localeCompare(b.titulo,"pt")).map(r=>linhaReceita(r)).join("")}</div></section>`).join("")}`;
+      ${[["pratos","Pratos"],["lanches","Lanches e pães"],["doces","Doces"]].map(([g,t])=>{const rs=RU.filter(r=>r.grupo===g).sort((a,b)=>a.titulo.localeCompare(b.titulo,"pt"));
+        return `<details class="ru-grupo" data-g="${g}"${RC.ruAberto===g?" open":""}><summary><h2 class="h-sec">${t}</h2><span class="n">${rs.length}</span></summary><div class="lista">${rs.map(r=>linhaReceita(r)).join("")}</div></details>`}).join("")}`;
     else if(RC.aba==="favoritas")corpo=favs.length?`<div class="lista">${favs.map(r=>linhaReceita(r)).join("")}</div>`:'<p class="vazio">Marque uma receita como favorita para ela aparecer aqui.</p>';
-    else corpo=abertas.length?`<div class="lista">${abertas.map(r=>linhaReceita(r)).join("")}</div>`:'<div class="vazio"><p>As receitas do livro abrem conforme você faz as aulas, e cada aula já tem um prato para cozinhar hoje.</p>${proximaAula()?`<div class="acoes"><button class="btn soft" data-ac="go" data-v="aula" data-id="${proximaAula()}">Abrir a próxima aula</button></div>`:""}</div>';
+    else corpo=abertas.length?`<div class="lista">${abertas.map(r=>linhaReceita(r)).join("")}</div>`:`<div class="vazio"><p>As receitas do livro abrem conforme você faz as aulas, e cada aula já tem um prato para cozinhar hoje.</p>${proximaAula()?`<div class="acoes"><button class="btn soft" data-ac="go" data-v="aula" data-id="${proximaAula()}">Abrir a próxima aula</button></div>`:""}</div>`;
     $("#rc-corpo").innerHTML=`<div class="abas" role="tablist" aria-label="Partes do livro">${abas.map(([a,r])=>`<button type="button" role="tab" id="aba-${a}" aria-controls="rc-painel" data-ac="aba" data-a="${a}" aria-selected="${RC.aba===a}" tabindex="${RC.aba===a?0:-1}">${r}</button>`).join("")}</div>
       <div class="view" id="rc-painel" role="tabpanel" aria-labelledby="aba-${RC.aba}">${corpo}</div>`;
   }
@@ -2247,6 +2261,7 @@ V.receita={
     box.innerHTML=`<div class="cab"><button class="linkbtn voltar" data-ac="go" data-v="receitas">← Receitas</button>
         <div class="cab-tit"><h1 class="h-pag">${esc(r.titulo)}</h1><button type="button" class="fav-btn" data-ac="fav" data-id="${esc(r.id)}" aria-pressed="${!!S.favoritas[r.id]}" aria-label="${S.favoritas[r.id]?"Tirar das favoritas":"Favoritar"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linejoin="round" d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button></div>${minha?`<p class="meta">Sua receita${rpLink(r.link)?` · <a href="${esc(rpLink(r.link))}" target="_blank" rel="noopener noreferrer">Ver a receita original</a>`:""}</p>`:criada?`<p class="meta">Criada pelo Claude${r.origem?` · ${esc(r.origem)}`:""}</p>`:""}
         ${r.fonte?`<p class="meta">${esc(r.fonte.livro)}, p. ${r.fonte.pag}</p>`:""}
+        ${r.espera?`<p class="espera">${esc(r.espera)}</p>`:""}
         ${r.exige&&r.exige.length?`<p class="meta">Técnicas: ${esc(listaE(r.exige.map(t=>TECNICAS[t]?TECNICAS[t].nome:t)))}</p>`:""}
         ${p&&p.vezes?`<span class="nota">Você já fez ${p.vezes}×, a última em ${dataBR(p.data)}${p.nota?` (${{bom:"ficou bom",medio:"mais ou menos",errado:"deu errado"}[p.nota]})`:""}.</span>`:""}
         ${p&&p.anotacao?`<p class="nota prosa">Da última vez você anotou: “${esc(p.anotacao)}”</p>`:""}</div>
@@ -2488,11 +2503,12 @@ AC["cz-ajuda"]=()=>{
   const{erros:todos,obs}=errosDa(r),s=CZ.passo?r.passos[CZ.passo-1]:null;
   const erros=s?ordenaPorPasso(todos,s):todos,seg=pontoSeguro(r);
   openDlg("Deu problema?",`${s&&s.pronto?`<div class="cz-pronto"><span class="sobre">Este passo está pronto quando</span>${esc(s.pronto)}</div>`:""}
-    ${erros.length?`<section class="ajuda-sec"><h3>O que aconteceu?</h3><div class="sintomas">${erros.map(x=>`<details><summary>${esc(x.problema)}</summary><p>${esc(x.conserto)}</p></details>`).join("")}</div></section>`:""}
+    ${erros.length?`<section class="ajuda-sec">${s&&s.pronto?"<h3>O que aconteceu?</h3>":""}<div class="sintomas">${erros.map(x=>`<details><summary>${esc(x.problema)}</summary><p>${esc(x.conserto)}</p></details>`).join("")}</div></section>`:""}
     ${obs.length?`<section class="ajuda-sec"><div class="sintomas"><details><summary>O que observar nesta aula</summary><ul>${obs.map(o=>`<li>${esc(o)}</li>`).join("")}</ul></details></div></section>`:""}
     <section class="ajuda-sec"><h3>Ponto seguro</h3><ul>${seg.map(x=>`<li>${x}</li>`).join("")}</ul></section>
     <div><button class="btn soft" type="button" data-ac="duvida" data-id="${esc(r.id)}">Tirar uma dúvida</button></div>`,null);
 };
+document.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("ru-grupo")){if(d.open){RC.ruAberto=d.dataset.g;$$(".ru-grupo").forEach(x=>{if(x!==d&&x.open)x.open=false})}else if(RC.ruAberto===d.dataset.g)RC.ruAberto=""}},true);
 document.addEventListener("change",e=>{const i=e.target.dataset&&e.target.dataset.czok;if(i!=null&&CZ){CZ.ok=CZ.ok||{};CZ.ok[i]=e.target.checked;salvaCZ()}});
 // Teclado: setas trocam de passo no modo cozinhar e de aba em qualquer lista de abas.
 document.addEventListener("keydown",e=>{
@@ -2543,8 +2559,10 @@ V.cozinhar={
       // O passo que está na tela não precisa do próprio resumo; os outros, sim.
       return `<div class="relogio"><span class="nome"><b>${t.passo===k?"Este passo":"Passo "+t.passo}</b>${t.passo===k?"":`<span>${esc(nome)}</span>`}</span><b class="tempo" role="timer" data-tfim="${t.fim}">${relogio(t.fim-agora)}</b><button type="button" class="relogio-x" data-ac="timer-x" data-i="${i}" aria-label="Cancelar o timer do passo ${t.passo}: ${esc(nome)}">×</button></div>`}).join("");
     const ant=$("#cz-ant"),prox=$("#cz-prox");ant.disabled=k===0;
+    // Na preparação a lista já está na tela; o botão de ingredientes volta no primeiro passo.
+    $('#cz-pe [data-ac="cz-ing"]').style.display=k===0?"none":"";
     if(k===0){
-      box.innerHTML=`<h1 class="h-pag">Separe tudo antes de acender o fogo</h1><p class="cz-intro">Para ${CZ.porcoes} ${CZ.porcoes>1?"porções":"porção"}. Leia os ${n} passos uma vez e marque o que já está na bancada. Para trocar de passo, toque em Próximo ou deslize o dedo para o lado.</p>
+      box.innerHTML=`<h1 class="h-pag">Separe tudo antes de acender o fogo</h1>${r.espera?`<p class="espera">${esc(r.espera)}</p>`:""}<p class="cz-intro">Para ${CZ.porcoes} ${CZ.porcoes>1?"porções":"porção"}. Leia os ${n} passos uma vez e marque o que já está na bancada. Para trocar de passo, toque em Próximo ou deslize o dedo para o lado.</p>
         <h2 class="h-sec">Ingredientes</h2><ul class="cz-lista">${r.ingredientes.map((i,x)=>`<li><label><input type="checkbox" id="czi-${x}" data-czok="i${x}"${CZ.ok&&CZ.ok["i"+x]?" checked":""}><span>${ingHTML(i,CZ.porcoes,r.porcoes||3)}</span></label></li>`).join("")}</ul>
         ${(r.utensilios||[]).length?`<h2 class="h-sec">Utensílios</h2><ul class="cz-lista">`:""}${(r.utensilios||[]).map((u,x)=>`<li><label><input type="checkbox" id="czu-${x}" data-czok="u${x}"${CZ.ok&&CZ.ok["u"+x]?" checked":""}><span>${esc(u)}</span></label></li>`).join("")}${(r.utensilios||[]).length?"</ul>":""}
         <h2 class="h-sec">Os passos</h2><ol class="passos">${r.passos.map(s=>`<li><span>${esc(s.txt)}</span></li>`).join("")}</ol>`;
@@ -2555,7 +2573,7 @@ V.cozinhar={
     box.innerHTML=`${s.fogo?`<div>${fogoHTML(s.fogo,true)}</div>`:""}
       <p class="cz-passo">${esc(s.txt)}</p>
       ${s.pronto?`<div class="cz-pronto${acabou?" agora":""}"><span class="sobre">Pronto quando</span>${esc(s.pronto)}</div>`:""}
-      ${s.timer?`<div><button class="btn contorno grande" style="flex:none" data-ac="cz-timer">${meu?(conf?"Toque de novo para reiniciar":"Timer correndo"):`Iniciar timer de ${fmtTempo(s.timer)}`}</button></div>`:""}`;
+      ${s.timer?`<div><button class="btn contorno grande" style="flex:none" data-ac="cz-timer">${meu?(conf?"Toque de novo para reiniciar":"Timer correndo"):acabou?`Contar mais ${fmtTempo(s.timer)}`:`Iniciar timer de ${fmtTempo(s.timer)}`}</button></div>`:""}`;
     if(k===n){prox.textContent="Terminei";prox.dataset.ac="cz-fim"}else{prox.textContent="Próximo";prox.dataset.ac="cz-prox"}
   }
 };
@@ -3250,7 +3268,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão cbfdb02703.
+// Guarda o app no aparelho para abrir sem internet. Versão 36d02947bf.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
