@@ -1241,6 +1241,621 @@ R("r-fricasse","Fricassê de frango",{min:60,exige:["pressao","engrossar","grati
     P("Refogue a cebola na manteiga, junte o frango e o creme batido. Aqueça em fogo baixo, sem ferver.",1,180,"creme quente e grosso"),
     P("Passe para o refratário, cubra com o queijo e leve ao forno a 220 graus.",null,900,"queijo dourado e borbulhando"),
     P("Espalhe a batata palha por cima na hora de servir.")]});
+// ===== Livro de receitas do RU UFRN: sempre aberto =====
+// U(id, título, {por: porções do livro, min, pag, grupo, inteira: não muda de tamanho, ing, ut, passos, erros})
+// Onde o livro não diz temperatura, tempo ou fogo, o passo completa e avisa: "o livro não diz".
+const RU=[];
+function U(id,titulo,d){RU.push({id,titulo,porcoes:d.por,minutos:d.min,ingredientes:d.ing,utensilios:d.ut,passos:d.passos,exige:[],
+  erros:d.erros.map(([problema,conserto])=>({problema,conserto})),fonte:{livro:"Livro de receitas do RU UFRN",pag:d.pag},grupo:d.grupo,inteira:!!d.inteira})}
+
+// --- Pratos ---
+U("u-batata-doce-rustica","Batata-doce rústica",{por:4,min:50,pag:17,grupo:"pratos",
+  ing:[I(1000,"g","batata-doce cozida al dente","com casca, cortada ao meio"),I(1,"c. sopa","salsa desidratada"),I(.5,"c. chá","pimenta-do-reino"),I(1,"c. chá","lemon pepper"),I(1,"c. chá","sal"),I(3,"c. sopa","azeite")],
+  ut:["Refratário","Tigela pequena","Espátula ou colher"],
+  passos:[P("Ligue o forno a 220 graus e unte o refratário com um pouco do azeite.",null,600),
+    P("Misture a salsa, a pimenta, o lemon pepper e o sal. Salpique um pouco sobre o azeite do refratário e espalhe."),
+    P("Arrume as batatas com a casca para cima, com espaço entre os pedaços. Misture o resto do azeite com o resto dos temperos e regue as batatas."),
+    P("Asse até dourar. Para mais crocante, deixe mais um pouco.",null,1800,"as batatas estão douradas nas bordas")],
+  erros:[["Ficaram moles e sem dourar.","Batatas encostadas ou forno frio. Deixe espaço entre os pedaços e espere o forno esquentar de verdade."],
+    ["Desmancharam no refratário.","Cozinharam demais antes. Cozinhe só até a faca entrar com um pouco de resistência."],
+    ["Grudaram no fundo.","Faltou azeite embaixo. Espalhe bem o azeite temperado antes de pôr as batatas."]]});
+U("u-canelone-abobrinha","Canelone de abobrinha",{por:2,min:35,pag:16,grupo:"pratos",
+  ing:[I(1,"","abobrinha italiana grande"),I(1,"xíc","molho de tomate"),I(.5,"xíc","recheio","sugestão: frango desfiado com cottage e cebolinha"),I(3,"","fatias de queijo muçarela","raladas"),I(1,"c. sobremesa","azeite"),I(1,"c. chá","orégano")],
+  ut:["Frigideira","Refratário","Faca e tábua"],
+  passos:[P("Ligue o forno a 180 graus. Corte as pontas da abobrinha e fatie no comprimento, em fatias finas.",null,600),
+    P("Aqueça a frigideira com o azeite e doure as fatias dos dois lados. Reserve.",2,null,"as fatias estão macias e dobram sem quebrar"),
+    P("Em cada fatia, ponha uma colher de sobremesa rasa de recheio e enrole. Use as fatias quebradas para firmar os canelones no refratário."),
+    P("Cubra com o molho, o queijo e o orégano."),
+    P("Leve ao forno.",null,900,"o queijo derreteu e dourou")],
+  erros:[["As fatias quebraram ao enrolar.","Grossas demais ou pouco tempo na frigideira. Fatias finas, até dobrarem sem quebrar."],
+    ["Soltou água no refratário.","Abobrinha solta água. Doure bem as fatias e use um molho mais grosso."]]});
+U("u-frango-curry","Frango ao curry",{por:4,min:40,pag:7,grupo:"pratos",
+  ing:[I(500,"g","filé de peito de frango"),I(1,"c. sopa","curry em pó"),I(4,"c. sopa","azeite"),I(3,"dente","alho picado ou amassado"),I(.5,"xíc","água"),I(2,"","limões","o caldo"),I(null,"","sal","a gosto")],
+  ut:["Frigideira antiaderente grande","Tigela","Peneira","Papel-alumínio"],
+  passos:[P("Numa tigela, misture o caldo de limão, 3 colheres de sopa do azeite, o curry e o alho."),
+    P("Junte o frango, tempere com sal, misture e cubra com filme. Deixe marinar. Lave as mãos e a tábua.",null,900),
+    P("Aqueça a frigideira com o resto do azeite e ponha os filés aos poucos, sem encher. Não mexa.",2,240,"dourados embaixo; soltam sozinhos da frigideira"),
+    P("Vire e doure o outro lado.",2,240,"dourado dos dois lados e sem parte rosada no centro"),
+    P("Passe os filés para um prato e cubra com papel-alumínio."),
+    P("Baixe o fogo, regue a frigideira com a água e raspe o fundo com a espátula.",1,120,"o fundo ficou limpo e o molho ficou dourado"),
+    P("Tempere o molho com uma pitada de sal, passe pela peneira e sirva com o frango e gomos de limão. Se quiser, corte os filés em fatias grossas na diagonal.")],
+  erros:[["O frango ficou seco.","Tempo demais ou filé fino. Tire assim que o centro do mais grosso estiver branco."],
+    ["Não dourou, cozinhou na água.","Frigideira cheia ou frango molhado da marinada. Escorra, seque e doure aos poucos."],
+    ["O molho ficou amargo.","O fundo queimou. Fogo médio ao dourar e raspe o fundo assim que juntar a água."]]});
+U("u-frango-coco","Frango ao molho de coco",{por:3,min:25,pag:5,grupo:"pratos",
+  ing:[I(450,"g","filé de peito de frango em cubos","pode ser sobra"),I(.75,"xíc","leite de coco"),I(.5,"","cebola picada"),I(1,"c. chá","páprica doce"),I(.5,"c. chá","pimenta-caiena"),I(.5,"c. chá","cúrcuma"),I(1,"c. sopa","azeite"),I(.5,"c. chá","sal"),I(null,"","coentro","a gosto")],
+  ut:["Frigideira","Tigela","Colher"],
+  passos:[P("Misture ao frango a páprica, a cúrcuma, a pimenta-caiena e o sal."),
+    P("Refogue a cebola no azeite até murchar, com uma pitada de sal.",2,null,"a cebola está macia e transparente"),
+    P("Junte o frango e refogue. Se o frango estiver cru, deixe até ficar branco por fora (o livro conta 2 minutos, para sobra já cozida).",2,120,"o frango está branco por fora e coberto de tempero"),
+    P("Junte o leite de coco, misture bem e deixe ferver.",2,null,"o molho ferveu"),
+    P("Baixe o fogo e cozinhe, mexendo de vez em quando.",1,300,"o molho encorpou e um cubo cortado está branco por inteiro"),
+    P("Sirva com folhas de coentro.")],
+  erros:[["O molho talhou.","Fervura forte com o leite de coco. Depois que ferver, fogo baixo."],
+    ["O frango ficou rosado por dentro.","Cubos grandes ou frango cru com pouco tempo. Deixe mais uns minutos em fogo baixo e corte um cubo para conferir."]]});
+U("u-frango-xadrez","Frango xadrez",{por:4,min:30,pag:6,grupo:"pratos",
+  ing:[I(500,"g","filé de peito de frango em cubos"),I(1,"","pimentão vermelho em cubos médios"),I(1,"","pimentão amarelo em cubos médios"),I(1,"","cebola média em cubos médios"),I(.5,"","cenoura em rodelas"),I(.5,"xíc","amendoim torrado e descascado"),I(3,"c. sopa","óleo"),I(6,"c. sopa","shoyu"),I(2,"c. sopa","amido de milho"),I(1,"c. sopa","óleo de gergelim torrado"),I(1,"c. chá","sal"),I(150,"ml","água")],
+  ut:["Frigideira grande e funda","Tigela","Faca e tábua"],
+  passos:[P("Misture o frango com metade do amido e o sal. Dissolva o resto do amido na água fria."),
+    P("Aqueça a frigideira com 1 colher de sopa do óleo e doure o frango. Reserve.",3,null,"o frango está dourado por fora"),
+    P("Na mesma frigideira, junte o resto do óleo e refogue os pimentões, a cebola e a cenoura.",3,180,"os legumes estão brilhantes e ainda firmes"),
+    P("Junte a água com o amido, o shoyu, o óleo de gergelim e o frango. Cozinhe.",2,600,"o molho engrossou e um cubo cortado está branco por inteiro"),
+    P("Prove o sal, junte o amendoim e sirva.")],
+  erros:[["O molho empelotou.","O amido entrou seco. Dissolva na água fria antes de juntar."],
+    ["Os legumes murcharam.","Fogo baixo ou tempo demais. Fogo alto e só até brilharem."],
+    ["Ficou salgado.","O shoyu já é salgado. Prove antes de pôr mais sal; um pouco de água ajuda."]]});
+U("u-hamburguer-berinjela","Hambúrguer de berinjela",{por:4,min:45,pag:23,grupo:"pratos",
+  ing:[I(1,"","berinjela"),I(.5,"xíc","cebola picada"),I(.75,"xíc","farinha de trigo"),I(1,"c. sopa","azeite"),I(1,"c. sopa","shoyu"),I(1,"c. sopa","coentro picado"),I(1,"dente","alho"),I(null,"","sal, manjericão e pimenta","a gosto"),
+    I(.75,"xíc","tomate picado","molho"),I(.5,"xíc","cebola picada","molho"),I(3,"c. sopa","extrato de tomate","molho"),I(1,"c. sopa","azeite","molho"),I(1,"dente","alho","molho"),I(null,"","sal e manjericão","molho, a gosto")],
+  ut:["Panela","Frigideira","Assadeira"],
+  passos:[P("Ligue o forno a 180 graus (forno médio).",null,600),
+    P("Corte a berinjela em cubos e cozinhe em água fervente.",3,600,"a berinjela está macia ao furar com o garfo"),
+    P("Escorra bem. Refogue a cebola e o alho no azeite com o shoyu, o coentro, o sal, o manjericão e a pimenta.",2,null,"a cebola está macia"),
+    P("Misture a berinjela ao refogado e junte a farinha aos poucos, até dar para modelar.",null,null,"a massa segura a forma sem desmanchar"),
+    P("Unte a assadeira com azeite, modele os hambúrgueres e asse.",null,1200,"firmes e dourados nas bordas"),
+    P("Molho: refogue a cebola e o alho no azeite, junte o tomate, o extrato, o sal e o manjericão e cozinhe até o tomate desmanchar. Sirva por cima dos hambúrgueres.",2,null,"o tomate desmanchou e o molho engrossou")],
+  erros:[["Desmancharam.","Berinjela mal escorrida. Escorra e aperte bem; junte mais farinha se precisar."],
+    ["Ficaram murchos e úmidos.","Berinjela com muita água. Escorra bem e asse até as bordas dourarem."]]});
+U("u-hamburguer-soja","Hambúrguer de soja e tomate assado",{por:3,min:30,pag:25,grupo:"pratos",
+  ing:[I(.5,"xíc","proteína de soja texturizada"),I(1,"xíc","aveia em flocos finos"),I(500,"ml","água"),I(1,"","ovo"),I(null,"","cebola picada","a gosto"),I(3,"","tomates médios"),I(null,"","azeite"),I(null,"","sal, curry e pimenta","a gosto")],
+  ut:["Tigela","Peneira","Frigideira","Colher"],
+  passos:[P("Junte a soja com a água, o sal, o curry e a pimenta e deixe hidratar.",null,300,"a soja está macia e inchada"),
+    P("Escorra, apertando bem, e misture com a cebola, o ovo e a aveia. Modele os hambúrgueres com a mão."),
+    P("Doure na frigideira untada com azeite.",2,null,"dourado embaixo; solta sozinho"),
+    P("Vire e doure o outro lado.",2,null,"dourados dos dois lados"),
+    P("Para o tomate, corte ao meio, tire a polpa com uma colher e tempere."),
+    P("Doure os tomates na frigideira untada, virando quando dourar. Sirva quente com os hambúrgueres.",2,null,"o tomate dourou e amoleceu sem desmanchar")],
+  erros:[["Desmanchou na frigideira.","A soja ficou molhada. Aperte bem na peneira e junte mais aveia."],
+    ["Ficou com gosto forte de soja.","Faltou tempero na hidratação. Capriche no curry e na pimenta, e escorra bem a água."]]});
+U("u-lasanha-invertida","Lasanha invertida de carne",{por:4,min:70,pag:9,grupo:"pratos",inteira:true,
+  ing:[I(500,"g","carne moída"),I(.5,"xíc","farinha de aveia"),I(1,"","ovo"),I(1,"dente","alho"),I(1,"c. sopa","coentro"),I(1,"c. chá","sal"),I(1,"c. chá","orégano"),I(1,"c. chá","pimenta"),
+    I(1,"xíc","molho de tomate","molho"),I(1,"","cebola picada","molho"),I(1,"dente","alho","molho"),I(1,"c. sopa","açúcar","molho"),I(1,"c. chá","vinagre de maçã","molho"),I(null,"","azeite ou óleo","para refogar o molho"),
+    I(4,"","folhas de massa de lasanha pré-cozida"),I(300,"g","queijo muçarela","recheio"),I(.5,"","copo de requeijão"),I(100,"g","queijo muçarela ralado","para cobrir")],
+  ut:["Forma de pão (11 x 21 cm)","Refratário","Tigela","Panela"],
+  passos:[P("Ligue o forno a 200 graus (o livro não diz a temperatura desta etapa) e unte a forma de pão.",null,600),
+    P("Misture a carne moída, o coentro, a farinha de aveia, o sal, a pimenta, o orégano, o alho e o ovo numa tigela. Lave as mãos depois."),
+    P("Use dois terços da mistura para forrar o fundo e as laterais da forma."),
+    P("Ponha uma folha de lasanha, 2 colheres de sopa de requeijão e uma camada de queijo. Repita mais 2 vezes."),
+    P("Com o resto da carne, faça uma tampa sobre a última folha. Asse até a carne cozinhar (o livro não dá o tempo; comece a conferir aos 30 minutos).",null,1800,"a carne está firme, solta das laterais e sem rosado ao cortar a ponta"),
+    P("Molho: refogue a cebola e o alho no azeite. Junte o açúcar e deixe caramelizar.",2,null,"a cebola ficou dourada e brilhante"),
+    P("Junte o vinagre e cozinhe um pouco. Junte o molho de tomate, sal e pimenta e deixe cozinhar.",1,600,"o molho encorpou"),
+    P("Desenforme a lasanha no refratário, despeje o molho por cima, cubra com o queijo ralado e leve ao forno a 200 graus.",null,600,"o queijo derreteu")],
+  erros:[["Desmanchou ao desenformar.","Saiu quente demais ou a carne não firmou. Espere cinco minutos e passe uma faca nas laterais antes de virar."],
+    ["Soltou muito líquido.","Gordura e água da carne. Escorra o caldo da forma antes de desenformar."],
+    ["O açúcar queimou.","Fogo alto. Fogo médio e tire quando dourar: queimado amarga o molho."]]});
+U("u-moqueca-palmito","Moqueca de palmito e banana-da-terra",{por:6,min:35,pag:22,grupo:"pratos",
+  ing:[I(.5,"","cebola média picada"),I(.5,"","tomate médio picado"),I(.5,"","pimentão laranja em rodelas"),I(.5,"","pimentão verde em rodelas"),I(1,"xíc","palmito em rodelas"),I(1,"xíc","banana-da-terra em rodelas"),I(1,"xíc","leite de coco fresco"),I(1,"c. sopa","coentro picado"),I(1,"dente","alho"),I(1,"c. sopa","azeite"),I(1,"c. sopa","páprica defumada"),I(null,"","sal e pimenta","a gosto")],
+  ut:["Panela","Faca e tábua"],
+  passos:[P("Refogue a cebola, o pimentão e o alho amassado no azeite.",2,null,"a cebola está bem macia"),
+    P("Junte o leite de coco, a páprica e o palmito."),
+    P("Em fogo baixo, deixe encorpar até o palmito ficar bem macio. Acerte o sal e a pimenta.",1,null,"o caldo engrossou"),
+    P("Junte o tomate, a banana-da-terra e metade do coentro."),
+    P("Cozinhe mais um pouco, até a banana ficar macia. Na hora de servir, ponha o resto do coentro.",1,null,"a banana está macia ao furar com o garfo")],
+  erros:[["A banana desmanchou.","Entrou cedo ou foi mexida. Junte só no fim e balance a panela em vez de mexer."],
+    ["O caldo talhou.","Fervura forte com o leite de coco. Fogo baixo do começo ao fim."]]});
+U("u-nhoque-batata-doce","Nhoque de batata-doce",{por:3,min:50,pag:18,grupo:"pratos",
+  ing:[I(400,"g","batata-doce","3 pequenas"),I(1,"xíc","farinha de trigo ou goma de tapioca"),I(1,"","ovo"),I(null,"","molho","de sua preferência; sugestão: bolonhesa"),I(null,"","azeite e sal","para a água")],
+  ut:["Panela","Escumadeira ou peneira","Tigela com água fria"],
+  passos:[P("Cozinhe as batatas em água até ficarem macias.",2,null,"a faca entra na batata sem esforço"),
+    P("Escorra, descasque e amasse ainda quente. Junte o ovo e a farinha e misture até a massa ficar lisa.",null,null,"a massa não gruda nas mãos"),
+    P("Ponha uma panela de água com sal e um fio de azeite para ferver.",3,null,"bolhas grandes sobem sem parar"),
+    P("Polvilhe farinha na bancada, pegue parte da massa e faça um rolinho com as mãos. Corte os nhoques no tamanho que quiser."),
+    P("Ponha os nhoques na água fervendo, poucos de cada vez.",3,null,"os nhoques sobem para a superfície"),
+    P("Retire com a escumadeira e passe para a tigela de água fria."),
+    P("Se quiser, grelhe os nhoques na manteiga. Sirva com o molho.")],
+  erros:[["Desmancharam na água.","Massa mole. Junte farinha aos poucos até não grudar nas mãos."],
+    ["Ficaram duros e pesados.","Farinha demais. Pare de juntar assim que a massa parar de grudar."],
+    ["Grudaram uns nos outros.","Muitos na panela de uma vez. Cozinhe em levas e passe logo para a água fria."]]});
+U("u-pacoca-feijao-verde","Paçoca com feijão verde",{por:6,min:90,pag:10,grupo:"pratos",
+  ing:[I(1000,"g","carne de sol"),I(500,"g","feijão verde"),I(1,"xíc","farinha de mandioca"),I(1,"","cebola"),I(3,"c. sopa","manteiga"),I(1,"c. sopa","nata"),I(1,"c. chá","sal")],
+  ut:["Panela","Assadeira","Frigideira","Processador ou liquidificador"],
+  passos:[P("Na véspera, dessalgue a carne de sol: deixe de molho em água na geladeira, trocando a água algumas vezes (o livro não diz como; de 12 a 24 horas costuma bastar)."),
+    P("Ponha o feijão verde para cozinhar em água, só com o sal, e ligue o forno a 230 graus.",2,null,"os grãos estão macios ao apertar"),
+    P("Escorra a carne de sol e asse.",null,2700,"a carne está dourada por fora"),
+    P("Enquanto isso, pique a cebola e doure na frigideira com a manteiga.",2,null,"a cebola está dourada"),
+    P("Reserve metade da cebola. Na outra metade, ainda na frigideira, junte a farinha e mexa. Se ficar seca, ponha mais manteiga.",1,null,"a farofa ficou soltinha e cheirosa"),
+    P("Passe a carne assada no processador ou liquidificador. Misture com a cebola reservada e depois com a farofa."),
+    P("Escorra um pouco da água do feijão e junte a nata. Sirva o feijão por cima da paçoca ou misturado.")],
+  erros:[["Ficou salgada.","Pouco tempo de molho. Na próxima, mais horas e mais trocas de água; agora, sirva com mais feijão sem sal."],
+    ["A carne travou no processador.","Pedaços grandes. Corte em pedaços menores e processe aos poucos."]]});
+U("u-peixe-champignon","Peixe ao molho de champignon e alcaparras",{por:2,min:40,pag:11,grupo:"pratos",
+  ing:[I(2,"","postas de peixe","no livro: atum; a quantidade é sugestão, o livro não diz"),I(null,"","alho","a gosto"),I(null,"","pimenta","a gosto"),I(null,"","sal","a gosto"),I(1,"","vidro pequeno de alcaparras","molho"),I(1,"","pacote pequeno de champignon","molho"),I(null,"","azeite extravirgem","o suficiente para cobrir o molho")],
+  ut:["Papel-alumínio","Airfryer ou forno","Tigela"],
+  passos:[P("Fatie o champignon em lâminas, misture com as alcaparras e cubra com azeite. Reserve. O ideal é fazer o molho com até 3 dias de antecedência, na geladeira, para pegar sabor."),
+    P("Ligue o forno a 180 graus. Tempere o peixe com alho, sal e pimenta e embrulhe no papel-alumínio, fazendo um papelote.",null,600),
+    P("Asse. Na airfryer: 20 minutos a 180 graus e mais 10 a 160 graus.",null,1800,"o peixe está opaco e solta em lascas com o garfo"),
+    P("Abra o papelote com cuidado, que sai vapor, e cubra o peixe com o molho.")],
+  erros:[["Ficou seco.","Posta fina ou tempo demais. Confira aos 20 minutos: está pronto quando solta em lascas."],
+    ["Ficou cru no meio.","Posta grossa. Feche o papelote e volte por mais 5 minutos."]]});
+U("u-pao-gratinado","Pão gratinado",{por:4,min:45,pag:34,grupo:"pratos",inteira:true,
+  ing:[I(10,"","fatias de pão de forma","pode ser integral"),I(null,"","carne de sol desfiada e ricota","ou outro recheio"),I(4,"","fatias de queijo muçarela"),I(null,"","orégano","a gosto"),I(300,"ml","leite","molho branco"),I(2,"c. sopa","farinha de trigo","molho branco"),I(.5,"","cebola","molho branco"),I(2,"c. sopa","manteiga","molho branco")],
+  ut:["Panela","Refratário"],
+  passos:[P("Ligue o forno a 200 graus.",null,600),
+    P("Molho: doure a cebola picada na manteiga e junte a farinha aos poucos, mexendo. Junte o leite aos poucos e mexa até engrossar.",2,null,"o molho está grosso e cobre as costas da colher"),
+    P("No refratário, faça uma camada de molho e uma de pão."),
+    P("Faça uma camada de recheio e cubra com outra de pão."),
+    P("Cubra com o resto do molho, o queijo e o orégano."),
+    P("Asse até gratinar.",null,1800,"o queijo dourou e borbulha nas bordas")],
+  erros:[["O molho empelotou.","O leite entrou de uma vez. Bata forte com o batedor ou passe pela peneira."],
+    ["Ficou encharcado.","Molho ralo. Deixe engrossar bem antes de montar."]]});
+U("u-salada-grao-de-bico","Salada de grão-de-bico com atum",{por:3,min:75,pag:26,grupo:"pratos",
+  ing:[I(1,"xíc","grão-de-bico cozido al dente"),I(1,"","lata de atum ralado em óleo","ou sardinha"),I(2,"c. sopa","azeitona em rodelas"),I(1,"","tomate pequeno em cubos"),I(1/3,"","cebola picada"),I(null,"","coentro","a gosto"),I(null,"","sal, pimenta em pó e azeite","a gosto")],
+  ut:["Tigela"],
+  passos:[P("Misture todos os ingredientes numa tigela e tempere."),
+    P("Leve à geladeira para gelar bem e sirva.",null,3600)],
+  erros:[["Ficou sem graça.","Falta sal ou ácido. Prove e junte umas gotas de limão."],
+    ["Ficou aguada.","O tomate soltou água. Tire as sementes do tomate."]]});
+U("u-shakshuka","Shakshuka",{por:3,min:30,pag:13,grupo:"pratos",
+  ing:[I(3,"","ovos"),I(.5,"","abobrinha grande picada"),I(.5,"","cebola média triturada"),I(1,"dente","alho triturado"),I(1,"","tomate grande picado"),I(1,"xíc","passata de tomate"),I(.25,"xíc","azeite de oliva"),I(1,"c. sopa","coentro picado"),I(.5,"c. chá","pimenta vermelha em flocos"),I(1,"c. chá","sal")],
+  ut:["Frigideira com tampa","Espátula","Faca e tábua"],
+  passos:[P("Aqueça o azeite, junte a abobrinha e parte do sal. Refogue 3 minutos, mexa e refogue mais 3.",2,360,"a abobrinha está macia e dourada nas bordas"),
+    P("Junte a cebola e o alho e refogue. Junte o tomate e a pimenta e refogue.",2,120,"o tomate começou a desmanchar"),
+    P("Junte a passata, o resto do sal e parte do coentro. Tampe e cozinhe.",1,300,"o molho engrossou"),
+    P("Com a espátula, faça 3 covinhas no molho, quebre um ovo em cada uma e tampe."),
+    P("Cozinhe 4 minutos para gema mole ou 7 para gema firme. O timer está em 4.",1,240,"a clara está branca e firme"),
+    P("Junte o resto do coentro e sirva.")],
+  erros:[["A clara ficou crua em cima.","Faltou tampa. Tampe e espere mais um ou dois minutos."],
+    ["A gema endureceu.","Tempo demais. Tire quando a clara firmar; o molho quente continua cozinhando."],
+    ["Ficou ácido.","Molho pouco tempo no fogo. Mais uns minutos tampado e uma pitada de açúcar, antes dos ovos."]]});
+U("u-sopa-macaxeira","Sopa creme de macaxeira e carne de sol",{por:4,min:25,pag:21,grupo:"pratos",
+  ing:[I(500,"g","macaxeira cozida sem talos"),I(1,"","bife médio de carne de sol cozido","em cubos"),I(500,"ml","leite"),I(1/3,"","cebola média picada"),I(1,"c. sopa","manteiga"),I(1,"dente","alho amassado")],
+  ut:["Liquidificador","Panela"],
+  passos:[P("Bata a macaxeira com o leite no liquidificador."),
+    P("Refogue a cebola, a carne de sol e o alho na manteiga.",2,null,"tudo dourado"),
+    P("Junte o creme de macaxeira e mexa até levantar fervura.",1,null,"começou a ferver")],
+  erros:[["Grudou no fundo.","Faltou mexer. Fogo baixo e raspe o fundo sem parar."],
+    ["Ficou grossa demais.","Junte leite quente aos poucos até o ponto que você gosta."],
+    ["Ficou salgada.","A carne de sol estava pouco dessalgada. Junte mais creme de macaxeira com leite, sem sal."]]});
+U("u-strogonoff-berinjela","Strogonoff de berinjela",{por:3,min:35,pag:24,grupo:"pratos",
+  ing:[I(1,"","berinjela média"),I(.5,"xíc","molho de tomate"),I(.5,"xíc","aveia em flocos","batida com água, vira o extrato de aveia"),I(.5,"","cebola grande picada"),I(1,"c. chá","alho triturado"),I(1,"c. sopa","azeite"),I(1,"c. sopa","vinagre"),I(1,"c. sopa","coentro"),I(null,"","sal","a gosto")],
+  ut:["Panela","Tigela","Liquidificador"],
+  passos:[P("Pique a berinjela em cubos e deixe de molho em água com o vinagre até usar, para tirar o amargor."),
+    P("Bata a aveia no liquidificador com meia xícara de água para fazer o extrato de aveia (o livro não diz quanto de água)."),
+    P("Escorra a berinjela e cozinhe em água fervente.",3,600,"a berinjela está macia ao furar com o garfo"),
+    P("Escorra. Refogue o alho e a cebola no azeite, junte a berinjela e o sal e cozinhe até ficar bem macia.",2,null,"a berinjela está macia e a cebola transparente"),
+    P("Junte o molho de tomate."),
+    P("Por último, junte o extrato de aveia e cozinhe até engrossar, mexendo.",1,null,"o molho está cremoso")],
+  erros:[["Ficou aguado.","Berinjela mal escorrida. Escorra bem e deixe o molho engrossar mais uns minutos."],
+    ["Ficou amargo.","Faltou o molho na água com vinagre. Deixe a berinjela de molho enquanto prepara o resto."]]});
+U("u-torta-aveia","Torta de aveia à pizzaiolo",{por:6,min:55,pag:32,grupo:"pratos",inteira:true,
+  ing:[I(1,"xíc","aveia em flocos"),I(1,"xíc","farinha de trigo com fermento"),I(1.5,"","copos de leite"),I(5,"","fatias de queijo muçarela","massa"),I(1,"c. sopa","óleo de soja"),I(.5,"c. chá","sal"),I(2,"","ovos"),I(5,"","fatias de queijo muçarela picadas","recheio"),I(.5,"","tomate picado","recheio"),I(1,"c. sopa","azeite","recheio"),I(.5,"","tomate em rodelas","para decorar"),I(.5,"c. chá","orégano","para decorar")],
+  ut:["Liquidificador","Refratário"],
+  passos:[P("Ligue o forno a 180 graus. Unte e enfarinhe o refratário.",null,600),
+    P("Bata no liquidificador o leite, os ovos, o sal, o óleo e o queijo até virar um creme grosso. Junte a aveia e a farinha e bata."),
+    P("Despeje metade da massa no refratário e recheie com o queijo, o tomate e o azeite misturados."),
+    P("Cubra com o resto da massa e decore com o tomate e o orégano."),
+    P("Asse.",null,2400,"dourada e firme no centro; um palito sai limpo")],
+  erros:[["Ficou crua no meio.","Forno fraco ou refratário pequeno e fundo. Asse mais e faça o teste do palito."],
+    ["Grudou no refratário.","Faltou untar e enfarinhar. Espere amornar e solte as bordas com uma faca."]]});
+
+// --- Lanches e pães ---
+U("u-bolinho-arroz","Bolinho de arroz",{por:4,min:45,pag:39,grupo:"lanches",
+  ing:[I(2,"xíc","arroz cozido","pode ser sobra"),I(1,"","cebola picada"),I(1,"dente","alho amassado"),I(.5,"","cenoura média ralada"),I(null,"","cheiro-verde picado","a gosto"),I(2,"","ovos"),I(1,"xíc","farinha de aveia ou de trigo"),I(null,"","sal e pimenta","a gosto")],
+  ut:["Tigela","Assadeira","Ralador"],
+  passos:[P("Ligue o forno a 180 graus.",null,600),
+    P("Misture bem todos os ingredientes e modele os bolinhos.",null,null,"a massa segura a forma sem desmanchar"),
+    P("Arrume na assadeira untada e asse. Se preferir fritar, use óleo quente em fogo médio até dourarem.",null,1800,"dourados por fora e firmes ao toque")],
+  erros:[["Desmancharam ao modelar.","Massa mole. Junte farinha, uma colher de cada vez, até dar para enrolar."],
+    ["Ficaram secos e duros.","Farinha demais ou forno tempo demais. Tire assim que dourarem."],
+    ["Grudaram na assadeira.","Faltou untar. Unte bem ou forre com papel-manteiga."]]});
+U("u-bolinho-batata-doce","Bolinho de batata-doce com frango",{por:4,min:60,pag:19,grupo:"lanches",
+  ing:[I(1,"xíc","batata-doce amassada","gelada"),I(1,"xíc","frango cozido desfiado","gelado"),I(1/3,"xíc","creme de leite"),I(2,"","fatias de pão integral","para a farinha de rosca"),I(1,"","ovo","para empanar"),I(1,"c. sopa","cebolinha"),I(1,"c. sopa","coentro"),I(1,"c. chá","orégano"),I(1,"c. café","sal"),I(1,"dente","alho ralado")],
+  ut:["Tigela","Assadeira","Liquidificador"],
+  passos:[P("Ligue o forno a 200 graus (o livro não diz a temperatura). Toste as fatias de pão no forno e triture no liquidificador para fazer a farinha de rosca.",null,600,"o pão está seco e quebra fácil"),
+    P("Numa tigela, misture todos os ingredientes, menos o ovo e a farinha de rosca."),
+    P("Forme os bolinhos, passe no ovo batido e depois na farinha de rosca."),
+    P("Asse no forno quente; não precisa untar a forma.",null,2400,"dourados por fora")],
+  erros:[["Os bolinhos abriram no forno.","A massa estava quente ou mole. Use a batata e o frango gelados e aperte bem ao modelar."],
+    ["A farinha não grudou.","Faltou o ovo. Passe cada bolinho no ovo batido antes da farinha."],
+    ["Ficaram pálidos.","Forno fraco. Deixe mais uns minutos ou suba a temperatura no fim."]]});
+U("u-bolinho-grao-de-bico","Bolinho de grão-de-bico com cenoura",{por:3,min:30,pag:27,grupo:"lanches",
+  ing:[I(2,"xíc","grão-de-bico cozido"),I(2,"c. sopa","farinha de aveia"),I(1,"","ovo"),I(.5,"","cenoura grande"),I(.25,"","cebola"),I(1,"dente","alho"),I(.5,"c. café","orégano"),I(.5,"c. café","pimenta"),I(null,"","coentro","a gosto"),I(.5,"c. café","sal"),I(.5,"xíc","água")],
+  ut:["Ralador","Liquidificador","Frigideira antiaderente"],
+  passos:[P("Rale a cenoura, o alho e a cebola e triture no liquidificador com os outros ingredientes, menos a aveia. Junte a água aos poucos, na função pulsar."),
+    P("Junte a aveia e mexa até a massa ficar mais firme.",null,null,"dá para modelar uma bolinha sem grudar na mão"),
+    P("Modele as bolinhas e doure na frigideira antiaderente, virando. Se precisar, use um fio de óleo ou uma colher de sopa de manteiga.",2,null,"dourados por fora")],
+  erros:[["A massa ficou mole demais.","Água demais. Junte mais aveia, uma colher de cada vez."],
+    ["Grudaram na frigideira.","Frigideira fria ou sem gordura. Espere esquentar e use um fio de óleo."],
+    ["Queimaram por fora e ficaram crus no meio.","Fogo alto ou bolinhas grandes. Fogo médio e bolinhas menores, achatadas."]]});
+U("u-cottage","Cottage caseiro",{por:3,min:40,pag:56,grupo:"lanches",
+  ing:[I(1000,"ml","leite integral pasteurizado"),I(.25,"xíc","suco de limão"),I(1,"","pitada de sal")],
+  ut:["Panela grande","Tigela","Peneira","Pano de algodão fino ou filtro de café"],
+  passos:[P("Ponha o leite numa panela com espaço para ferver e leve ao fogo alto. Quando ferver, desligue.",3,null,"o leite subiu fervendo"),
+    P("Junte o limão, mexa e deixe descansar. O leite vai talhar: soro amarelado de um lado, parte sólida do outro. Se não talhar, ferva de novo.",null,300,"o soro está amarelado e separado dos coalhos"),
+    P("Forre a peneira com o pano, apoie na tigela e separe o soro da parte sólida. Quanto mais tempo escorrendo, mais seco fica."),
+    P("Tempere com sal. Se achar seco, junte algumas colheres do soro (o livro usou 5 colheres de sopa). Guarde em pote fechado na geladeira. O soro serve para outras receitas.")],
+  erros:[["Não talhou.","O leite esfriou ou faltou limão. Volte ao fogo até ferver e junte mais um pouco de limão."],
+    ["O leite derramou.","Panela pequena. Use panela grande e fique de olho: desligue quando subir."],
+    ["Ficou seco e esfarelando.","Escorreu tempo demais. Misture colheres do soro até ficar cremoso."]]});
+U("u-crepioca-alface","Crepioca de alface",{por:1,min:10,pag:14,grupo:"lanches",inteira:true,
+  ing:[I(2,"c. sopa","goma de tapioca"),I(1,"","ovo"),I(2,"","folhas de alface picadas"),I(1,"c. sopa","queijo ralado"),I(1,"c. sopa","coentro"),I(1,"c. sopa","cebolinha"),I(1,"c. chá","orégano"),I(1,"","pitada de sal"),I(null,"","recheio","de sua preferência")],
+  ut:["Liquidificador","Frigideira antiaderente","Espátula"],
+  passos:[P("Bata no liquidificador o ovo, a alface, o coentro, a cebolinha, o queijo, o orégano e o sal."),
+    P("Passe para uma tigela, junte a goma e misture."),
+    P("Despeje na frigideira antiaderente quente e espalhe.",2,null,"a borda solta e a superfície ficou opaca"),
+    P("Vire com a espátula e doure o outro lado.",2,null,"firme e levemente dourada dos dois lados"),
+    P("Recheie como preferir.")],
+  erros:[["Grudou na frigideira.","Frigideira fria. Espere esquentar antes de despejar e use antiaderente."],
+    ["Rasgou ao virar.","Virou cedo. Espere a borda soltar sozinha."],
+    ["A goma ficou no fundo da tigela.","A goma assenta. Mexa a massa logo antes de despejar."]]});
+U("u-focaccia","Focaccia de abobrinha",{por:8,min:1080,pag:30,grupo:"lanches",inteira:true,
+  ing:[I(1.75,"xíc","água morna"),I(3.25,"xíc","farinha de trigo"),I(2,"c. sopa","azeite"),I(2,"c. chá","sal"),I(.5,"c. chá","fermento biológico seco"),I(1,"","abobrinha pequena","cobertura"),I(.5,"c. sopa","orégano","cobertura"),I(.5,"dente","alho","cobertura"),I(.25,"xíc","azeite","cobertura")],
+  ut:["2 tigelas","Assadeira","Pano de prato"],
+  passos:[P("Numa tigela, misture bem a água, a farinha, o sal e o fermento, sem o azeite."),
+    P("Noutra tigela funda, ponha 2 colheres de sopa de azeite e a massa, virando para o azeite cobrir tudo. Tampe e leve à geladeira por 16 horas."),
+    P("Passe a massa para a assadeira untada e deixe em temperatura ambiente, coberta com o pano.",null,3000,"a massa cresceu e ficou cheia de bolhas"),
+    P("Ligue o forno a 220 graus. Molhe as pontas dos dedos e afunde a massa toda, fazendo furinhos.",null,600),
+    P("Rale o alho e misture com o azeite e o orégano. Fatie só a parte de fora da abobrinha, em fatias finas."),
+    P("Espalhe o azeite temperado sobre a massa e depois a abobrinha."),
+    P("Asse a 220 graus.",null,900),
+    P("Baixe o forno para 200 graus e asse mais.",null,1200,"dourada por cima e por baixo")],
+  erros:[["A massa não cresceu.","Fermento velho ou água quente demais. A água deve estar só morna, como a pele."],
+    ["Ficou pálida.","Forno sem pré-aquecer. Espere chegar a 220 graus antes de pôr a assadeira."],
+    ["Grudou na assadeira.","Faltou azeite no fundo. Unte bem a assadeira."]]});
+U("u-malassada","Malassada recheada",{por:1,min:15,pag:12,grupo:"lanches",inteira:true,
+  ing:[I(3,"","ovos"),I(.25,"xíc","farinha de mandioca"),I(1,"c. sopa","cenoura ralada"),I(1/3,"xíc","tomate picado"),I(3,"","pitadas de sal"),I(1,"","pitada de pimenta"),I(.25,"xíc","carne cozida","recheio"),I(1,"","fatia de queijo muçarela","recheio"),I(1,"c. sopa","cebola picada"),I(null,"","azeite","para untar")],
+  ut:["Frigideira média com tampa","Tigela","Batedor ou garfo","Espátula"],
+  passos:[P("Separe as claras das gemas e bata as claras em neve.",null,null,"as claras formam picos firmes"),
+    P("Junte as gemas e misture de leve. Junte o resto, menos a carne e o queijo, e misture."),
+    P("Aqueça a frigideira untada com azeite, ponha três quartos da massa, a carne e o queijo, e cubra com o resto da massa.",2,null,"a massa começou a firmar nas bordas"),
+    P("Tampe e baixe o fogo.",1,120,"a superfície firmou e a borda solta"),
+    P("Vire com a espátula e doure o outro lado.",1,180,"dourada dos dois lados")],
+  erros:[["As claras não subiram.","Tinha gema ou gordura na tigela. Tigela limpa e seca, e claras sem nenhum fio de gema."],
+    ["Quebrou ao virar.","Virou cedo. Espere firmar por cima; se precisar, use um prato para virar."]]});
+U("u-muffin-carne","Muffin de carne com queijo (micro-ondas)",{por:1,min:10,pag:40,grupo:"lanches",inteira:true,
+  ing:[I(7,"c. sopa","leite"),I(6,"c. sopa","farinha de linhaça dourada","cheias"),I(3,"c. sopa","carne moída cozida","no livro: carne processada"),I(.5,"","tomate pequeno picado"),I(2,"c. sopa","queijo ralado"),I(1,"","fatia de queijo muçarela"),I(null,"","sal e orégano","a gosto"),I(6,"c. sopa","azeite"),I(1,"c. sobremesa","fermento")],
+  ut:["Tigela","Recipiente de vidro para micro-ondas"],
+  passos:[P("Numa tigela, misture os líquidos: o leite e o azeite."),
+    P("Junte o tomate, o queijo ralado, o sal, o orégano, a carne e a muçarela. Por último, a farinha de linhaça e o fermento."),
+    P("Passe para o recipiente de vidro untado e leve ao micro-ondas.",null,240,"firme no meio; um palito sai seco")],
+  erros:[["Ficou cru no meio.","Micro-ondas mais fraco. Volte por mais 30 segundos de cada vez."],
+    ["Ficou oleoso.","É muito azeite para um muffin. Dá para usar metade sem estragar a receita."]]});
+U("u-panqueca-cenoura","Panqueca de cenoura",{por:3,min:25,pag:38,grupo:"lanches",
+  ing:[I(1,"","ovo"),I(1,"xíc","leite"),I(2,"c. sopa","azeite"),I(.5,"xíc","cenoura"),I(1,"xíc","farinha de trigo"),I(2,"","folhas de alface"),I(null,"","sal","a gosto"),I(null,"","recheio","de sua preferência")],
+  ut:["Liquidificador","Frigideira"],
+  passos:[P("Bata tudo no liquidificador."),
+    P("Unte a frigideira com óleo ou azeite e despeje uma porção da massa, girando para cobrir o fundo.",2,null,"a borda solta e o centro firmou"),
+    P("Vire e doure o outro lado. Repita até acabar a massa.",2,null,"pintinhas douradas dos dois lados"),
+    P("Recheie como preferir.")],
+  erros:[["Rasgou ao virar.","Virou cedo. Espere a borda soltar e o centro firmar."],
+    ["Ficou grossa.","Massa demais na frigideira. Pouca massa e gire logo para espalhar fino."],
+    ["A primeira grudou.","Frigideira fria ou sem gordura. Unte de leve e espere esquentar; a primeira costuma ser de teste."]]});
+U("u-pastel-forno","Pastel de forno (massa de batata-doce)",{por:3,min:100,pag:37,grupo:"lanches",
+  ing:[I(300,"g","batata-doce"),I(.25,"xíc","farelo de aveia"),I(1,"c. sobremesa","manteiga"),I(2,"","pitadas de sal"),I(3,"c. sopa","recheio","sugestão: tomate, queijo e palmito"),I(1,"","gema de ovo")],
+  ut:["Panela","Garfo","Plástico ou filme","Pote redondo para cortar","Pincel"],
+  passos:[P("Cozinhe a batata-doce em água até ficar macia.",2,null,"a faca entra sem esforço"),
+    P("Descasque e amasse com o garfo. Junte o farelo de aveia e amasse de novo."),
+    P("Junte a manteiga e o sal e misture com as mãos. Embrulhe em filme e deixe na geladeira.",null,3600,"a massa está firme e fria"),
+    P("Ligue o forno a 180 graus. Divida a massa em 3 sobre um plástico, abra cada parte e corte com o pote redondo. Recheie.",null,600),
+    P("Feche com a ajuda do plástico e aperte as bordas com um garfo. Pincele a gema."),
+    P("Asse (ou 9 minutos na airfryer).",null,900,"dourados")],
+  erros:[["Abriram no forno.","Borda mal fechada ou recheio demais. Menos recheio e aperte bem com o garfo."],
+    ["A massa rachou ao abrir.","Seca demais. Junte um pouco de manteiga e amasse de novo."],
+    ["A massa grudou.","Saiu da geladeira cedo. Use o plástico por cima e por baixo para abrir."]]});
+U("u-pizza-fake","Pizza fake",{por:1,min:15,pag:31,grupo:"lanches",inteira:true,
+  ing:[I(2,"c. sopa","farinha de aveia"),I(2,"","ovos"),I(1,"c. chá","fermento químico"),I(1,"","pitada de sal"),I(.5,"xíc","frango cozido desfiado","recheio"),I(.75,"xíc","queijo muçarela","recheio"),I(1,"","tomate pequeno","recheio"),I(1/3,"","cebola pequena","recheio"),I(3,"c. sopa","extrato de tomate","recheio"),I(null,"","orégano","a gosto")],
+  ut:["Tigela","Frigideira com tampa","Espátula"],
+  passos:[P("Misture a farinha de aveia, os ovos, o fermento e o sal."),
+    P("Despeje na frigideira untada com azeite, tampe e cozinhe.",1,180,"a massa firmou e solta da frigideira"),
+    P("Vire a massa e ponha o recheio: primeiro o extrato, depois o frango, o tomate, a cebola, o queijo e o orégano."),
+    P("Tampe de novo e cozinhe até o queijo derreter.",1,180,"o queijo derreteu")],
+  erros:[["Quebrou ao virar.","Virou cedo. Espere a massa firmar por cima; use um prato para virar."],
+    ["Queimou embaixo.","Fogo alto. Mantenha no baixo e com tampa."]]});
+U("u-pao-alho-frigideira","Pão de alho de frigideira (massa de macaxeira)",{por:4,min:25,pag:20,grupo:"lanches",
+  ing:[I(200,"g","macaxeira cozida"),I(100,"g","queijo ralado","no livro: minas padrão light"),I(2,"dente","alho grande"),I(2,"","pitadas de orégano"),I(1,"c. sopa","azeite")],
+  ut:["Frigideira","Tigela","Garfo"],
+  passos:[P("Na frigideira quente com um pouco do azeite, refogue o alho ralado ou picado.",2,null,"o alho dourou levemente"),
+    P("Amasse a macaxeira com um garfo numa tigela. Junte o alho, o orégano e dois terços do queijo e misture bem."),
+    P("Divida em 4 partes e modele 4 pães. Cubra com o resto do queijo."),
+    P("Aqueça a mesma frigideira com o resto do azeite e doure os pães, 1 minuto de cada lado.",2,60,"dourados dos dois lados")],
+  erros:[["O alho queimou e amargou.","Fogo alto. Fogo médio e tire no dourado claro."],
+    ["Os pães desmancharam.","Macaxeira úmida demais. Escorra bem e amasse ainda morna."]]});
+U("u-pao-aveia-iogurte","Pão de aveia com iogurte (micro-ondas)",{por:1,min:5,pag:36,grupo:"lanches",inteira:true,
+  ing:[I(1,"","ovo"),I(2,"c. sopa","iogurte natural"),I(3,"c. sopa","farelo de aveia"),I(null,"","orégano e sal","a gosto"),I(1,"c. chá","fermento químico")],
+  ut:["Vasilha de vidro"],
+  passos:[P("Misture tudo numa vasilha de vidro untada."),
+    P("Leve ao micro-ondas.",null,120,"firme e soltando das bordas"),
+    P("Recheie como preferir e, se quiser, doure na frigideira ou na torradeira.")],
+  erros:[["Ficou cru no meio.","Micro-ondas mais fraco. Volte por mais 20 segundos de cada vez."],
+    ["Ficou borrachudo.","Tempo demais. Tire assim que firmar."]]});
+U("u-pao-queijo-rosa","Pão de queijo rosa",{por:3,min:25,pag:35,grupo:"lanches",
+  ing:[I(1,"xíc","goma de tapioca"),I(.5,"xíc","queijo ralado"),I(1/3,"xíc","beterraba crua ralada"),I(1,"c. sobremesa","requeijão")],
+  ut:["Tigela","Forma","Ralador"],
+  passos:[P("Ligue o forno a 200 graus (o livro não diz a temperatura).",null,600),
+    P("Misture todos os ingredientes e modele as bolinhas.",null,null,"a massa enrola sem rachar"),
+    P("Arrume numa forma untada com óleo e asse.",null,900,"firmes por fora e soltando da forma")],
+  erros:[["A massa esfarelou.","Pouca umidade. Junte um pouco mais de requeijão ou uma colher de água."],
+    ["Ficaram duros.","Forno tempo demais. Tire assim que firmarem por fora."]]});
+U("u-pao-integral-aveia","Pão integral de aveia",{por:6,min:300,pag:33,grupo:"lanches",inteira:true,
+  ing:[I(800,"g","farinha de trigo"),I(200,"g","farinha de aveia"),I(1,"xíc","aveia em flocos"),I(2,"xíc","leite"),I(100,"ml","óleo"),I(3,"","ovos"),I(3,"c. sopa","açúcar"),I(1,"","pacote de fermento biológico seco"),I(1,"c. sopa","sal"),I(null,"","manteiga","para pincelar")],
+  ut:["Vasilha com tampa","Rolo","Forma","Copo com água","Pincel"],
+  passos:[P("Amorne o leite e, na vasilha, misture com o fermento, o óleo, o açúcar e o sal. Deixe tampado.",null,1800,"formou uma espuma por cima"),
+    P("Junte os ovos e misture. Junte a farinha de aveia, a aveia e, aos poucos, a farinha de trigo, sovando até a massa soltar da mão.",null,null,"a massa solta das mãos e volta quando apertada"),
+    P("Volte a massa para a vasilha fechada e deixe crescer de 2 a 3 horas.",null,7200,"a massa dobrou de tamanho"),
+    P("Divida a massa em 3 partes iguais, de cerca de 550 g. Separe uma bolinha de massa num copo com água."),
+    P("Aqueça o forno por 10 minutos e desligue. Abra cada parte com o rolo, enrole como rocambole e ponha na forma dentro do forno desligado."),
+    P("Deixe descansar até a bolinha do copo subir.",null,3600,"a bolinha boiou"),
+    P("Ligue o forno a 180 graus e asse (o livro não diz a temperatura nem o tempo; confira aos 30 minutos). Quase no ponto, pincele manteiga e deixe dourar mais 5 minutos.",null,1800,"dourado por cima e soa oco ao bater embaixo")],
+  erros:[["A massa não cresceu.","Leite quente demais mata o fermento. Amorne só até ficar como a pele."],
+    ["Ficou cru no meio.","Forno fraco ou pão grosso. Asse mais e bata embaixo: pronto, soa oco."],
+    ["Ficou pesado.","Farinha demais. Pare de juntar trigo assim que a massa soltar da mão."]]});
+U("u-snack-grao-de-bico","Snack de grão-de-bico",{por:4,min:60,pag:28,grupo:"lanches",
+  ing:[I(2,"xíc","grão-de-bico cru"),I(3,"c. sopa","azeite"),I(2,"c. sobremesa","sal"),I(1,"c. sobremesa","orégano"),I(1,"c. café","páprica picante"),I(null,"","outros temperos secos","a gosto")],
+  ut:["Tigela","Panela de pressão","Escorredor","Airfryer ou forno"],
+  passos:[P("Na véspera, deixe o grão-de-bico de molho por umas 6 horas, com 2 xícaras de água para cada xícara de grão."),
+    P("Troque a água, junte 1 colher de sobremesa do sal, feche a panela de pressão e leve ao fogo.",3,null,"a panela chia de forma constante"),
+    P("Baixe o fogo e cozinhe.",2,600,"o tempo acabou: com a tampa fechada, o sinal vem depois, no grão macio por fora"),
+    P("Desligue e espere a pressão sair sozinha antes de abrir.",null,null,"o pino baixou e não sai mais vapor"),
+    P("Escorra e misture com o azeite, os temperos e o resto do sal."),
+    P("Asse na airfryer a 180 graus, mexendo a cada 10 minutos (no forno, 40 minutos).",null,1500,"crocantes por fora")],
+  erros:[["Ficaram moles.","Grão molhado ou cesto cheio. Seque bem e asse em uma camada só, mais uns minutos."],
+    ["Queimaram.","Temperatura alta ou faltou mexer. Mantenha 180 graus e mexa a cada 10 minutos."]]});
+
+// --- Doces ---
+U("u-bolo-abacaxi-hortela","Bolo de abacaxi com hortelã",{por:12,min:55,pag:48,grupo:"doces",inteira:true,
+  ing:[I(1,"xíc","abacaxi"),I(1,"xíc","hortelã"),I(2,"xíc","farinha","de qualquer tipo"),I(1,"xíc","azeite"),I(1,"xíc","água morna"),I(5,"","ovos"),I(1,"xíc","açúcar"),I(2,"c. sopa","fermento")],
+  ut:["Liquidificador","Tigela","Forma"],
+  passos:[P("Ligue o forno a 180 graus (o livro não diz a temperatura) e unte a forma.",null,600),
+    P("Bata no liquidificador os ovos, o açúcar, o abacaxi, a hortelã e o azeite."),
+    P("Junte a água morna e misture. Espere amornar e despeje numa tigela com a farinha e o fermento. Misture só até a farinha sumir."),
+    P("Despeje na forma e asse.",null,2400,"uma faca enfiada no meio sai limpa")],
+  erros:[["Murchou no meio.","Saiu cru ou o forno foi aberto cedo. Só abra depois de 25 minutos e teste com a faca."],
+    ["Ficou pesado.","Mexeu demais depois da farinha. Misture só até sumir."],
+    ["Grudou na forma.","Faltou untar ou desenformou quente. Unte bem e espere dez minutos antes de desenformar."]]});
+U("u-bolo-banana-frigideira","Bolo de banana integral de frigideira",{por:2,min:20,pag:47,grupo:"doces",inteira:true,
+  ing:[I(10,"c. sopa","farinha de aveia"),I(2,"c. sopa","farinha de linhaça"),I(2,"","ovos"),I(2,"c. sopa","açúcar"),I(2,"c. sopa","óleo de soja"),I(2,"","bananas pequenas"),I(1,"c. sopa","fermento químico"),I(1,"c. chá","canela em pó","rasa"),I(1,"","banana pequena","para decorar"),I(null,"","canela ou cacau em pó","para decorar"),I(null,"","mel","um fio")],
+  ut:["Tigela","Frigideira antiaderente","Espátula"],
+  passos:[P("Misture os ovos, o óleo, o açúcar, a canela e uma banana amassada até ficar homogêneo."),
+    P("Junte as farinhas e misture. Por último, o fermento."),
+    P("Na frigideira untada, arrume rodelas da outra banana e despeje a massa por cima.",1,300,"a borda firmou e a superfície quase não brilha"),
+    P("Vire com a espátula e cozinhe o outro lado.",1,240,"firme e dourado dos dois lados"),
+    P("Passe para um prato, decore com banana, canela ou cacau e o mel, e leve ao micro-ondas.",null,60)],
+  erros:[["Quebrou ao virar.","Virou cedo. Espere a borda firmar; ou cubra a frigideira com um prato, vire e deslize o bolo de volta."],
+    ["Queimou embaixo e ficou cru em cima.","Fogo alto. Fogo baixo e, se quiser, tampe nos primeiros minutos."]]});
+U("u-bolo-banana-sem-gluten","Bolo de banana sem glúten",{por:12,min:50,pag:46,grupo:"doces",inteira:true,
+  ing:[I(5,"","ovos"),I(1,"xíc","óleo"),I(1,"xíc","açúcar"),I(1,"xíc","aveia em flocos","sem glúten, se for para quem não pode"),I(1,"xíc","farinha de arroz"),I(1,"xíc","cacau 50%"),I(2,"xíc","água morna"),I(2,"","bananas"),I(2,"c. sopa","fermento em pó")],
+  ut:["Liquidificador","Tigela","Forma"],
+  passos:[P("Ligue o forno a 180 graus. Unte a forma com óleo e polvilhe cacau.",null,600),
+    P("Bata no liquidificador a banana, os ovos, o açúcar e o óleo."),
+    P("Junte o cacau e bata. Junte a água morna e bata de novo."),
+    P("Espere amornar e despeje numa tigela com a farinha e a aveia. Mexa e junte o fermento."),
+    P("Despeje na forma e asse.",null,1800,"um garfo enfiado no meio sai limpo")],
+  erros:[["Murchou no meio.","Saiu cru ou o forno foi aberto cedo. Só abra depois de 25 minutos e faça o teste do garfo."],
+    ["Ficou seco.","Forno tempo demais. Faça o teste do garfo aos 25 minutos."],
+    ["Grudou na forma.","Faltou untar. Unte com óleo, polvilhe cacau e espere dez minutos para desenformar."]]});
+U("u-bolo-cenoura-micro","Bolo de cenoura com calda de chocolate (micro-ondas)",{por:4,min:20,pag:42,grupo:"doces",inteira:true,
+  ing:[I(1,"","cenoura média","em pedaços"),I(1,"xíc","aveia em flocos finos"),I(.25,"xíc","açúcar"),I(.75,"xíc","água"),I(5,"c. sopa","óleo de soja"),I(2,"c. sopa","fermento químico"),I(7,"c. sopa","água","calda"),I(3,"c. sopa","leite em pó","calda"),I(2,"c. sopa","cacau em pó","calda"),I(1,"c. sopa","açúcar","calda, cheia")],
+  ut:["Liquidificador","Recipiente para micro-ondas","Panela pequena"],
+  passos:[P("Bata no liquidificador a cenoura, a água, o açúcar, o óleo e a aveia. Misture o fermento com delicadeza."),
+    P("Passe para o recipiente untado e leve ao micro-ondas.",null,240,"um palito no meio sai seco"),
+    P("Calda: misture os ingredientes frios na panela e leve ao fogo, mexendo, até engrossar.",1,null,"a calda engrossou e cobre as costas da colher"),
+    P("Espalhe a calda sobre o bolo.")],
+  erros:[["Ficou cru no meio.","Micro-ondas mais fraco. Volte por mais 30 segundos de cada vez."],
+    ["Ficou borrachudo.","Tempo demais no micro-ondas. Tire assim que o palito sair seco."],
+    ["A calda empelotou.","O cacau e o leite em pó não dissolveram. Misture tudo frio, antes de ir ao fogo, e mexa sempre."]]});
+U("u-bolo-chocolate-frutas","Bolo de chocolate com frutas e oleaginosas",{por:12,min:50,pag:44,grupo:"doces",inteira:true,
+  ing:[I(6,"","ovos"),I(1,"xíc","açúcar"),I(1,"xíc","óleo"),I(2,"xíc","água morna"),I(1,"xíc","cacau 50%"),I(2,"xíc","farinha","de qualquer tipo"),I(1,"","maçã"),I(2,"","bananas"),I(3,"c. sopa","mix de oleaginosas"),I(2,"c. sopa","fermento")],
+  ut:["Liquidificador","Tigela","Assadeira"],
+  passos:[P("Ligue o forno a 180 graus (forno médio) e unte a assadeira.",null,600),
+    P("Bata no liquidificador os ovos, a maçã, a banana, as oleaginosas, o açúcar, o óleo e o cacau. Junte a água morna e bata até ficar homogêneo."),
+    P("Numa tigela, ponha a farinha e junte o que foi batido. Por último, o fermento. Misture só até a farinha sumir."),
+    P("Despeje na assadeira e asse.",null,1800,"uma faca enfiada no meio sai limpa")],
+  erros:[["Murchou no meio.","Saiu cru ou o forno foi aberto cedo. Só abra depois de 25 minutos e teste com a faca."],
+    ["Ficou pesado.","Mexeu demais depois da farinha. Misture só até sumir."],
+    ["Grudou na assadeira.","Faltou untar. Unte bem e espere dez minutos antes de cortar."]]});
+U("u-bolo-chocolate-sem-gluten","Bolo de chocolate sem glúten e sem lactose",{por:8,min:60,pag:43,grupo:"doces",inteira:true,
+  ing:[I(3,"","ovos"),I(.5,"xíc","azeite"),I(1,"xíc","açúcar demerara"),I(1,"xíc","farinha de arroz"),I(.5,"xíc","cacau em pó 70%"),I(1,"xíc","água quente"),I(1,"c. sopa","fermento químico")],
+  ut:["Tigela","Batedor","Forma"],
+  passos:[P("Ligue o forno a 180 graus. Unte a forma com azeite e polvilhe farinha de arroz.",null,600),
+    P("Bata os ovos com o açúcar até virar um creme claro e grosso.",null,null,"o creme ficou claro e cai em fita do batedor"),
+    P("Junte o azeite e o cacau e bata até dissolver. Misture a água quente."),
+    P("Junte a farinha e, por último, o fermento."),
+    P("Despeje na forma e asse.",null,2400,"um garfo enfiado no meio sai limpo")],
+  erros:[["Ficou baixo e denso.","Os ovos foram pouco batidos. Bata com o açúcar até o creme ficar claro e grosso."],
+    ["Murchou no meio.","Saiu cru ou o forno foi aberto cedo. Só abra depois de 25 minutos."],
+    ["Grudou na forma.","Faltou untar. Unte com azeite, polvilhe farinha de arroz e espere dez minutos."]]});
+U("u-bolo-maca","Bolo de maçã",{por:10,min:60,pag:45,grupo:"doces",inteira:true,
+  ing:[I(4,"","ovos"),I(1,"xíc","açúcar"),I(.5,"xíc","óleo"),I(2,"xíc","farinha"),I(1,"c. chá","canela"),I(3,"","maçãs picadas"),I(1,"c. sopa","fermento")],
+  ut:["Tigela","Forma"],
+  passos:[P("Ligue o forno a 180 graus e unte a forma com óleo.",null,600),
+    P("Numa tigela, misture bem os ovos, o açúcar e o óleo."),
+    P("Junte a farinha e a canela e misture."),
+    P("Junte a maçã picada."),
+    P("Por último, junte o fermento mexendo de leve e despeje na forma."),
+    P("Asse.",null,2400,"um garfo enfiado no meio sai limpo")],
+  erros:[["A maçã afundou.","Pedaços grandes. Pique pequeno e passe na farinha antes de misturar."],
+    ["Murchou no meio.","Saiu cru ou o forno foi aberto cedo. Só abra depois de 25 minutos."],
+    ["Grudou na forma.","Faltou untar. Unte bem e espere dez minutos para desenformar."]]});
+U("u-brigadeiro-banana","Brigadeiro de banana",{por:3,min:15,pag:58,grupo:"doces",
+  ing:[I(2,"","bananas"),I(5,"c. sopa","leite em pó","cheias"),I(1,"c. sopa","farelo de aveia"),I(1,"c. chá","açúcar demerara"),I(2,"c. sopa","cacau em pó"),I(null,"","cacau em pó 70%","para polvilhar")],
+  ut:["Recipiente para micro-ondas","Colher"],
+  passos:[P("Amasse a banana no recipiente e leve ao micro-ondas.",null,120,"a banana está quente e mole"),
+    P("Junte os outros ingredientes e misture até virar uma massa lisa. Modele as bolinhas.",null,null,"a massa solta da colher e dá para enrolar"),
+    P("Polvilhe cacau em pó 70%.")],
+  erros:[["A massa ficou mole e não enrola.","Banana grande ou muito madura. Junte mais leite em pó, uma colher de cada vez, ou leve à geladeira por 30 minutos."],
+    ["Grudou nas mãos.","Unte as mãos com um pouco de manteiga ou molhe de leve."]]});
+U("u-canjica","Canjica nordestina",{por:8,min:60,pag:61,grupo:"doces",inteira:true,
+  ing:[I(12,"","espigas de milho verde"),I(600,"ml","leite integral"),I(.5,"xíc","açúcar"),I(1/3,"xíc","nata"),I(null,"","canela","a gosto"),I(.5,"c. chá","sal")],
+  ut:["Faca","Liquidificador","Peneira","Panela","Travessa (25 x 15 cm)"],
+  passos:[P("Debulhe as espigas passando a faca rente ao sabugo, com a espiga em pé sobre uma tigela."),
+    P("Bata os grãos aos poucos no liquidificador com o leite."),
+    P("Peneire, apertando com a colher, passe para a panela e junte a nata, o açúcar e o sal."),
+    P("Cozinhe mexendo sem parar.",3,600,"o creme ferveu e começou a engrossar"),
+    P("Baixe o fogo e cozinhe mais, sem parar de mexer.",1,600,"a canjica engrossou e a colher abre caminho no fundo"),
+    P("Passe para a travessa, espere formar uma película e, se quiser, polvilhe canela.")],
+  erros:[["Grudou e queimou no fundo.","Faltou mexer. Mexa sem parar, raspando o fundo, principalmente no fogo alto."],
+    ["Ficou rala.","Pouco tempo de fogo. Cozinhe mais em fogo baixo até a colher abrir caminho."],
+    ["Empelotou.","O creme parou de ser mexido. Bata rápido com o batedor de arame."]]});
+U("u-cheesecake-goiabada","Cheesecake de goiabada",{por:4,min:180,pag:59,grupo:"doces",inteira:true,
+  ing:[I(15,"","biscoitos cream cracker"),I(3,"c. sopa","aveia em flocos"),I(1/3,"xíc","creme de leite","massa"),I(100,"g","polpa de goiaba"),I(2,"c. sopa","açúcar"),I(4,"c. sopa","requeijão"),I(3,"c. sopa","creme de leite","recheio"),I(1,"c. sobremesa","queijo parmesão ralado")],
+  ut:["Liquidificador ou processador","Tigela","Forma","Panela"],
+  passos:[P("Ligue o forno a 180 graus (o livro não diz a temperatura). Triture o biscoito no liquidificador ou processador.",null,600),
+    P("Numa tigela, misture o biscoito com o creme de leite e a aveia até formar uma massa."),
+    P("Forre o fundo da forma untada com a massa, apertando, e asse.",null,900,"a massa está seca e crocante nas bordas"),
+    P("Recheio: bata o creme de leite, o requeijão e o queijo ralado e espalhe sobre a massa já fria."),
+    P("Calda: cozinhe a polpa com o açúcar, mexendo, até engrossar. Deixe esfriar e cubra o recheio.",2,null,"a calda engrossou e cobre as costas da colher"),
+    P("Leve à geladeira até gelar.",null,7200)],
+  erros:[["A base esfarelou.","Pouco creme de leite ou massa pouco apertada. Aperte bem com o fundo de um copo."],
+    ["A calda derreteu o recheio.","Foi quente por cima. Espere a calda esfriar antes de cobrir."]]});
+U("u-chocolate-quente","Chocolate quente",{por:2,min:15,pag:52,grupo:"doces",
+  ing:[I(1,"xíc","leite integral"),I(.5,"","caixa de creme de leite"),I(4,"","quadradinhos de chocolate meio amargo"),I(2,"c. sopa","achocolatado"),I(1,"c. sopa","amido de milho"),I(1,"c. sopa","açúcar demerara"),I(.5,"c. chá","canela em pó")],
+  ut:["Liquidificador","Panela"],
+  passos:[P("Bata no liquidificador tudo, menos o chocolate em barra e o creme de leite."),
+    P("Leve ao fogo baixo e junte o chocolate em barra, mexendo até derreter.",1,null,"o chocolate derreteu por inteiro"),
+    P("Continue mexendo até ficar cremoso.",1,null,"engrossou e cobre as costas da colher"),
+    P("Junte o creme de leite e deixe mais três minutos, mexendo, sem ferver.",1,180,"quente e liso, sem ferver")],
+  erros:[["Empelotou.","O amido não foi batido com o leite frio. Bata de novo no liquidificador ou passe pela peneira."],
+    ["Grudou no fundo.","Faltou mexer. Fogo baixo e mexa sempre, raspando o fundo."],
+    ["Ficou ralo.","Pouco tempo de fogo. Mexa mais uns minutos: o amido só engrossa quando esquenta."]]});
+U("u-cocada","Cocada com farelo de aveia",{por:4,min:20,pag:63,grupo:"doces",
+  ing:[I(1,"xíc","coco seco ralado"),I(2,"c. sopa","farelo de aveia"),I(2,"c. sopa","leite em pó"),I(1,"c. sopa","açúcar","cheia"),I(1,"xíc","água")],
+  ut:["Panela","Colher"],
+  passos:[P("Na panela, ponha a água, o açúcar e o coco e deixe ferver.",2,300,"ferveu e a água começou a diminuir"),
+    P("Junte o farelo e o leite em pó e mexa bem até desgrudar da panela.",2,null,"a massa desgruda do fundo da panela"),
+    P("Espalhe num prato untado ou faça bolinhas com uma colher e deixe esfriar.")],
+  erros:[["Queimou no fundo.","Faltou mexer no fim. Quando a água secar, mexa sem parar."],
+    ["Ficou mole.","Saiu do fogo cedo. Mexa até a massa desgrudar inteira da panela."]]});
+U("u-cuscuz-tapioca","Cuscuz de tapioca",{por:6,min:360,pag:60,grupo:"doces",inteira:true,
+  ing:[I(1,"xíc","tapioca granulada"),I(200,"ml","leite de coco"),I(.5,"xíc","leite condensado"),I(.5,"xíc","açúcar"),I(.5,"xíc","coco fresco ralado"),I(500,"ml","leite"),I(1,"","pitada de sal")],
+  ut:["Panela média","Tigela grande","Espátula","Assadeira","Filme plástico"],
+  passos:[P("Na panela, ponha o leite, o leite de coco, o açúcar e o sal. Misture com a espátula para dissolver o açúcar."),
+    P("Leve ao fogo alto, mexendo de vez em quando para o açúcar não ficar no fundo nem formar nata.",3,null,"começou a ferver"),
+    P("Na tigela, ponha a tapioca e regue com o líquido fervente de uma vez. Misture com delicadeza para desfazer grumos. No começo parece muito líquido; é assim mesmo."),
+    P("Deixe descansar em temperatura ambiente, mexendo a cada 10 minutos.",null,1800,"virou uma massa densa e cremosa"),
+    P("Passe para a assadeira, cubra com filme e leve à geladeira para firmar.",null,10800,"firme ao toque"),
+    P("Regue com o leite condensado e volte à geladeira.",null,7200),
+    P("Na hora de servir, cubra com o coco ralado e corte as fatias.")],
+  erros:[["Ficou mole e não firmou.","Pouco descanso ou pouca geladeira. Mexa até ficar densa antes de ir para a assadeira e deixe as três horas inteiras."],
+    ["Ficou com grumos de tapioca seca.","O líquido não estava fervendo ou entrou aos poucos. Regue de uma vez, bem quente, e mexa logo."]]});
+U("u-geleia-abacaxi","Geleia de abacaxi",{por:4,min:25,pag:64,grupo:"doces",inteira:true,
+  ing:[I(1,"xíc","abacaxi maduro picado"),I(1,"xíc","água"),I(1,"c. sobremesa","farelo de aveia"),I(1,"c. sopa","açúcar")],
+  ut:["Panela","Colher"],
+  passos:[P("Na panela, ponha o abacaxi, o açúcar e a água e deixe ferver até a água reduzir um pouco.",2,null,"a água baixou e o abacaxi está macio"),
+    P("Junte o farelo e mexa até desgrudar da panela.",2,null,"a geleia desgruda do fundo quando você passa a colher"),
+    P("Deixe esfriar e guarde em pote fechado na geladeira.")],
+  erros:[["Ficou rala.","Pouco tempo de fogo. Mexa mais uns minutos; ela também engrossa ao esfriar."],
+    ["Queimou no fundo.","Faltou mexer no fim. Fogo médio e mexa sem parar depois do farelo."]]});
+U("u-geleia-acerola","Geleia de acerola com crocante de aveia",{por:4,min:40,pag:65,grupo:"doces",inteira:true,
+  ing:[I(100,"g","polpa de acerola"),I(.5,"xíc","açúcar"),I(2,"c. sopa","farelo de aveia","geleia"),I(.5,"xíc","água"),I(1/3,"xíc","creme de leite","crocante"),I(1,"xíc","farelo de aveia","crocante"),I(null,"","sal e orégano","crocante, a gosto")],
+  ut:["Panela","Tigela","Forma"],
+  passos:[P("Ligue o forno a 180 graus para o crocante (o livro não diz a temperatura).",null,600),
+    P("Geleia: ponha a polpa, o açúcar e a água na panela e deixe a água reduzir.",2,null,"a água baixou pela metade"),
+    P("Junte o farelo e deixe ferver, mexendo, até dar ponto de geleia.",2,null,"uma gota no prato frio não escorre"),
+    P("Crocante: misture os ingredientes numa tigela, espalhe fino na forma untada e asse (o livro não diz o tempo; confira aos 15 minutos).",null,900,"seco, dourado e crocante")],
+  erros:[["A geleia ficou rala.","Pouco tempo de fogo. Ferva mais, mexendo, e faça o teste do prato frio."],
+    ["O crocante ficou mole.","Camada grossa ou pouco forno. Espalhe fino e deixe até dourar."]]});
+U("u-iogurte-frutas","Iogurte de frutas",{por:1,min:5,pag:55,grupo:"doces",
+  ing:[I(1,"","pote de iogurte natural integral"),I(8,"","amoras","ou outra fruta, ou 100 g de polpa"),I(1,"","banana bem madura")],
+  ut:["Liquidificador"],
+  passos:[P("Bata tudo no liquidificador até ficar liso.",null,null,"liso, sem pedaços"),
+    P("Dica do livro: para mais proteína, junte proteína em pó; para mais fibras, granola, linhaça ou aveia.")],
+  erros:[["Ficou ralo.","Fruta muito aguada. Junte meia banana ou uma colher de aveia e bata de novo."],
+    ["Ficou azedo.","Iogurte natural é azedo. Use banana bem madura ou um fio de mel."]]});
+U("u-papa-chocolate","Papa de chocolate",{por:2,min:15,pag:54,grupo:"doces",
+  ing:[I(500,"ml","leite"),I(3,"c. sopa","amido de milho"),I(2,"c. sopa","achocolatado"),I(1,"c. sopa","açúcar")],
+  ut:["Liquidificador","Panela"],
+  passos:[P("No liquidificador, bata meio copo do leite com o amido, o achocolatado e o açúcar."),
+    P("Ferva o resto do leite e junte a mistura batida.",2,null,"o leite ferveu"),
+    P("Baixe o fogo e mexa até engrossar.",1,null,"a papa engrossou e cobre as costas da colher")],
+  erros:[["Empelotou.","A mistura entrou sem bater ou você parou de mexer. Bata forte com o batedor."],
+    ["Grudou no fundo.","Faltou mexer. Fogo baixo e raspe o fundo sem parar."]]});
+U("u-papa-farinha-lactea","Papa de farinha láctea",{por:2,min:10,pag:53,grupo:"doces",
+  ing:[I(2,"xíc","leite"),I(4,"c. sopa","farinha láctea"),I(1,"c. chá","açúcar"),I(1,"c. sopa","amido de milho")],
+  ut:["Liquidificador","Panela"],
+  passos:[P("Bata tudo no liquidificador."),
+    P("Cozinhe em fogo baixo, mexendo sem parar, até engrossar.",1,300,"engrossou e cobre as costas da colher")],
+  erros:[["Empelotou.","Faltou mexer. Bata forte com o batedor ou passe pela peneira."],
+    ["Grudou no fundo.","Fogo alto. Fogo baixo e raspe o fundo sem parar."]]});
+U("u-petit-gateau-banana","Petit gâteau de banana",{por:4,min:25,pag:50,grupo:"doces",inteira:true,
+  ing:[I(2,"","bananas"),I(2,"c. sopa","cacau"),I(2,"c. sopa","farinha de aveia"),I(1,"c. sopa","xilitol"),I(1,"c. sopa","manteiga"),I(null,"","pedacinhos de chocolate 70%")],
+  ut:["Liquidificador","Forminhas de silicone"],
+  passos:[P("Ligue o forno a 180 graus.",null,600),
+    P("Bata tudo no liquidificador, menos o chocolate."),
+    P("Despeje nas forminhas e ponha os pedacinhos de chocolate no centro."),
+    P("Asse.",null,900,"firme por fora e ainda mole no centro")],
+  erros:[["Desmanchou ao desenformar.","Pouco forno. Deixe mais 2 ou 3 minutos e desenforme depois de amornar um pouco."],
+    ["Ficou seco, sem creme no meio.","Forno tempo demais. Tire assim que a borda firmar."]]});
+U("u-petit-gateau-pote","Petit gâteau de pote com aveia",{por:1,min:20,pag:49,grupo:"doces",inteira:true,
+  ing:[I(1,"","ovo"),I(1,"","gema"),I(1,"c. sopa","farinha de aveia","ou metade farinha de trigo sem fermento e metade farelo de aveia"),I(1,"c. sobremesa","açúcar"),I(1,"c. chá","chocolate em pó 70%"),I(25,"g","chocolate em barra")],
+  ut:["Recipiente que vá ao forno","Garfo"],
+  passos:[P("Pré-aqueça o forno a 180 graus (ou a airfryer por 5 minutos).",null,600),
+    P("Derreta o chocolate em barra no próprio recipiente, em banho-maria ou no micro-ondas, de 30 em 30 segundos.",null,null,"o chocolate derreteu e está liso"),
+    P("Junte os outros ingredientes e misture muito bem com o garfo. Se for desenformar, use forminha untada com manteiga e chocolate em pó."),
+    P("Asse: 9 minutos no forno ou 5 na airfryer.",null,540,"firme por fora e mole por dentro"),
+    P("Se usou forminha, desenforme ainda quente.")],
+  erros:[["O chocolate queimou no micro-ondas.","Tempo seguido demais. Derreta de 30 em 30 segundos, mexendo entre uma vez e outra."],
+    ["Ficou seco, sem creme no meio.","Passou do tempo. Tire assim que a borda firmar."]]});
+U("u-picole-frutas","Picolé de frutas (opção 1)",{por:6,min:320,pag:66,grupo:"doces",inteira:true,
+  ing:[I(1,"xíc","água de coco","ou suco de maçã, laranja, limão ou uva"),I(.5,"","kiwi"),I(4,"","morangos"),I(5,"","uvas verdes"),I(7,"","uvas roxas"),I(.5,"","banana-anã"),I(1,"","manga espada")],
+  ut:["Faca e tábua","Forminhas de picolé"],
+  passos:[P("Corte as frutas em pedaços pequenos."),
+    P("Ponha as frutas nas forminhas e complete com o suco."),
+    P("Leve ao congelador.",null,18000,"firmes por inteiro")],
+  erros:[["Não desenforma.","Passe a forminha rápido na água morna e puxe pelo palito."],
+    ["Ficou com pedras de gelo.","Fruta demais e suco de menos. Encha bem com o suco para firmar por igual."]]});
+U("u-picole-melancia","Picolé de melancia, banana e kiwi (opção 2)",{por:3,min:300,pag:67,grupo:"doces",inteira:true,
+  ing:[I(.5,"","kiwi processado"),I(1/3,"","banana processada","com 1 colher de sopa do suco"),I(2,"","fatias grandes de melancia","para o suco")],
+  ut:["Liquidificador","Forminhas de picolé"],
+  passos:[P("Bata a melancia no liquidificador e coe para fazer o suco."),
+    P("Encha três quartos de cada forminha com o suco e leve ao congelador.",null,1800,"o suco começou a firmar"),
+    P("Junte a banana processada e volte ao congelador.",null,1800,"a banana firmou"),
+    P("Junte o kiwi e congele por mais algumas horas (o livro não diz quantas; 3 horas costumam bastar).",null,10800,"firmes por inteiro")],
+  erros:[["As camadas se misturaram.","A camada de baixo não firmou. Espere os 30 minutos antes de pôr a próxima."],
+    ["O palito soltou.","Ponha o palito quando a primeira camada estiver meio firme."]]});
+U("u-pudim-caneca","Pudim de café de caneca",{por:1,min:30,pag:62,grupo:"doces",inteira:true,
+  ing:[I(1,"","ovo"),I(2,"c. sopa","açúcar"),I(1,"c. chá","café solúvel"),I(1,"c. sopa","amido de milho","cheia"),I(200,"ml","leite de coco"),I(3,"c. sopa","açúcar","calda"),I(1,"c. sopa","água","calda; o livro diz só um pouco"),I(null,"","cacau em pó","opcional; o livro lista 6 colheres na calda, mas não diz quando usar")],
+  ut:["Caneca","2 tigelas"],
+  passos:[P("Na caneca, ponha o açúcar e a água da calda e leve ao micro-ondas, conferindo a cada 30 segundos. Cuidado: a calda queima a pele.",null,null,"a calda ficou cor de caramelo claro"),
+    P("Numa tigela, misture o açúcar, metade do leite de coco e o amido. Junte o ovo e misture bem."),
+    P("Noutra tigela, dissolva o café na outra metade do leite de coco e junte à mistura. Despeje na caneca, sobre a calda."),
+    P("Leve ao micro-ondas.",null,120,"firme nas bordas e tremendo só no centro"),
+    P("Deixe esfriar e leve à geladeira até gelar. Desenforme e sirva.",null,900)],
+  erros:[["A calda queimou e amargou.","Passou do ponto. Confira de 30 em 30 segundos e tire no caramelo claro."],
+    ["Transbordou no micro-ondas.","Caneca cheia demais. Use uma caneca grande e pare um pouco no meio do tempo."]]});
+U("u-sorbet-amendoim","Sorbet de amendoim com granola",{por:2,min:10,pag:68,grupo:"doces",
+  ing:[I(1,"","potinho de iogurte congelado"),I(1/3,"xíc","pasta de amendoim com cacau e avelã"),I(2,"","bananas picadas e congeladas"),I(2,"c. sopa","chocolate picado","opcional"),I(2,"c. sopa","granola")],
+  ut:["Liquidificador"],
+  passos:[P("Bata a banana no liquidificador."),
+    P("Junte o iogurte congelado e bata. Junte a pasta de amendoim e bata."),
+    P("Por último, junte a granola e bata mais uma vez. Misture o chocolate e sirva.",null,null,"cremoso e firme na colher")],
+  erros:[["Ficou mole como vitamina.","A banana ou o iogurte não estavam bem congelados. Leve ao congelador por 30 minutos e bata de novo."],
+    ["O liquidificador travou.","Pedaços grandes. Pique a banana antes de congelar e use a função pulsar."]]});
+U("u-sorbet-acai","Sorbet de açaí",{por:3,min:130,pag:69,grupo:"doces",inteira:true,
+  ing:[I(4,"","bananas bem maduras"),I(100,"g","polpa de açaí","2 polpas"),I(3,"c. sopa","leite em pó")],
+  ut:["Liquidificador","Pote"],
+  passos:[P("Ponha tudo no liquidificador e bata na função pulsar, até virar um creme liso.",null,null,"creme liso, sem pedaços"),
+    P("Passe para um pote e leve ao congelador.",null,7200,"firme, mas ainda dá para tirar com a colher"),
+    P("Sirva com frutas, castanhas, amendoim ou coco ralado. Dá para trocar o açaí por morango ou manga.")],
+  erros:[["Ficou duro demais.","Muito tempo no congelador. Deixe 10 minutos fora antes de servir."],
+    ["O liquidificador travou.","Polpa muito dura. Deixe amolecer um pouco e use a função pulsar."]]});
+U("u-sorbet-manga","Sorbet de manga",{por:3,min:260,pag:70,grupo:"doces",inteira:true,
+  ing:[I(2,"","mangas"),I(.5,"","limão","o suco")],
+  ut:["Faca e tábua","Liquidificador"],
+  passos:[P("Corte as mangas em pedaços e congele sem amontoar, por no mínimo 4 horas.",null,14400,"os pedaços estão duros"),
+    P("Tire do congelador e deixe em temperatura ambiente.",null,600),
+    P("Bata com o limão na função pulsar para quebrar os pedaços e depois normalmente, até ficar cremoso. Sirva na hora: congelado de novo, endurece.",null,null,"cremoso e liso")],
+  erros:[["Virou suco.","A manga amoleceu demais ou bateu tempo demais. Volte ao congelador por 30 minutos."],
+    ["O liquidificador travou.","Pedaços grandes ou duros demais. Espere os 10 minutos e use a função pulsar."]]});
 /*CONTEUDO-FIM*/
 
 // ---------- utilitários ----------
@@ -1353,7 +1968,9 @@ function moduloFeito(mid){const m=MODULOS.find(x=>x.id===mid);return m.aulas.len
 function aulaQueEnsina(t){return ORDEM.find(id=>AULAS[id].ensina.includes(t))||null}
 function aberta(r){if(!r.exige||S.receitas[r.id])return true;const s=tecnicasSabidas();return r.exige.every(t=>s.has(t))}
 function faltam(r){const s=tecnicasSabidas(),ids=[];(r.exige||[]).forEach(t=>{if(!s.has(t)){const a=aulaQueEnsina(t);if(a&&!ids.includes(a))ids.push(a)}});return ids}
-function receitaDe(id){return (AULAS[id]&&AULAS[id].receita)||LIVRO.find(r=>r.id===id)||S.receitas[id]||null}
+function receitaDe(id){return (AULAS[id]&&AULAS[id].receita)||LIVRO.find(r=>r.id===id)||RU.find(r=>r.id===id)||S.receitas[id]||null}
+// Bolo, pão e picolé não mudam de tamanho: rendem o que a forma rende.
+const porcDe=r=>r&&r.inteira?r.porcoes:porc();
 
 // ---------- receita: textos ----------
 const FOGO=["","fogo baixo","fogo médio","fogo alto"];
@@ -1369,9 +1986,9 @@ function fmtNum(v,u,item){
 const un=(u,v)=>u==="dente"?(v>1?"dentes de":"dente de"):u;
 function ingHTML(i,p,base){const q=i.q==null?"":fmtNum(i.q*p/base,i.u,i.item);return esc([q,un(i.u,i.q*p/base),i.item].filter(Boolean).join(" "))+(i.obs?` <span class="obs">(${esc(i.obs)})</span>`:"")}
 function blocoReceita(r,acoes=""){
-  const p=porc();
+  const p=porcDe(r);
   return `<div class="rec-meta"><span class="tag">${fmtMin(r.minutos)}</span>
-    <span class="porc"><button class="iconbtn" data-ac="porc" data-d="-1" aria-label="Menos porções"${p<=1?" disabled":""}>−</button><b>${p} ${p>1?"porções":"porção"}</b><button class="iconbtn" data-ac="porc" data-d="1" aria-label="Mais porções"${p>=6?" disabled":""}>+</button></span></div>
+    ${r.inteira?`<span class="porc"><b>Rende ${r.porcoes} ${r.porcoes>1?"porções":"porção"}</b></span>`:`<span class="porc"><button class="iconbtn" data-ac="porc" data-d="-1" aria-label="Menos porções"${p<=1?" disabled":""}>−</button><b>${p} ${p>1?"porções":"porção"}</b><button class="iconbtn" data-ac="porc" data-d="1" aria-label="Mais porções"${p>=6?" disabled":""}>+</button></span>`}</div>
   ${acoes}<div class="duas">
     <section class="sec"><h2 class="h-sec">Ingredientes</h2><ul class="ing">${r.ingredientes.map(i=>`<li>${ingHTML(i,p,r.porcoes||3)}</li>`).join("")}</ul></section>
     <section class="sec"><h2 class="h-sec">Utensílios</h2><ul class="uts">${(r.utensilios||[]).map(u=>`<li>${esc(u)}</li>`).join("")||'<li class="muted">Nada além do básico.</li>'}</ul></section>
@@ -1440,7 +2057,7 @@ AC.porc=d=>{const n=Math.min(6,Math.max(1,porc()+(+d.d)));put("config","geral",{
 AC.pular=d=>pular(d.id);
 AC.fav=d=>{if(S.favoritas[d.id])del("favoritas",d.id);else put("favoritas",d.id,{data:hoje()})};
 AC.avaliar=d=>dlgAvaliar(d.id);
-AC["compras-add"]=d=>{const r=receitaDe(d.id);if(r)paraCompras(r,porc())};
+AC["compras-add"]=d=>{const r=receitaDe(d.id);if(r)paraCompras(r,porcDe(r))};
 
 // O registro começa sem resposta: "Ficou bom" precisa ser escolhido, não aceito por distração.
 function dlgAvaliar(id){
@@ -1600,19 +2217,21 @@ V.receitas={
     // Com busca, mostra tudo filtrado no lugar das abas: suas receitas, os pratos das aulas e o livro.
     if(RC.q.trim()){
       const aulas=ORDEM.map(id=>({titulo:AULAS[id].receita.titulo+" "+AULAS[id].titulo,ingredientes:AULAS[id].receita.ingredientes,aula:id}));
-      const res=filtrarReceitas([...criadas,...aulas,...LIVRO],RC.q);
+      const res=filtrarReceitas([...criadas,...aulas,...LIVRO,...RU],RC.q);
       $("#rc-corpo").innerHTML=res.length?`<p class="nota" role="status">${res.length===1?"1 resultado":res.length+" resultados"}</p><div class="lista">${res.map(r=>r.aula?linhaAulaBusca(r.aula):linhaReceita(r,!aberta(r))).join("")}</div>`
         :`<p class="vazio" role="status">Nenhuma receita ou aula com “${esc(RC.q.trim())}” no nome ou nos ingredientes.</p>`;
       return;
     }
     const favs=Object.keys(S.favoritas).map(receitaDe).filter(Boolean);
     const n=k=>`<span class="n">${k}</span>`;
-    const abas=[["abertas",`Abertas${n(abertas.length)}`],["favoritas",`Favoritas${n(favs.length)}`],["criadas",`Minhas${n(criadas.length)}`],["proximas",`Próximas${n(fechadas.length)}`]];
+    const abas=[["abertas",`Abertas${n(abertas.length)}`],["ru",`RU UFRN${n(RU.length)}`],["favoritas",`Favoritas${n(favs.length)}`],["criadas",`Minhas${n(criadas.length)}`],["proximas",`Próximas${n(fechadas.length)}`]];
     if(!abas.some(([a])=>a===RC.aba))RC.aba="abertas";
     let corpo;
     if(RC.aba==="proximas")corpo=fechadas.length?`<p class="nota prosa">Estas receitas abrem quando você concluir as aulas das técnicas que elas usam. Dá para ver e cozinhar antes, se quiser.</p><div class="lista">${fechadas.map(r=>linhaReceita(r,true)).join("")}</div>`:'<p class="vazio">Nenhuma receita esperando: o livro inteiro está aberto.</p>';
     else if(RC.aba==="criadas")corpo=`<div class="acoes"><button class="btn acao" data-ac="receita-propria">Adicionar receita</button><button class="btn soft" data-ac="nova-receita"${RC.busy?" disabled":""}>${SAMPLE?(RC.busy?"O Claude está escrevendo…":"Pedir receita nova ao Claude"):"O que dá pra fazer com o que tenho"}</button></div>
       ${criadas.length?`<div class="lista">${criadas.map(r=>linhaReceita(r)).join("")}</div>`:`<p class="vazio">Adicione receitas que você viu em vídeos e sites. Elas ficam aqui, com timer e lista de compras.${SAMPLE?" Ou peça uma ao Claude, com o que você tem em casa.":" As receitas que você adaptar também aparecem aqui."}</p>`}`;
+    else if(RC.aba==="ru")corpo=`<p class="nota prosa">As receitas do Livro de receitas do Restaurante Universitário da UFRN, todas abertas. Onde o livro não diz o tempo, a temperatura ou o fogo, o passo completa e avisa.</p>
+      ${[["pratos","Pratos"],["lanches","Lanches e pães"],["doces","Doces"]].map(([g,t])=>`<section class="sec"><h2 class="h-sec">${t}</h2><div class="lista">${RU.filter(r=>r.grupo===g).sort((a,b)=>a.titulo.localeCompare(b.titulo,"pt")).map(r=>linhaReceita(r)).join("")}</div></section>`).join("")}`;
     else if(RC.aba==="favoritas")corpo=favs.length?`<div class="lista">${favs.map(r=>linhaReceita(r)).join("")}</div>`:'<p class="vazio">Marque uma receita como favorita para ela aparecer aqui.</p>';
     else corpo=abertas.length?`<div class="lista">${abertas.map(r=>linhaReceita(r)).join("")}</div>`:'<div class="vazio"><p>As receitas do livro abrem conforme você faz as aulas, e cada aula já tem um prato para cozinhar hoje.</p>${proximaAula()?`<div class="acoes"><button class="btn soft" data-ac="go" data-v="aula" data-id="${proximaAula()}">Abrir a próxima aula</button></div>`:""}</div>';
     $("#rc-corpo").innerHTML=`<div class="abas" role="tablist" aria-label="Partes do livro">${abas.map(([a,r])=>`<button type="button" role="tab" id="aba-${a}" aria-controls="rc-painel" data-ac="aba" data-a="${a}" aria-selected="${RC.aba===a}" tabindex="${RC.aba===a?0:-1}">${r}</button>`).join("")}</div>
@@ -1627,6 +2246,7 @@ V.receita={
     const f=faltam(r),criada=!!S.receitas[r.id],minha=criada&&r.origem==="sua",p=S.progresso[r.id];
     box.innerHTML=`<div class="cab"><button class="linkbtn voltar" data-ac="go" data-v="receitas">← Receitas</button>
         <div class="cab-tit"><h1 class="h-pag">${esc(r.titulo)}</h1><button type="button" class="fav-btn" data-ac="fav" data-id="${esc(r.id)}" aria-pressed="${!!S.favoritas[r.id]}" aria-label="${S.favoritas[r.id]?"Tirar das favoritas":"Favoritar"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linejoin="round" d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button></div>${minha?`<p class="meta">Sua receita${rpLink(r.link)?` · <a href="${esc(rpLink(r.link))}" target="_blank" rel="noopener noreferrer">Ver a receita original</a>`:""}</p>`:criada?`<p class="meta">Criada pelo Claude${r.origem?` · ${esc(r.origem)}`:""}</p>`:""}
+        ${r.fonte?`<p class="meta">${esc(r.fonte.livro)}, p. ${r.fonte.pag}</p>`:""}
         ${r.exige&&r.exige.length?`<p class="meta">Técnicas: ${esc(listaE(r.exige.map(t=>TECNICAS[t]?TECNICAS[t].nome:t)))}</p>`:""}
         ${p&&p.vezes?`<span class="nota">Você já fez ${p.vezes}×, a última em ${dataBR(p.data)}${p.nota?` (${{bom:"ficou bom",medio:"mais ou menos",errado:"deu errado"}[p.nota]})`:""}.</span>`:""}
         ${p&&p.anotacao?`<p class="nota prosa">Da última vez você anotou: “${esc(p.anotacao)}”</p>`:""}</div>
@@ -1699,7 +2319,7 @@ AC["compras-enviar"]=()=>{
 // Receita inteira em texto, nas porções que estão na tela.
 AC["receita-enviar"]=d=>{
   const r=receitaDe(d.id);if(!r)return;
-  const p=porc(),base=r.porcoes||3,link=S.receitas[r.id]&&rpLink(r.link);
+  const p=porcDe(r),base=r.porcoes||3,link=S.receitas[r.id]&&rpLink(r.link);
   const ing=r.ingredientes.map(i=>{const q=i.q==null?null:i.q*p/base;return "- "+[q==null?"":fmtNum(q,i.u,i.item),un(i.u,q),i.item].filter(Boolean).join(" ")+(i.obs?` (${i.obs})`:"")});
   const pas=r.passos.map((s,k)=>`${k+1}. ${s.txt}${s.pronto?` Pronto quando: ${s.pronto}.`:""}`);
   const txt=`${r.titulo}\n${p} ${p>1?"porções":"porção"} · ${fmtMin(r.minutos)}\n\nIngredientes\n${ing.join("\n")}\n\nModo de fazer\n${pas.join("\n")}${link?`\n\nReceita original: ${link}`:""}`;
@@ -1783,7 +2403,7 @@ AC.cozinhar=d=>{
   const nova=receitaDe(d.id);if(!nova)return;
   ligaSom();
   const velha=CZ&&CZ.id!==d.id&&receitaDe(CZ.id);
-  const comecar=()=>{CZ={id:d.id,passo:0,porcoes:porc(),ok:{},timers:[]};salvaCZ();go("cozinhar")};
+  const comecar=()=>{CZ={id:d.id,passo:0,porcoes:porcDe(receitaDe(d.id)),ok:{},timers:[]};salvaCZ();go("cozinhar")};
   if(velha&&(CZ.passo>0||CZ.timers.length)){
     const correndo=CZ.timers.filter(t=>!t.tocou).length;
     openDlg("Trocar de receita?",`<p>Você está no meio de <b>${esc(velha.titulo)}</b>${CZ.passo?`, no passo ${CZ.passo} de ${velha.passos.length}`:""}${correndo?`, com ${correndo>1?correndo+" timers correndo":"um timer correndo"}`:""}.</p><p>Se começar <b>${esc(nova.titulo)}</b>, esse progresso${CZ.timers.length?" e os timers":""} se perdem.</p>`,()=>{comecar()},"Trocar de receita",{calmo:true,nao:"Manter "+velha.titulo});
@@ -2569,7 +3189,7 @@ function mostrarSugestoes(){
   const tenho=[...document.querySelectorAll('#sg-chips [aria-pressed="true"]')].map(b=>b.textContent).concat(separarIngredientes($("#sg-txt").value));
   const el=$("#sg-res");
   if(!tenho.length){el.innerHTML=`<p class="nota">Escolha pelo menos um ingrediente.</p>`;return}
-  const rs=[...Object.values(AULAS).map(a=>a.receita),...LIVRO];
+  const rs=[...Object.values(AULAS).map(a=>a.receita),...LIVRO,...RU];
   const {agora,depois}=sugerir(tenho,rs,tecnicasSabidas());
   const linha=s=>`<button type="button" class="linha" data-ac="dlg-go" data-v="${AULAS[s.id]?"aula":"receita"}" data-id="${esc(s.id)}"><span class="cresce"><span class="t">${esc(s.titulo)}</span><br><span class="m">${s.faltam.length?"Falta: "+esc(listaE(s.faltam)):"Você tem tudo"}${s.aulas?` · Aprenda antes: ${esc(listaE(s.aulas.slice(0,2).map(a=>AULAS[a].titulo)))}`:""}</span></span></button>`;
   el.innerHTML=!agora.length&&!depois.length?`<p class="vazio">Nenhuma receita do curso usa a maior parte disso. Tente juntar mais um ingrediente.</p>`
@@ -2630,7 +3250,7 @@ initStore();
 </script>
 
 <script>
-// Guarda o app no aparelho para abrir sem internet. Versão d934e64f24.
+// Guarda o app no aparelho para abrir sem internet. Versão cbfdb02703.
 if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
